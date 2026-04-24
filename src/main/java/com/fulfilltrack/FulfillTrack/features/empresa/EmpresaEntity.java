@@ -1,0 +1,51 @@
+package com.fulfilltrack.FulfillTrack.features.empresa;
+
+
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(name= "empresa")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class EmpresaEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_empresa")
+    private Long id_empresa;
+
+    @Column(name ="uuid", nullable = false, unique = true)
+    private UUID uuid;
+
+    @Column(name = "nombre_empresa", nullable = false)
+    private String nombreEmpresa;
+
+    @Column(nullable = false, unique = true, updatable = false)
+    private String email;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal precio;
+
+   @Enumerated(EnumType.STRING)
+   @Column(nullable = false)
+   private EstadoEmpresa estado;
+
+@CreationTimestamp
+@Column(updatable = false)
+private LocalDateTime fechaCreacion;
+
+    @PrePersist
+    public void prePersist() {
+        this.uuid = UUID.randomUUID();
+        this.estado = EstadoEmpresa.ACTIVA;
+    }
+
+}
