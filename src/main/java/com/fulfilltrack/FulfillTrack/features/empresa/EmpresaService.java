@@ -1,12 +1,18 @@
 package com.fulfilltrack.FulfillTrack.features.empresa;
 
+import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
+import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
 import com.fulfilltrack.FulfillTrack.features.empresa.dto.EmpresaRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.empresa.dto.EmpresaResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.empresa.mapper.EmpresaMapper;
+import jakarta.validation.Valid;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class EmpresaService implements IEmpresaService{
     private final EmpresaRepository empresaRepository;
     private final EmpresaMapper empresaMapper;
@@ -40,7 +46,7 @@ public class EmpresaService implements IEmpresaService{
     @Override
     public EmpresaResponseDTO actualizarEmpresa(UUID uuid, EmpresaRequestDTO request) {
         EmpresaEntity empresa = empresaRepository.findByUuid(uuid)
-                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+                .orElseThrow(() -> new EntidadNoEncontradaException("Empresa no encontrada"));
         empresa.setNombreEmpresa(request.getNombreEmpresa());
         empresa.setEmail(request.getEmail());
         empresa.setCostoPorEnvio(request.getCostoPorEnvio());
@@ -52,14 +58,28 @@ public class EmpresaService implements IEmpresaService{
     @Override
     public void desactivarEmpresa(UUID uuid) {
         EmpresaEntity empresa = empresaRepository.findByUuid(uuid)
-                .orElseThrow(()->new RuntimeException("Empresa no encontrada"));
+                .orElseThrow(()->new EntidadNoEncontradaException("Empresa no encontrada"));
 
         if (empresa.getEstado() == EstadoEmpresa.INACTIVA) {
-            throw new RuntimeException("La empresa ya se encuentra inactiva");
+            throw new OperacionNoPermitidaException("La empresa ya se encuentra inactiva");
         }
         empresa.setEstado(EstadoEmpresa.INACTIVA);
 
         empresaRepository.save(empresa);
     }
+
+    @Override
+    public void activarEmpresa(UUID uuid) {
+        EmpresaEntity empresa = empresaRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntidadNoEncontradaException("Empresa no encontrada"));
+        if(empresa.getEstado() == EstadoEmpresa.ACTIVA){
+            throw new OperacionNoPermitidaException("La empresa ya se encuentra activada");
+        }
+        empresa.setEstado(EstadoEmpresa.ACTIVA);
+        empresaRepository.save(empresa);
+    }
+
+
+
 
 }

@@ -38,9 +38,15 @@ public class EmpresaController {
         return ResponseEntity.ok(empresaService.actualizarEmpresa(uuid, modificar));
     }
 
-    @DeleteMapping("/{uuid}")
-    public ResponseEntity<Void> desactivarEmpresa(@PathVariable UUID uuid){
+    @PatchMapping("/{uuid}/desactivar")
+    public ResponseEntity<Void> desactivarEmpresa(@PathVariable UUID uuid) {
         empresaService.desactivarEmpresa(uuid);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{uuid}/activar")
+    public ResponseEntity<Void> activarEmpresa(@PathVariable UUID uuid){
+        empresaService.activarEmpresa(uuid);
         return ResponseEntity.noContent().build();
     }
 
