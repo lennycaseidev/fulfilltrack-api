@@ -28,11 +28,11 @@ public class EmpresaEntity {
     @Column(name = "nombre_empresa", nullable = false)
     private String nombreEmpresa;
 
-    @Column(nullable = false, unique = true, updatable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(precision = 10, scale = 2)
-    private BigDecimal precio;
+    @Column(name ="costo_por_envio",precision = 10, scale = 2)
+    private BigDecimal costoPorEnvio;
 
    @Enumerated(EnumType.STRING)
    @Column(nullable = false)
