@@ -15,5 +15,5 @@ public interface IEmpresaService {
 
     EmpresaResponseDTO actualizarEmpresa(UUID uuid, EmpresaRequestDTO request);
 
-    void eliminarEmpresa(UUID uuid);
+    void desactivarEmpresa(UUID uuid);
 }
