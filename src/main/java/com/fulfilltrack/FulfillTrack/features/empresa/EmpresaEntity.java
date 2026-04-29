@@ -20,7 +20,7 @@ public class EmpresaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_empresa")
-    private Long id_empresa;
+    private Long idEmpresa;
 
     @Column(name ="uuid", nullable = false, unique = true)
     private UUID uuid;
