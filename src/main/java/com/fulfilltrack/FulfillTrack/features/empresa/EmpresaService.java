@@ -49,6 +49,9 @@ public class EmpresaService implements IEmpresaService{
     public EmpresaResponseDTO actualizarEmpresa(UUID uuid, EmpresaRequestDTO request) {
         EmpresaEntity empresa = empresaRepository.findByUuid(uuid)
                 .orElseThrow(() -> new EntidadNoEncontradaException("Empresa no encontrada"));
+        if (empresaRepository.existsByEmailAndUuidNot(request.getEmail(), uuid)) {
+            throw new EntidadDuplicadaException("Ya existe otra empresa registrada con el email: " + request.getEmail());
+        }
         empresa.setNombreEmpresa(request.getNombreEmpresa());
         empresa.setEmail(request.getEmail());
         empresa.setCostoPorEnvio(request.getCostoPorEnvio());

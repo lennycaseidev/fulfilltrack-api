@@ -12,4 +12,5 @@ import java.util.UUID;
 public interface EmpresaRepository extends JpaRepository<EmpresaEntity, Long> {
     Optional<EmpresaEntity> findByUuid(UUID uuid);
     boolean existsByEmail(String email);
+    boolean existsByEmailAndUuidNot(String email, UUID uuid);
 }

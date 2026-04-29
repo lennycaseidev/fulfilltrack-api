@@ -15,7 +15,7 @@ import java.util.UUID;
 @RequestMapping("/api/empresas")
 @RequiredArgsConstructor
 public class EmpresaController {
-    private final EmpresaService empresaService;
+    private final IEmpresaService empresaService;
 
     @GetMapping
     public ResponseEntity<List<EmpresaResponseDTO>> listarEmpresas(){
