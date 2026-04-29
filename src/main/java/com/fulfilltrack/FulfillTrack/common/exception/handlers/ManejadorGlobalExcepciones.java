@@ -49,8 +49,8 @@ public class ManejadorGlobalExcepciones {
         String mensaje = ex.getBindingResult().getFieldErrors().stream()
                 .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
                 .collect(Collectors.joining(", "));
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
-                .body(buildError(HttpStatus.UNPROCESSABLE_ENTITY, mensaje, request));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(buildError(HttpStatus.BAD_REQUEST, mensaje, request));
     }
 
     @ExceptionHandler(Exception.class)
