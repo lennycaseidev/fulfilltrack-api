@@ -1,13 +1,12 @@
 package com.fulfilltrack.FulfillTrack.features.empresa;
 
+import com.fulfilltrack.FulfillTrack.common.exception.EntidadDuplicadaException;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
 import com.fulfilltrack.FulfillTrack.features.empresa.dto.EmpresaRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.empresa.dto.EmpresaResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.empresa.mapper.EmpresaMapper;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +24,9 @@ public class EmpresaService implements IEmpresaService{
 
     @Override
     public EmpresaResponseDTO crearEmpresa(EmpresaRequestDTO request) {
+        if (empresaRepository.existsByEmail(request.getEmail())) {
+            throw new EntidadDuplicadaException("Ya existe una empresa registrada con el email: " + request.getEmail());
+        }
         EmpresaEntity empresa = empresaMapper.toEntity(request);
         EmpresaEntity saved = empresaRepository.save(empresa);
         return empresaMapper.toResponseDTO(saved);
@@ -33,7 +35,7 @@ public class EmpresaService implements IEmpresaService{
     @Override
     public EmpresaResponseDTO obtenerEmpresaPorUuid(UUID uuid) {
         EmpresaEntity empresa = empresaRepository.findByUuid(uuid)
-                .orElseThrow(()->new RuntimeException("Empresa no encontrada"));
+                .orElseThrow(() -> new EntidadNoEncontradaException("Empresa no encontrada con UUID: " + uuid));
         return empresaMapper.toResponseDTO(empresa);
     }
 
