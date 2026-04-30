@@ -28,8 +28,8 @@ public class EmpresaService implements IEmpresaService{
             throw new EntidadDuplicadaException("Ya existe una empresa registrada con el email: " + request.getEmail());
         }
         EmpresaEntity empresa = empresaMapper.toEntity(request);
-        EmpresaEntity saved = empresaRepository.save(empresa);
-        return empresaMapper.toResponseDTO(saved);
+        EmpresaEntity guardado = empresaRepository.save(empresa);
+        return empresaMapper.toResponseDTO(guardado);
     }
 
     @Override

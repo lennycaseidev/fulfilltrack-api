@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Repository
 public interface DepositoRepository extends JpaRepository<DepositoEntity, Long> {
-
 Optional<DepositoEntity> findByUuid(UUID uuid);
-
+boolean existsByEmail(String email);
+boolean existsByEmailAndUuidNot(String email, UUID uuid);
 }
