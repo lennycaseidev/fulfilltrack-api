@@ -4,6 +4,8 @@ import com.fulfilltrack.FulfillTrack.common.exception.EntidadDuplicadaException;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
 import com.fulfilltrack.FulfillTrack.common.utils.Estado;
+import com.fulfilltrack.FulfillTrack.features.deposito.DepositoEntity;
+import com.fulfilltrack.FulfillTrack.features.deposito.DepositoRepository;
 import com.fulfilltrack.FulfillTrack.features.empresa.dto.EmpresaRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.empresa.dto.EmpresaResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.empresa.mapper.EmpresaMapper;
@@ -16,10 +18,12 @@ import java.util.UUID;
 public class EmpresaService implements IEmpresaService{
     private final EmpresaRepository empresaRepository;
     private final EmpresaMapper empresaMapper;
+    private final DepositoRepository depositoRepository;
 
-    public EmpresaService(EmpresaRepository empresaRepository, EmpresaMapper empresaMapper) {
+    public EmpresaService(EmpresaRepository empresaRepository, EmpresaMapper empresaMapper, DepositoRepository depositoRepository) {
         this.empresaRepository = empresaRepository;
         this.empresaMapper = empresaMapper;
+        this.depositoRepository = depositoRepository;
     }
 
 
@@ -28,9 +32,12 @@ public class EmpresaService implements IEmpresaService{
         if (empresaRepository.existsByEmail(request.getEmail())) {
             throw new EntidadDuplicadaException("Ya existe una empresa registrada con el email: " + request.getEmail());
         }
+        DepositoEntity deposito = depositoRepository.findByUuid(request.getDepositoUuid())
+                .orElseThrow(() -> new EntidadNoEncontradaException("Depósito no encontrado con UUID " + request.getDepositoUuid()));
+
         EmpresaEntity empresa = empresaMapper.toEntity(request);
-        EmpresaEntity guardado = empresaRepository.save(empresa);
-        return empresaMapper.toResponseDTO(guardado);
+        empresa.setDeposito(deposito);
+        return empresaMapper.toResponseDTO(empresaRepository.save(empresa));
     }
 
     @Override
@@ -53,12 +60,15 @@ public class EmpresaService implements IEmpresaService{
         if (empresaRepository.existsByEmailAndUuidNot(request.getEmail(), uuid)) {
             throw new EntidadDuplicadaException("Ya existe otra empresa registrada con el email: " + request.getEmail());
         }
+        DepositoEntity deposito = depositoRepository.findByUuid(request.getDepositoUuid())
+                .orElseThrow(() -> new EntidadNoEncontradaException("Depósito no encontrado con UUID " + request.getDepositoUuid()));
+
         empresa.setNombreEmpresa(request.getNombreEmpresa());
         empresa.setEmail(request.getEmail());
         empresa.setCostoPorEnvio(request.getCostoPorEnvio());
+        empresa.setDeposito(deposito);
 
-        EmpresaEntity empresaActualizada = empresaRepository.save(empresa);
-        return empresaMapper.toResponseDTO(empresaActualizada);
+        return empresaMapper.toResponseDTO(empresaRepository.save(empresa));
     }
 
     @Override
