@@ -3,6 +3,7 @@ package com.fulfilltrack.FulfillTrack.features.empresa;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadDuplicadaException;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
+import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import com.fulfilltrack.FulfillTrack.features.empresa.dto.EmpresaRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.empresa.dto.EmpresaResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.empresa.mapper.EmpresaMapper;
@@ -28,8 +29,8 @@ public class EmpresaService implements IEmpresaService{
             throw new EntidadDuplicadaException("Ya existe una empresa registrada con el email: " + request.getEmail());
         }
         EmpresaEntity empresa = empresaMapper.toEntity(request);
-        EmpresaEntity saved = empresaRepository.save(empresa);
-        return empresaMapper.toResponseDTO(saved);
+        EmpresaEntity guardado = empresaRepository.save(empresa);
+        return empresaMapper.toResponseDTO(guardado);
     }
 
     @Override
@@ -65,10 +66,10 @@ public class EmpresaService implements IEmpresaService{
         EmpresaEntity empresa = empresaRepository.findByUuid(uuid)
                 .orElseThrow(()->new EntidadNoEncontradaException("Empresa no encontrada"));
 
-        if (empresa.getEstado() == EstadoEmpresa.INACTIVA) {
+        if (empresa.getEstado() == Estado.INACTIVA) {
             throw new OperacionNoPermitidaException("La empresa ya se encuentra inactiva");
         }
-        empresa.setEstado(EstadoEmpresa.INACTIVA);
+        empresa.setEstado(Estado.INACTIVA);
 
         empresaRepository.save(empresa);
     }
@@ -77,10 +78,10 @@ public class EmpresaService implements IEmpresaService{
     public void activarEmpresa(UUID uuid) {
         EmpresaEntity empresa = empresaRepository.findByUuid(uuid)
                 .orElseThrow(() -> new EntidadNoEncontradaException("Empresa no encontrada"));
-        if(empresa.getEstado() == EstadoEmpresa.ACTIVA){
+        if(empresa.getEstado() == Estado.ACTIVA){
             throw new OperacionNoPermitidaException("La empresa ya se encuentra activada");
         }
-        empresa.setEstado(EstadoEmpresa.ACTIVA);
+        empresa.setEstado(Estado.ACTIVA);
         empresaRepository.save(empresa);
     }
 

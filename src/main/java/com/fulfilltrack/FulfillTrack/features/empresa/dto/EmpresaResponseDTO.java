@@ -1,7 +1,7 @@
 package com.fulfilltrack.FulfillTrack.features.empresa.dto;
 
 
-import com.fulfilltrack.FulfillTrack.features.empresa.EstadoEmpresa;
+import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -18,6 +18,6 @@ public class EmpresaResponseDTO {
     private String nombreEmpresa;
     private String email;
     private BigDecimal costoPorEnvio;
-    private EstadoEmpresa estado;
+    private Estado estado;
     private LocalDateTime fechaCreacion;
 }
