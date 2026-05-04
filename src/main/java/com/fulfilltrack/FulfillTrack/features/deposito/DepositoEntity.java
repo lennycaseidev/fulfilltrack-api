@@ -1,12 +1,15 @@
 package com.fulfilltrack.FulfillTrack.features.deposito;
 
 
+import com.fulfilltrack.FulfillTrack.common.utils.Estado;
+import com.fulfilltrack.FulfillTrack.features.empresa.EmpresaEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -48,10 +51,17 @@ private LocalTime cierreDeposito;
 @Column(name = "creacion_deposito", updatable = false)
 private LocalDateTime creacionDeposito;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Estado estado;
 
 @PrePersist
 public void prePersist() {
     this.uuid = UUID.randomUUID();
+    this.estado = Estado.ACTIVA;
 }
+    @OneToMany(mappedBy = "deposito")
+    private List<EmpresaEntity> empresas;
+
 
 }

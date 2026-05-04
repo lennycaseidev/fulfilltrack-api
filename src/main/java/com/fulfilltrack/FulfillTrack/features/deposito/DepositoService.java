@@ -3,6 +3,7 @@ package com.fulfilltrack.FulfillTrack.features.deposito;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadDuplicadaException;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
+import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import com.fulfilltrack.FulfillTrack.features.deposito.dto.DepositoRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.deposito.dto.DepositoResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.deposito.mapper.DepositoMapper;
@@ -71,11 +72,23 @@ public class DepositoService implements IDepositoService {
 
     @Override
     public void desactivarDeposito(UUID uuid) {
-
+        DepositoEntity deposito = depositoRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntidadNoEncontradaException("Depósito no encontrado con UUID " + uuid));
+        if (deposito.getEstado() == Estado.INACTIVA) {
+            throw new OperacionNoPermitidaException("El depósito ya se encuentra inactivo");
+        }
+        deposito.setEstado(Estado.INACTIVA);
+        depositoRepository.save(deposito);
     }
 
     @Override
     public void activarDeposito(UUID uuid) {
-
+        DepositoEntity deposito = depositoRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntidadNoEncontradaException("Depósito no encontrado con UUID " + uuid));
+        if (deposito.getEstado() == Estado.ACTIVA) {
+            throw new OperacionNoPermitidaException("El depósito ya se encuentra activo");
+        }
+        deposito.setEstado(Estado.ACTIVA);
+        depositoRepository.save(deposito);
     }
 }

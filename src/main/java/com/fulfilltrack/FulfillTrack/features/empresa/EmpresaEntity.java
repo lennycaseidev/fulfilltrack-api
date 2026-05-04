@@ -1,6 +1,8 @@
 package com.fulfilltrack.FulfillTrack.features.empresa;
 
 
+import com.fulfilltrack.FulfillTrack.common.utils.Estado;
+import com.fulfilltrack.FulfillTrack.features.deposito.DepositoEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -36,7 +38,7 @@ public class EmpresaEntity {
 
    @Enumerated(EnumType.STRING)
    @Column(nullable = false)
-   private EstadoEmpresa estado;
+   private Estado estado;
 
 @CreationTimestamp
 @Column(updatable = false)
@@ -45,7 +47,12 @@ private LocalDateTime fechaCreacion;
     @PrePersist
     public void prePersist() {
         this.uuid = UUID.randomUUID();
-        this.estado = EstadoEmpresa.ACTIVA;
+        this.estado = Estado.ACTIVA;
     }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_deposito", nullable = false)
+    private DepositoEntity deposito;
+
 
 }
