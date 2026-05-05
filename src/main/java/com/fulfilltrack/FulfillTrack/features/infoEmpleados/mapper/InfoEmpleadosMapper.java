@@ -7,10 +7,13 @@ import com.fulfilltrack.FulfillTrack.features.infoEmpleados.dto.InfoEmpleadosRes
 import org.mapstruct.Mapper;
 
 import java.util.List;
+import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 public interface InfoEmpleadosMapper {
     InfoEmpleadosEntity toEntity(InfoEmpleadosRequestDTO request);
     InfoEmpleadosResponseDTO toResponseDTO(InfoEmpleadosEntity entity);
     List<InfoEmpleadosResponseDTO> toResponseList(List<InfoEmpleadosEntity> list);
+    void eliminarEmpleado(UUID uuid);
+
 }

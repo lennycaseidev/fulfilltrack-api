@@ -3,6 +3,7 @@ package com.fulfilltrack.FulfillTrack.features.deposito;
 
 import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import com.fulfilltrack.FulfillTrack.features.empresa.EmpresaEntity;
+import com.fulfilltrack.FulfillTrack.features.infoEmpleados.InfoEmpleadosEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -63,5 +64,7 @@ public void prePersist() {
     @OneToMany(mappedBy = "deposito")
     private List<EmpresaEntity> empresas;
 
+    @OneToMany(mappedBy = "deposito")
+    private List<InfoEmpleadosEntity> empleados;
 
 }

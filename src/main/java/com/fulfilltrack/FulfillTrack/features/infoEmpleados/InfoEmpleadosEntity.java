@@ -1,5 +1,6 @@
 package com.fulfilltrack.FulfillTrack.features.infoEmpleados;
 
+import com.fulfilltrack.FulfillTrack.features.deposito.DepositoEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -43,5 +44,12 @@ public class InfoEmpleadosEntity {
 //    @JoinColumn(name= "id_puesto", nullable = false)
 //    private PuestoEntity puesto;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_deposito", nullable = false)
+    private DepositoEntity deposito;
 
+    //Falta hacer tabla usuario
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "id_usuario", nullable = false)
+//    private UsuarioEntity usuario;
 }
