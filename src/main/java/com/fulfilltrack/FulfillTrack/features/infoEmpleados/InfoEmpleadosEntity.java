@@ -1,5 +1,6 @@
 package com.fulfilltrack.FulfillTrack.features.infoEmpleados;
 
+import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import com.fulfilltrack.FulfillTrack.features.deposito.DepositoEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,9 +35,14 @@ public class InfoEmpleadosEntity {
     @Column(name="contratacion_empleado", nullable = false)
     private LocalDateTime fechaContratacion;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Estado estado;
+
     @PrePersist
     public void prePersist() {
         this.uuid = UUID.randomUUID();
+        this.estado = Estado.ACTIVA;
     }
 
     //Falta hacer tabla puesto

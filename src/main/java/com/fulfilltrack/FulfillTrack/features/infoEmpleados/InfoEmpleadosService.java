@@ -2,6 +2,8 @@ package com.fulfilltrack.FulfillTrack.features.infoEmpleados;
 
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadDuplicadaException;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
+import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
+import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import com.fulfilltrack.FulfillTrack.features.deposito.DepositoEntity;
 import com.fulfilltrack.FulfillTrack.features.deposito.DepositoRepository;
 import com.fulfilltrack.FulfillTrack.features.infoEmpleados.dto.InfoEmpleadosRequestDTO;
@@ -77,5 +79,27 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
 //        empleado.setPuesto(puesto);
 
         return infoEmpleadosMapper.toResponseDTO(infoEmpleadosRepository.save(empleado));
+    }
+
+    @Override
+    public void activarEmpleado(UUID uuid) {
+        InfoEmpleadosEntity empleado = infoEmpleadosRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntidadNoEncontradaException("El empleado no ha sido encontrado"));
+        if (empleado.getEstado() == Estado.ACTIVA) {
+            throw new OperacionNoPermitidaException("El empleado ya está activo");
+        }
+        empleado.setEstado(Estado.ACTIVA);
+        infoEmpleadosRepository.save(empleado);
+    }
+
+    @Override
+    public void desactivarEmpleado(UUID uuid) {
+        InfoEmpleadosEntity empleado = infoEmpleadosRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntidadNoEncontradaException("El empleado no ha sido encontrado"));
+        if (empleado.getEstado() == Estado.INACTIVA) {
+            throw new OperacionNoPermitidaException("El empleado ya está inactivo");
+        }
+        empleado.setEstado(Estado.INACTIVA);
+        infoEmpleadosRepository.save(empleado);
     }
 }

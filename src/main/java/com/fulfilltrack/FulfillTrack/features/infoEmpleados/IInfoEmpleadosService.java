@@ -11,7 +11,8 @@ public interface IInfoEmpleadosService {
     InfoEmpleadosResponseDTO obtenerEmpleadoPorUuid(UUID uuid);
     InfoEmpleadosResponseDTO crearEmpleado(InfoEmpleadosRequestDTO request);
     InfoEmpleadosResponseDTO actualizarEmpleado(UUID uuid, InfoEmpleadosRequestDTO request);
-
+    void activarEmpleado(UUID uuid);
+    void desactivarEmpleado(UUID uuid);
 
 
 

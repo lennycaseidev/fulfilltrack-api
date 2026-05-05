@@ -14,6 +14,6 @@ public interface InfoEmpleadosMapper {
     InfoEmpleadosEntity toEntity(InfoEmpleadosRequestDTO request);
     InfoEmpleadosResponseDTO toResponseDTO(InfoEmpleadosEntity entity);
     List<InfoEmpleadosResponseDTO> toResponseList(List<InfoEmpleadosEntity> list);
-    void eliminarEmpleado(UUID uuid);
+
 
 }

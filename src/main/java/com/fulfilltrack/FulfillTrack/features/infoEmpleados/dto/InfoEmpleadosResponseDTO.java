@@ -1,5 +1,6 @@
 package com.fulfilltrack.FulfillTrack.features.infoEmpleados.dto;
 
+import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -19,6 +20,7 @@ public class InfoEmpleadosResponseDTO {
     private UUID puestoUuid;
     private UUID usuarioUuid;
     private UUID depositoUuid;
+    private Estado estado;
 
 
 
