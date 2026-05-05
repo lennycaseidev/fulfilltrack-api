@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -18,15 +19,15 @@ import java.math.BigDecimal;
 public class EmpresaRequestDTO {
     @NotBlank(message = "El nombre de la empresa es obligatorio")
     private String nombreEmpresa;
+
     @NotBlank(message = "El email es obligatorio")
     @Email(message = "El formato del email no es válido")
     private String email;
 
     @NotNull(message = "El costo por envío es obligatorio")
-    @DecimalMin(
-            value = "0.0",
-            inclusive = false,
-            message = "El costo por envío debe ser mayor a cero"
-    )
+    @DecimalMin(value = "0.0", inclusive = false, message = "El costo por envío debe ser mayor a cero")
     private BigDecimal costoPorEnvio;
+
+    @NotNull(message = "El UUID del depósito es obligatorio")
+    private UUID depositoUuid;
 }

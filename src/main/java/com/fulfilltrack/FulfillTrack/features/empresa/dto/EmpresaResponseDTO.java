@@ -20,4 +20,5 @@ public class EmpresaResponseDTO {
     private BigDecimal costoPorEnvio;
     private Estado estado;
     private LocalDateTime fechaCreacion;
+    private UUID depositoUuid;
 }
