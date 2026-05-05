@@ -24,7 +24,7 @@ public class InfoEmpleadosEntity {
     @Column(name = "id_empleado")
     private long idEmpleado;
 
-    @Column(name="documento_empleado", nullable = false, unique = true)
+    @Column(name="documento_empleado", nullable = false, unique = true, updatable = false)
     private String documento;
 
     @Column(name="salario_empleado", nullable = false)
@@ -50,6 +50,6 @@ public class InfoEmpleadosEntity {
 
     //Falta hacer tabla usuario
 //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id_usuario", nullable = false)
+//    @JoinColumn(name = "id_usuario", nullable = false, updatable = false)
 //    private UsuarioEntity usuario;
 }
