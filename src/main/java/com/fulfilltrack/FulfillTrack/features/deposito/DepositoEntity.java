@@ -25,7 +25,7 @@ public class DepositoEntity {
 @Column(name = "id_deposito")
 private Long idDeposito;
 
-@Column(name = "uuid" ,nullable = false, updatable = false)
+@Column(name = "uuid" ,nullable = false, updatable = false, unique = true)
 private UUID uuid;
 
 

@@ -24,7 +24,7 @@ public class EmpresaEntity {
     @Column(name = "id_empresa")
     private Long idEmpresa;
 
-    @Column(name ="uuid", nullable = false, unique = true)
+    @Column(name ="uuid", nullable = false, unique = true, updatable = false)
     private UUID uuid;
 
     @Column(name = "nombre_empresa", nullable = false)
