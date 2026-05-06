@@ -9,5 +9,4 @@ import java.util.UUID;
 public interface InfoEmpleadosRepository extends JpaRepository<InfoEmpleadosEntity, Long> {
     Optional<InfoEmpleadosEntity> findByUuid(UUID uuid);
     boolean existsByDocumento(String documento);
-    boolean existsByUuid(UUID uuid);
 }

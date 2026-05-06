@@ -15,7 +15,7 @@ import java.util.UUID;
 @RequestMapping("/api/empleados")
 @AllArgsConstructor
 public class InfoEmpleadosController {
-    private final InfoEmpleadosService infoEmpleadosService;
+    private final IInfoEmpleadosService infoEmpleadosService;
 
     @GetMapping
     public ResponseEntity<List<InfoEmpleadosResponseDTO>> listarEmpleados(){
