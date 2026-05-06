@@ -23,7 +23,7 @@ public class LiquidacionEntity {
     @Column(name = "id_liquidacion")
     private Long idLiquidacion;
 
-    @Column(name = "uuid", nullable = false, updatable = false)
+    @Column(name = "uuid", nullable = false, updatable = false, unique = true)
     private UUID uuid;
 
     @Column(name = "periodo", nullable = false)

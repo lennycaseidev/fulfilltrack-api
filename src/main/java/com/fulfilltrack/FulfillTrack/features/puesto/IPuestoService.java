@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IPuestoService {
-    List<PuestoResponseDTO> listarpuestos();
+    List<PuestoResponseDTO> listarPuestos();
     PuestoResponseDTO obtenerPuestoPorUuid(UUID uuid);
     PuestoResponseDTO actualizarPuesto(UUID uuid, PuestoRequestDTO request);
     void eliminarPuesto(UUID uuid);
