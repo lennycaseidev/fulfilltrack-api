@@ -2,6 +2,7 @@ package com.fulfilltrack.FulfillTrack.features.infoEmpleados;
 
 import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import com.fulfilltrack.FulfillTrack.features.deposito.DepositoEntity;
+import com.fulfilltrack.FulfillTrack.features.puesto.PuestoEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -45,10 +46,10 @@ public class InfoEmpleadosEntity {
         this.estado = Estado.ACTIVA;
     }
 
-    //Falta hacer tabla puesto
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name= "id_puesto", nullable = false)
-//    private PuestoEntity puesto;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "id_puesto", nullable = false)
+    private PuestoEntity puesto;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_deposito", nullable = false)

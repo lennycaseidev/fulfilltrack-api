@@ -1,9 +1,11 @@
 package com.fulfilltrack.FulfillTrack.features.puesto;
 
 
+import com.fulfilltrack.FulfillTrack.features.infoEmpleados.InfoEmpleadosEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 @Entity
 @Table(name = "puesto")
@@ -27,8 +29,9 @@ public class PuestoEntity {
     @Column(name="descripcion_puesto")
     private String descripcion;
 
-//    @OneToMany(mappedBy = "puesto")
-//    private List<InfoEmpleadosEntity> empleados;
+    @OneToMany(mappedBy = "puesto")
+    private List<InfoEmpleadosEntity> empleados;
+
 @PrePersist
 public void prePersist() {
     this.uuid = UUID.randomUUID();
