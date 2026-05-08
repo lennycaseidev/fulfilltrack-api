@@ -36,4 +36,5 @@ build/
 CLAUDE.md
 .claude/
 
+### Frontend (local testing only) ###
 frontend/

@@ -25,7 +25,7 @@ public class DepositoEntity {
 @Column(name = "id_deposito")
 private Long idDeposito;
 
-@Column(name = "uuid", nullable = false, updatable = false, unique = true)
+@Column(name = "uuid" ,nullable = false, updatable = false)
 private UUID uuid;
 
 
@@ -62,6 +62,7 @@ public void prePersist() {
 }
     @OneToMany(mappedBy = "deposito")
     private List<EmpresaEntity> empresas;
+
 
 
 }
