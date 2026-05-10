@@ -11,6 +11,7 @@ public interface ILiquidacionService {
     LiquidacionResponseDTO obtenerLiquidacionPorUuid(UUID uuid);
     List<LiquidacionResponseDTO> listarLiquidaciones();
     List<LiquidacionResponseDTO> listarLiquidacionesPorEmpresa(UUID empresaUuid);
+    LiquidacionResponseDTO actualizarLiquidacion(UUID uuid, LiquidacionRequestDTO request);
     void marcarComoPagada(UUID uuid);
     void marcarComoImpaga(UUID uuid);
 }
