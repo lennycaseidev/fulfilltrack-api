@@ -4,6 +4,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class EmpresaRequestDTO {
     @NotBlank(message = "El nombre de la empresa es obligatorio")
+    @Size(max = 100, message = "El nombre de la empresa no puede superar los 100 caracteres")
     private String nombreEmpresa;
 
     @NotBlank(message = "El email es obligatorio")

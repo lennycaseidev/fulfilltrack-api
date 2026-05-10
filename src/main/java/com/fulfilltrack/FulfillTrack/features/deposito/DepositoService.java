@@ -32,8 +32,7 @@ public class DepositoService implements IDepositoService {
             throw new OperacionNoPermitidaException("El horario de cierre debe ser mayor al de apertura");
         }
         DepositoEntity deposito = depositoMapper.toEntity(request);
-        DepositoEntity guardado = depositoRepository.save(deposito);
-        return depositoMapper.toResponseDTO(guardado);
+        return depositoMapper.toResponseDTO(depositoRepository.save(deposito));
     }
 
     @Override
@@ -66,8 +65,7 @@ public class DepositoService implements IDepositoService {
         deposito.setAperturaDeposito(request.getAperturaDeposito());
         deposito.setCierreDeposito(request.getCierreDeposito());
 
-        DepositoEntity actualizado = depositoRepository.save(deposito);
-        return depositoMapper.toResponseDTO(actualizado);
+        return depositoMapper.toResponseDTO(depositoRepository.save(deposito));
     }
 
     @Override
