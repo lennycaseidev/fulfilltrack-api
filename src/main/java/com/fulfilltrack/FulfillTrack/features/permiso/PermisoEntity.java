@@ -22,7 +22,7 @@ public class PermisoEntity {
     @Column(name = "uuid", nullable = false, updatable = false, unique = true)
     private UUID uuid;
 
-    @Column(name = "nombre_permiso", nullable = false, updatable = false)
+    @Column(name = "nombre_permiso", nullable = false, updatable = false, unique = true)
     private String nombrePermiso;
 
     @PrePersist
