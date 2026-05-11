@@ -4,6 +4,7 @@ package com.fulfilltrack.FulfillTrack.features.empresa;
 import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import com.fulfilltrack.FulfillTrack.features.deposito.DepositoEntity;
 import com.fulfilltrack.FulfillTrack.features.liquidacion.LiquidacionEntity;
+import com.fulfilltrack.FulfillTrack.features.usuarioEmpresa.UsuarioEmpresaEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -58,5 +59,8 @@ private LocalDateTime fechaCreacion;
 
     @OneToMany(mappedBy = "empresa")
     private List<LiquidacionEntity> liquidaciones;
+
+    @OneToMany(mappedBy = "empresa")
+    private List<UsuarioEmpresaEntity> usuariosEmpresa;
 
 }
