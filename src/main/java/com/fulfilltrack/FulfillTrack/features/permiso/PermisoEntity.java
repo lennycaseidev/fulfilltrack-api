@@ -16,8 +16,8 @@ import java.util.UUID;
 public class PermisoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_puesto")
-    private Long idPuesto;
+    @Column(name = "id_permiso")
+    private Long idPermiso;
 
     @Column(name = "uuid", nullable = false, updatable = false, unique = true)
     private UUID uuid;
