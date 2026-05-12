@@ -10,8 +10,9 @@ public interface IProductoService {
     ProductoResponseDTO crearProducto(ProductoRequestDTO request);
     ProductoResponseDTO obtenerProductoPorUuid(UUID uuid);
     ProductoResponseDTO obtenerProductoPorSku(String sku);
-    List<ProductoResponseDTO> listarProductoPorEmpresa(UUID empresaUuid);
+    List<ProductoResponseDTO> listarProductosPorEmpresa(UUID empresaUuid);
     List<ProductoResponseDTO> listarProductos();
+    ProductoResponseDTO actualizarProducto(UUID uuid, ProductoRequestDTO request);
     void activarProducto(UUID uuid);
     void desactivarProducto(UUID uuid);
 }

@@ -53,7 +53,7 @@ public class ProductoService implements IProductoService{
     }
 
     @Override
-    public List<ProductoResponseDTO> listarProductoPorEmpresa(UUID empresaUuid) {
+    public List<ProductoResponseDTO> listarProductosPorEmpresa(UUID empresaUuid) {
         if (!empresaRepository.existsByUuid(empresaUuid)) {
             throw new EntidadNoEncontradaException("La empresa no ha sido encontrada");
         }
@@ -63,6 +63,22 @@ public class ProductoService implements IProductoService{
     @Override
     public List<ProductoResponseDTO> listarProductos() {
         return productoMapper.toResponseList(productoRepository.findAll());
+    }
+
+    @Override
+    public ProductoResponseDTO actualizarProducto(UUID uuid, ProductoRequestDTO request) {
+        ProductoEntity producto = productoRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntidadNoEncontradaException("El producto no ha sido encontrado"));
+
+        if (!producto.getSku().equals(request.getSku()) && productoRepository.existsBySku(request.getSku())) {
+            throw new EntidadDuplicadaException("El sku ya está registrado para otro producto");
+        }
+
+        producto.setNombreProducto(request.getNombreProducto());
+        producto.setDescripcion(request.getDescripcion());
+        producto.setSku(request.getSku());
+
+        return productoMapper.toResponseDTO(productoRepository.save(producto));
     }
 
     @Override
