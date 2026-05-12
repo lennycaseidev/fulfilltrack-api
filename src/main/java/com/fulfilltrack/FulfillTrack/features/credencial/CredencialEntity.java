@@ -31,6 +31,7 @@ public class CredencialEntity {
     private String email;
     @Column(name = "contrasena", nullable = false)
     private String contrasena;
+    @Enumerated(EnumType.STRING)
     @Column(name = "estado_usuario", nullable = false)
     private Estado estado;
 
