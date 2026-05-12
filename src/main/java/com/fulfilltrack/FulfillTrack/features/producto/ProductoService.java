@@ -28,11 +28,11 @@ public class ProductoService implements IProductoService{
 
     @Override
     public ProductoResponseDTO crearProducto(ProductoRequestDTO request) {
-        if(productoRepository.existsBySku(request.getSku())){
-            throw new EntidadDuplicadaException("El sku ya esta registrado para otro producto");
-        }
         EmpresaEntity empresa = empresaRepository.findByUuid(request.getEmpresaUuid())
                 .orElseThrow(() -> new EntidadNoEncontradaException("La empresa no ha sido encontrada"));
+        if(productoRepository.existsBySkuAndEmpresa_Uuid(request.getSku(), request.getEmpresaUuid())){
+            throw new EntidadDuplicadaException("El sku ya está registrado para un producto de esta empresa");
+        }
         ProductoEntity producto = productoMapper.toEntity(request);
         producto.setEmpresa(empresa);
         return productoMapper.toResponseDTO(productoRepository.save(producto));
@@ -70,10 +70,9 @@ public class ProductoService implements IProductoService{
         ProductoEntity producto = productoRepository.findByUuid(uuid)
                 .orElseThrow(() -> new EntidadNoEncontradaException("El producto no ha sido encontrado"));
 
-        if (!producto.getSku().equals(request.getSku()) && productoRepository.existsBySku(request.getSku())) {
-            throw new EntidadDuplicadaException("El sku ya está registrado para otro producto");
+        if(!producto.getSku().equals(request.getSku()) && productoRepository.existsBySkuAndEmpresa_Uuid(request.getSku(), request.getEmpresaUuid())){
+            throw new EntidadDuplicadaException("El sku ya está registrado para un producto de esta empresa");
         }
-
         producto.setNombreProducto(request.getNombreProducto());
         producto.setDescripcion(request.getDescripcion());
         producto.setSku(request.getSku());
