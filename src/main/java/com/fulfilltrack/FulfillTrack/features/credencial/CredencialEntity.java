@@ -34,7 +34,7 @@ public class CredencialEntity {
     private Estado estado;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_permiso", nullable = false)
+    @JoinColumn(name = "id_permiso", nullable = true)
     private PermisoEntity permiso;
 
     @PrePersist
