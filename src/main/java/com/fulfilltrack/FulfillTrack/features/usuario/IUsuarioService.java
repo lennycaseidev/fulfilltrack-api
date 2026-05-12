@@ -10,4 +10,5 @@ public interface IUsuarioService {
     UsuarioResponseDTO registrarUsuario(UsuarioRequestDTO request);
     UsuarioResponseDTO obtenerUsuarioPorUuid(UUID uuid);
     List<UsuarioResponseDTO> listarUsuarios();
+    List<UsuarioResponseDTO> listarUsuariosActivos();
 }

@@ -2,6 +2,7 @@ package com.fulfilltrack.FulfillTrack.features.usuario;
 
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadDuplicadaException;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
+import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import com.fulfilltrack.FulfillTrack.features.credencial.CredencialEntity;
 import com.fulfilltrack.FulfillTrack.features.credencial.CredencialRepository;
 import com.fulfilltrack.FulfillTrack.features.usuario.dto.UsuarioRequestDTO;
@@ -57,7 +58,11 @@ public class UsuarioService implements IUsuarioService{
 
     @Override
     public List<UsuarioResponseDTO> listarUsuarios() {
-        List<UsuarioEntity> usuarios = usuarioRepository.findAll();
-        return usuarioMapper.toResponseList(usuarios);
+        return usuarioMapper.toResponseList(usuarioRepository.findAll());
+    }
+
+    @Override
+    public List<UsuarioResponseDTO> listarUsuariosActivos() {
+        return usuarioMapper.toResponseList(usuarioRepository.findByCredencial_Estado(Estado.ACTIVA));
     }
 }
