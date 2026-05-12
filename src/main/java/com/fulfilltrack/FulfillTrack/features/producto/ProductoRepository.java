@@ -1,4 +1,16 @@
 package com.fulfilltrack.FulfillTrack.features.producto;
 
-public interface ProductoRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+@Repository
+public interface ProductoRepository extends JpaRepository<ProductoEntity, Long> {
+    Optional<ProductoEntity> findByUuid(UUID uuid);
+    Optional<ProductoEntity> findBySku(String sku);
+    boolean existsBySku(String sku);
+    List<ProductoEntity> findByEmpresa_Uuid(UUID empresaUuid);
 }
