@@ -27,8 +27,8 @@ public class UsuarioEntity {
     @Column(name="apellido",nullable = false)
     private String apellido;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_credencial", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_credencial", nullable = false, unique = true)
     private CredencialEntity credencial;
 
     @PrePersist
