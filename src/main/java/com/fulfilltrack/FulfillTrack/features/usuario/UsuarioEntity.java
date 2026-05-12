@@ -1,38 +1,38 @@
-package com.fulfilltrack.FulfillTrack.features.permiso;
+package com.fulfilltrack.FulfillTrack.features.usuario;
 
 
 import com.fulfilltrack.FulfillTrack.features.credencial.CredencialEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "permiso")
+@Table(name = "usuario")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PermisoEntity {
+public class UsuarioEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_permiso")
-    private Long idPermiso;
+    @Column(name = "id_usuario")
+    private Long idUsuario;
 
     @Column(name = "uuid", nullable = false, updatable = false, unique = true)
     private UUID uuid;
+    @Column(name="nombre",nullable = false)
+    private String nombre;
+    @Column(name="apellido",nullable = false)
+    private String apellido;
 
-    @Column(name = "nombre_permiso", nullable = false, unique = true)
-    private String nombrePermiso;
-
-    @OneToMany(mappedBy = "permiso")
-    private List<CredencialEntity> credenciales;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_credencial", nullable = false)
+    private CredencialEntity credencial;
 
     @PrePersist
     public void prePersist() {
         this.uuid = UUID.randomUUID();
     }
 }
-
