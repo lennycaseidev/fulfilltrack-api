@@ -1,4 +1,15 @@
 package com.fulfilltrack.FulfillTrack.features.usuario.mapper;
 
-public class UsuarioMapper {
+import com.fulfilltrack.FulfillTrack.features.usuario.UsuarioEntity;
+import com.fulfilltrack.FulfillTrack.features.usuario.dto.UsuarioResponseDTO;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+import java.util.List;
+
+@Mapper(componentModel = "spring")
+public interface UsuarioMapper {
+    @Mapping(source = "credencial.permiso.nombrePermiso", target = "nombrePermiso")
+    UsuarioResponseDTO toResponseDTO(UsuarioEntity entity);
+    List<UsuarioResponseDTO> toResponseList(List<UsuarioEntity> usuarios);
 }

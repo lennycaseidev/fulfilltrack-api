@@ -20,5 +20,6 @@ public class CredencialRequestDTO {
     @Email(message = "El formato del email no es válido")
     private String email;
     @NotBlank(message = "la contraseña es obligatoria")
+    @Size(max = 25, message = "la clave no puede superar los 25 caracteres")
     private String contrasena;
 }
