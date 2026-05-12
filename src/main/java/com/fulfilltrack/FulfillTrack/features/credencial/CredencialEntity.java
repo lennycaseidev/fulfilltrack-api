@@ -3,6 +3,7 @@ package com.fulfilltrack.FulfillTrack.features.credencial;
 
 import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import com.fulfilltrack.FulfillTrack.features.permiso.PermisoEntity;
+import com.fulfilltrack.FulfillTrack.features.usuario.UsuarioEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,8 +35,12 @@ public class CredencialEntity {
     private Estado estado;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_permiso", nullable = true)
+    @JoinColumn(name = "id_permiso")
     private PermisoEntity permiso;
+
+    @OneToOne(mappedBy = "credencial")
+    private UsuarioEntity usuario;
+
 
     @PrePersist
     public void prePersist(){
