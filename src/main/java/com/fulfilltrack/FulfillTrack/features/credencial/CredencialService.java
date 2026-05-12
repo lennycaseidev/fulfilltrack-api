@@ -66,24 +66,24 @@ public class CredencialService implements ICredencialService{
     }
 
     @Override
-    public CredencialResponseDTO activarCredencial(UUID uuid) {
+    public void activarCredencial(UUID uuid) {
         CredencialEntity credencial = credencialRepository.findByUuid(uuid)
                 .orElseThrow(()-> new EntidadNoEncontradaException("No se ha encontrado la credencial"));
         if(credencial.getEstado() == Estado.ACTIVA){
             throw new OperacionNoPermitidaException("La credencial ya se encuentra activa");
         }
         credencial.setEstado(Estado.ACTIVA);
-        return credencialMapper.toResponseDTO(credencialRepository.save(credencial));
+        credencialRepository.save(credencial);
     }
 
     @Override
-    public CredencialResponseDTO desactivarCredencial(UUID uuid) {
+    public void desactivarCredencial(UUID uuid) {
         CredencialEntity credencial = credencialRepository.findByUuid(uuid)
                 .orElseThrow(()-> new EntidadNoEncontradaException("No se ha encontrado la credencial"));
         if(credencial.getEstado() == Estado.INACTIVA){
             throw new OperacionNoPermitidaException("La credencial ya se encuentra inactiva");
         }
         credencial.setEstado(Estado.INACTIVA);
-        return credencialMapper.toResponseDTO(credencialRepository.save(credencial));
+        credencialRepository.save(credencial);
     }
 }

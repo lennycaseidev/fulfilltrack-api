@@ -11,6 +11,6 @@ public interface ICredencialService {
     CredencialResponseDTO obtenerCredencialPorUuid(UUID uuid);
     List<CredencialResponseDTO> obtenerCredenciales();
     CredencialResponseDTO asignarPermiso(UUID uuid, UUID permisoUuid);
-    CredencialResponseDTO activarCredencial(UUID uuid);
-    CredencialResponseDTO desactivarCredencial(UUID uuid);
+    void activarCredencial(UUID uuid);
+    void desactivarCredencial(UUID uuid);
 }
