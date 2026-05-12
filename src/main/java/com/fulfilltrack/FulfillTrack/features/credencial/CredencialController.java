@@ -20,7 +20,8 @@ public class CredencialController {
 
 
     @GetMapping
-    ResponseEntity<List<CredencialResponseDTO>> obtenerCredenciales(){
+    ResponseEntity<List<CredencialResponseDTO>> obtenerCredenciales(@RequestParam(required = false) String email){
+        if(email != null) return ResponseEntity.ok(List.of(credencialService.obtenerCredencialPorEmail(email)));
         return ResponseEntity.ok(credencialService.obtenerCredenciales());
     }
 
@@ -35,7 +36,7 @@ public class CredencialController {
     }
 
     @PatchMapping("/{uuid}/asignar-permiso")
-    ResponseEntity<CredencialResponseDTO> asignarPermiso(@PathVariable UUID uuid, @RequestBody UUID permisoUuid){
+    ResponseEntity<CredencialResponseDTO> asignarPermiso(@PathVariable UUID uuid, @RequestParam UUID permisoUuid){
         return ResponseEntity.ok(credencialService.asignarPermiso(uuid,permisoUuid));
     }
 

@@ -66,6 +66,13 @@ public class CredencialService implements ICredencialService{
     }
 
     @Override
+    public CredencialResponseDTO obtenerCredencialPorEmail(String email) {
+        CredencialEntity credencial = credencialRepository.findByEmail(email)
+                .orElseThrow(()-> new EntidadNoEncontradaException("No se ha encontrado una credencial asociada al email"));
+        return credencialMapper.toResponseDTO(credencial);
+    }
+
+    @Override
     public void activarCredencial(UUID uuid) {
         CredencialEntity credencial = credencialRepository.findByUuid(uuid)
                 .orElseThrow(()-> new EntidadNoEncontradaException("No se ha encontrado la credencial"));
