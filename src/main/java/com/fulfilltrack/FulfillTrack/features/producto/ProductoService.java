@@ -9,7 +9,10 @@ import com.fulfilltrack.FulfillTrack.features.empresa.EmpresaRepository;
 import com.fulfilltrack.FulfillTrack.features.producto.dto.ProductoRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.producto.dto.ProductoResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.producto.mapper.ProductoMapper;
+import com.fulfilltrack.FulfillTrack.features.stock.StockEntity;
+import com.fulfilltrack.FulfillTrack.features.stock.StockRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,14 +22,17 @@ public class ProductoService implements IProductoService{
     private final ProductoRepository productoRepository;
     private final EmpresaRepository empresaRepository;
     private final ProductoMapper productoMapper;
+    private final StockRepository stockRepository;
 
-    public ProductoService(ProductoRepository productoRepository, EmpresaRepository empresaRepository, ProductoMapper productoMapper) {
+    public ProductoService(ProductoRepository productoRepository, EmpresaRepository empresaRepository, ProductoMapper productoMapper, StockRepository stockRepository) {
         this.productoRepository = productoRepository;
         this.empresaRepository = empresaRepository;
         this.productoMapper = productoMapper;
+        this.stockRepository = stockRepository;
     }
 
     @Override
+    @Transactional
     public ProductoResponseDTO crearProducto(ProductoRequestDTO request) {
         EmpresaEntity empresa = empresaRepository.findByUuid(request.getEmpresaUuid())
                 .orElseThrow(() -> new EntidadNoEncontradaException("La empresa no ha sido encontrada"));
@@ -35,7 +41,13 @@ public class ProductoService implements IProductoService{
         }
         ProductoEntity producto = productoMapper.toEntity(request);
         producto.setEmpresa(empresa);
-        return productoMapper.toResponseDTO(productoRepository.save(producto));
+        ProductoEntity productoGuardado = productoRepository.save(producto);
+        stockRepository.save(StockEntity.builder()
+                .producto(productoGuardado)
+                .cantidadDisponible(0)
+                .cantidadReservada(0)
+                .build());
+        return productoMapper.toResponseDTO(productoGuardado);
     }
 
     @Override
@@ -98,6 +110,11 @@ public class ProductoService implements IProductoService{
         if(producto.getEstado() == Estado.INACTIVA){
             throw new OperacionNoPermitidaException("El producto ya se encuentra inactivo");
         }
+        stockRepository.findByProducto_Uuid(uuid).ifPresent(stock -> {
+            if(stock.getCantidadDisponible() > 0 || stock.getCantidadReservada() > 0){
+                throw new OperacionNoPermitidaException("No se puede desactivar un producto con stock disponible o reservado");
+            }
+        });
         producto.setEstado(Estado.INACTIVA);
         productoRepository.save(producto);
     }
