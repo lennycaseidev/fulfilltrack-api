@@ -15,6 +15,8 @@ import java.util.UUID;
 public class StockResponseDTO {
     private UUID uuid;
     private UUID productoUuid;
+    private String nombreProducto;
+    private String sku;
     private Integer cantidadDisponible;
     private Integer cantidadReservada;
     private LocalDateTime fechaActualizacion;
