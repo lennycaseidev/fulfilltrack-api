@@ -59,6 +59,7 @@ public class ManejadorGlobalExcepciones {
                 .body(buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error interno en el servidor", request));
     }
 
+
     private ErrorResponseDTO buildError(HttpStatus status, String mensaje, HttpServletRequest request) {
         return ErrorResponseDTO.builder()
                 .timestamp(LocalDateTime.now())
