@@ -29,4 +29,9 @@ public class StockController {
     ResponseEntity<StockResponseDTO> obtenerStockPorProducto(@PathVariable UUID productoUuid) {
         return ResponseEntity.ok(stockService.obtenerStockPorProductoUuid(productoUuid));
     }
+
+    @PatchMapping("/producto/{productoUuid}/agregar")
+    ResponseEntity<StockResponseDTO> agregarStock(@PathVariable UUID productoUuid, @RequestParam int cantidad) {
+        return ResponseEntity.ok(stockService.agregarStock(productoUuid, cantidad));
+    }
 }
