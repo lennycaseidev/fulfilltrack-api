@@ -1,10 +1,10 @@
 package com.fulfilltrack.FulfillTrack.features.credencial;
 
-import com.fulfilltrack.FulfillTrack.features.credencial.dto.CredencialRequestDTO;
+
 import com.fulfilltrack.FulfillTrack.features.credencial.dto.CredencialResponseDTO;
-import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,13 +30,10 @@ public class CredencialController {
         return ResponseEntity.ok(credencialService.obtenerCredencialPorUuid(uuid));
     }
 
-    @PostMapping
-    ResponseEntity<CredencialResponseDTO> registrarCredencial(@Valid @RequestBody CredencialRequestDTO request){
-        return ResponseEntity.status(HttpStatus.CREATED).body(credencialService.registrarCredencial(request));
-    }
 
-    @PatchMapping("/{uuid}/asignar-permiso")
-    ResponseEntity<CredencialResponseDTO> asignarPermiso(@PathVariable UUID uuid, @RequestParam UUID permisoUuid){
+
+    @PatchMapping("/{uuid}/asignar-permiso/{permisoUuid}")
+    ResponseEntity<CredencialResponseDTO> asignarPermiso(@PathVariable UUID uuid, @PathVariable UUID permisoUuid){
         return ResponseEntity.ok(credencialService.asignarPermiso(uuid,permisoUuid));
     }
 

@@ -37,8 +37,7 @@ public class DepositoService implements IDepositoService {
 
     @Override
     public DepositoResponseDTO obtenerDepositoPorUuid(UUID uuid) {
-        DepositoEntity deposito = depositoRepository.findByUuid(uuid)
-                .orElseThrow(()-> new EntidadNoEncontradaException("Deposito no encontrado con UUID " + uuid));
+        DepositoEntity deposito = obtenerDepositoUuid(uuid);
         return depositoMapper.toResponseDTO(deposito);
     }
 
@@ -50,8 +49,7 @@ public class DepositoService implements IDepositoService {
 
     @Override
     public DepositoResponseDTO actualizarDeposito(UUID uuid, DepositoRequestDTO request) {
-        DepositoEntity deposito = depositoRepository.findByUuid(uuid)
-                .orElseThrow(() -> new EntidadNoEncontradaException("Depósito no encontrado"));
+        DepositoEntity deposito = obtenerDepositoUuid(uuid);
         if((!request.getAperturaDeposito().isBefore(request.getCierreDeposito()))){
             throw new OperacionNoPermitidaException("El horario de cierre debe ser mayor al de apertura");
         }
@@ -70,8 +68,7 @@ public class DepositoService implements IDepositoService {
 
     @Override
     public void desactivarDeposito(UUID uuid) {
-        DepositoEntity deposito = depositoRepository.findByUuid(uuid)
-                .orElseThrow(() -> new EntidadNoEncontradaException("Depósito no encontrado con UUID " + uuid));
+        DepositoEntity deposito = obtenerDepositoUuid(uuid);
         if (deposito.getEstado() == Estado.INACTIVA) {
             throw new OperacionNoPermitidaException("El depósito ya se encuentra inactivo");
         }
@@ -81,12 +78,17 @@ public class DepositoService implements IDepositoService {
 
     @Override
     public void activarDeposito(UUID uuid) {
-        DepositoEntity deposito = depositoRepository.findByUuid(uuid)
-                .orElseThrow(() -> new EntidadNoEncontradaException("Depósito no encontrado con UUID " + uuid));
+        DepositoEntity deposito = obtenerDepositoUuid(uuid);
         if (deposito.getEstado() == Estado.ACTIVA) {
             throw new OperacionNoPermitidaException("El depósito ya se encuentra activo");
         }
         deposito.setEstado(Estado.ACTIVA);
         depositoRepository.save(deposito);
+    }
+
+    @Override
+    public DepositoEntity obtenerDepositoUuid(UUID uuid) {
+        return depositoRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntidadNoEncontradaException("Depósito no encontrado"));
     }
 }

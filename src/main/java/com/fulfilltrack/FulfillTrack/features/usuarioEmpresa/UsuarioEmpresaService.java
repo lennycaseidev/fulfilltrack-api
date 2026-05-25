@@ -4,7 +4,7 @@ import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaExcepti
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
 import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import com.fulfilltrack.FulfillTrack.features.empresa.EmpresaEntity;
-import com.fulfilltrack.FulfillTrack.features.empresa.EmpresaRepository;
+import com.fulfilltrack.FulfillTrack.features.empresa.IEmpresaService;
 import com.fulfilltrack.FulfillTrack.features.usuarioEmpresa.dto.UsuarioEmpresaRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.usuarioEmpresa.dto.UsuarioEmpresaResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.usuarioEmpresa.mapper.UsuarioEmpresaMapper;
@@ -18,14 +18,12 @@ public class UsuarioEmpresaService implements IUsuarioEmpresaService {
 
     private final UsuarioEmpresaRepository usuarioEmpresaRepository;
     private final UsuarioEmpresaMapper usuarioEmpresaMapper;
-    private final EmpresaRepository empresaRepository;
+    private final IEmpresaService empresaService;
 
-    public UsuarioEmpresaService(UsuarioEmpresaRepository usuarioEmpresaRepository,
-                                 UsuarioEmpresaMapper usuarioEmpresaMapper,
-                                 EmpresaRepository empresaRepository) {
+    public UsuarioEmpresaService(UsuarioEmpresaRepository usuarioEmpresaRepository, UsuarioEmpresaMapper usuarioEmpresaMapper, IEmpresaService empresaService) {
         this.usuarioEmpresaRepository = usuarioEmpresaRepository;
         this.usuarioEmpresaMapper = usuarioEmpresaMapper;
-        this.empresaRepository = empresaRepository;
+        this.empresaService = empresaService;
     }
 
     @Override
@@ -35,8 +33,8 @@ public class UsuarioEmpresaService implements IUsuarioEmpresaService {
 
     @Override
     public List<UsuarioEmpresaResponseDTO> listarUsuariosPorEmpresa(UUID empresaUuid) {
-        if (!empresaRepository.existsByUuid(empresaUuid)) {
-            throw new EntidadNoEncontradaException("Empresa no encontrada con UUID " + empresaUuid);
+        if (!empresaService.existeEmpresaPorUuid(empresaUuid)) {
+            throw new EntidadNoEncontradaException("Empresa no encontrada");
         }
         return usuarioEmpresaMapper.toResponseList(usuarioEmpresaRepository.findByEmpresa_Uuid(empresaUuid));
     }
@@ -50,8 +48,7 @@ public class UsuarioEmpresaService implements IUsuarioEmpresaService {
 
     @Override
     public UsuarioEmpresaResponseDTO crearUsuarioEmpresa(UsuarioEmpresaRequestDTO request) {
-        EmpresaEntity empresa = empresaRepository.findByUuid(request.getEmpresaUuid())
-                .orElseThrow(() -> new EntidadNoEncontradaException("Empresa no encontrada con UUID " + request.getEmpresaUuid()));
+        EmpresaEntity empresa = empresaService.obtenerEmpresaUuid(request.getEmpresaUuid());
 
         UsuarioEmpresaEntity usuarioEmpresa = usuarioEmpresaMapper.toEntity(request);
         usuarioEmpresa.setEmpresa(empresa);
@@ -63,8 +60,7 @@ public class UsuarioEmpresaService implements IUsuarioEmpresaService {
     public UsuarioEmpresaResponseDTO actualizarUsuarioEmpresa(UUID uuid, UsuarioEmpresaRequestDTO request) {
         UsuarioEmpresaEntity usuarioEmpresa = usuarioEmpresaRepository.findByUuid(uuid)
                 .orElseThrow(() -> new EntidadNoEncontradaException("Usuario empresa no encontrado con UUID " + uuid));
-        EmpresaEntity empresa = empresaRepository.findByUuid(request.getEmpresaUuid())
-                .orElseThrow(() -> new EntidadNoEncontradaException("Empresa no encontrada con UUID " + request.getEmpresaUuid()));
+        EmpresaEntity empresa = empresaService.obtenerEmpresaUuid(request.getEmpresaUuid());
 
         usuarioEmpresa.setCargo(request.getCargo());
         usuarioEmpresa.setTelefono(request.getTelefono());

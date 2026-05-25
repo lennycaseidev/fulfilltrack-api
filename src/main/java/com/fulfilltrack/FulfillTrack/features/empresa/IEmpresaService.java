@@ -18,4 +18,8 @@ public interface IEmpresaService {
     void desactivarEmpresa(UUID uuid);
 
     void activarEmpresa(UUID uuid);
+
+    EmpresaEntity obtenerEmpresaUuid(UUID uuid);
+
+    boolean existeEmpresaPorUuid(UUID uuid);
 }

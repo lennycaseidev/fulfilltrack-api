@@ -6,6 +6,7 @@ import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaExcept
 import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import com.fulfilltrack.FulfillTrack.features.deposito.DepositoEntity;
 import com.fulfilltrack.FulfillTrack.features.deposito.DepositoRepository;
+import com.fulfilltrack.FulfillTrack.features.deposito.IDepositoService;
 import com.fulfilltrack.FulfillTrack.features.empresa.dto.EmpresaRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.empresa.dto.EmpresaResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.empresa.mapper.EmpresaMapper;
@@ -18,12 +19,12 @@ import java.util.UUID;
 public class EmpresaService implements IEmpresaService{
     private final EmpresaRepository empresaRepository;
     private final EmpresaMapper empresaMapper;
-    private final DepositoRepository depositoRepository;
+    private final IDepositoService depositoService;
 
-    public EmpresaService(EmpresaRepository empresaRepository, EmpresaMapper empresaMapper, DepositoRepository depositoRepository) {
+    public EmpresaService(EmpresaRepository empresaRepository, EmpresaMapper empresaMapper, IDepositoService depositoService) {
         this.empresaRepository = empresaRepository;
         this.empresaMapper = empresaMapper;
-        this.depositoRepository = depositoRepository;
+        this.depositoService = depositoService;
     }
 
 
@@ -32,8 +33,7 @@ public class EmpresaService implements IEmpresaService{
         if (empresaRepository.existsByEmail(request.getEmail())) {
             throw new EntidadDuplicadaException("Ya existe una empresa registrada con el email: " + request.getEmail());
         }
-        DepositoEntity deposito = depositoRepository.findByUuid(request.getDepositoUuid())
-                .orElseThrow(() -> new EntidadNoEncontradaException("Depósito no encontrado con UUID " + request.getDepositoUuid()));
+        DepositoEntity deposito = depositoService.obtenerDepositoUuid(request.getDepositoUuid());
 
         EmpresaEntity empresa = empresaMapper.toEntity(request);
         empresa.setDeposito(deposito);
@@ -42,8 +42,7 @@ public class EmpresaService implements IEmpresaService{
 
     @Override
     public EmpresaResponseDTO obtenerEmpresaPorUuid(UUID uuid) {
-        EmpresaEntity empresa = empresaRepository.findByUuid(uuid)
-                .orElseThrow(() -> new EntidadNoEncontradaException("Empresa no encontrada con UUID: " + uuid));
+        EmpresaEntity empresa = obtenerEmpresaUuid(uuid);
         return empresaMapper.toResponseDTO(empresa);
     }
 
@@ -55,13 +54,11 @@ public class EmpresaService implements IEmpresaService{
 
     @Override
     public EmpresaResponseDTO actualizarEmpresa(UUID uuid, EmpresaRequestDTO request) {
-        EmpresaEntity empresa = empresaRepository.findByUuid(uuid)
-                .orElseThrow(() -> new EntidadNoEncontradaException("Empresa no encontrada"));
+        EmpresaEntity empresa = obtenerEmpresaUuid(uuid);
         if (empresaRepository.existsByEmailAndUuidNot(request.getEmail(), uuid)) {
             throw new EntidadDuplicadaException("Ya existe otra empresa registrada con el email: " + request.getEmail());
         }
-        DepositoEntity deposito = depositoRepository.findByUuid(request.getDepositoUuid())
-                .orElseThrow(() -> new EntidadNoEncontradaException("Depósito no encontrado con UUID " + request.getDepositoUuid()));
+        DepositoEntity deposito = depositoService.obtenerDepositoUuid(request.getDepositoUuid());
 
         empresa.setNombreEmpresa(request.getNombreEmpresa());
         empresa.setEmail(request.getEmail());
@@ -73,9 +70,7 @@ public class EmpresaService implements IEmpresaService{
 
     @Override
     public void desactivarEmpresa(UUID uuid) {
-        EmpresaEntity empresa = empresaRepository.findByUuid(uuid)
-                .orElseThrow(()->new EntidadNoEncontradaException("Empresa no encontrada"));
-
+        EmpresaEntity empresa = obtenerEmpresaUuid(uuid);
         if (empresa.getEstado() == Estado.INACTIVA) {
             throw new OperacionNoPermitidaException("La empresa ya se encuentra inactiva");
         }
@@ -86,8 +81,7 @@ public class EmpresaService implements IEmpresaService{
 
     @Override
     public void activarEmpresa(UUID uuid) {
-        EmpresaEntity empresa = empresaRepository.findByUuid(uuid)
-                .orElseThrow(() -> new EntidadNoEncontradaException("Empresa no encontrada"));
+        EmpresaEntity empresa = obtenerEmpresaUuid(uuid);
         if(empresa.getEstado() == Estado.ACTIVA){
             throw new OperacionNoPermitidaException("La empresa ya se encuentra activada");
         }
@@ -95,7 +89,16 @@ public class EmpresaService implements IEmpresaService{
         empresaRepository.save(empresa);
     }
 
+    @Override
+    public EmpresaEntity obtenerEmpresaUuid(UUID uuid) {
+        return empresaRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntidadNoEncontradaException("Empresa no encontrada"));
+    }
 
+    @Override
+    public boolean existeEmpresaPorUuid(UUID uuid) {
+        return empresaRepository.existsByUuid(uuid);
+    }
 
 
 }

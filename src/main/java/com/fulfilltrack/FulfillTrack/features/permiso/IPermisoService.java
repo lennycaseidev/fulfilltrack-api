@@ -10,4 +10,5 @@ public interface IPermisoService {
  List<PermisoResponseDTO> listarPermisos();
  PermisoResponseDTO crearPermiso(PermisoRequestDTO requestDTO);
  PermisoResponseDTO actualizarPermiso(UUID uuid, PermisoRequestDTO request);
+ PermisoEntity obtenerPermisoPorUuid(UUID uuid);
 }

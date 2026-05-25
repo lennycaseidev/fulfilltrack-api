@@ -4,11 +4,10 @@ import com.fulfilltrack.FulfillTrack.common.exception.EntidadDuplicadaException;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
 import com.fulfilltrack.FulfillTrack.common.utils.Estado;
-import com.fulfilltrack.FulfillTrack.features.credencial.dto.CredencialRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.credencial.dto.CredencialResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.credencial.mapper.CredencialMapper;
+import com.fulfilltrack.FulfillTrack.features.permiso.IPermisoService;
 import com.fulfilltrack.FulfillTrack.features.permiso.PermisoEntity;
-import com.fulfilltrack.FulfillTrack.features.permiso.PermisoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,29 +17,33 @@ import java.util.UUID;
 public class CredencialService implements ICredencialService{
     private final CredencialRepository credencialRepository;
     private final CredencialMapper credencialMapper;
-    private final PermisoRepository permisoRepository;
-    public CredencialService(CredencialRepository credencialRepository, CredencialMapper credencialMapper, PermisoRepository permisoRepository) {
+    private final IPermisoService permisoService;
+
+    public CredencialService(CredencialRepository credencialRepository, CredencialMapper credencialMapper, IPermisoService permisoService) {
         this.credencialRepository = credencialRepository;
         this.credencialMapper = credencialMapper;
-        this.permisoRepository = permisoRepository;
+        this.permisoService = permisoService;
     }
 
     @Override
-    public CredencialResponseDTO registrarCredencial(CredencialRequestDTO request) {
-        if(credencialRepository.existsByEmail(request.getEmail())){
+    public CredencialEntity registrarCredencial(String nombreUsuario, String email, String contrasena) {
+        if(credencialRepository.existsByEmail(email)){
             throw new EntidadDuplicadaException("El email ya está en uso");
         }
-        if(credencialRepository.existsByNombreUsuario(request.getNombreUsuario())){
+        if(credencialRepository.existsByNombreUsuario(nombreUsuario)){
             throw new EntidadDuplicadaException("El nombre de usuario ya esta en uso");
         }
-        CredencialEntity credencial = credencialMapper.toEntity(request);
-        return credencialMapper.toResponseDTO(credencialRepository.save(credencial));
+        CredencialEntity credencial = CredencialEntity.builder().
+                contrasena(contrasena)
+                .email(email)
+                .nombreUsuario(nombreUsuario)
+                .build();
+        return credencialRepository.save(credencial);
     }
 
     @Override
     public CredencialResponseDTO obtenerCredencialPorUuid(UUID uuid) {
-        CredencialEntity credencial = credencialRepository.findByUuid(uuid)
-                .orElseThrow(()-> new EntidadNoEncontradaException("No se ha encontrado la credencial"));
+        CredencialEntity credencial = obtenerCredencialUuid(uuid);
         return credencialMapper.toResponseDTO(credencial);
     }
 
@@ -52,11 +55,8 @@ public class CredencialService implements ICredencialService{
 
     @Override
     public CredencialResponseDTO asignarPermiso(UUID uuid, UUID permisoUuid) {
-        CredencialEntity credencial = credencialRepository.findByUuid(uuid)
-                .orElseThrow(()-> new EntidadNoEncontradaException("No se ha encontrado la credencial"));
-
-        PermisoEntity permiso = permisoRepository.findByUuid(permisoUuid)
-                .orElseThrow(()-> new EntidadNoEncontradaException("No se ha encontrado el permiso"));
+        CredencialEntity credencial = obtenerCredencialUuid(uuid);
+        PermisoEntity permiso = permisoService.obtenerPermisoPorUuid(permisoUuid);
 
         if(permiso.equals(credencial.getPermiso())){
             throw new OperacionNoPermitidaException("El permiso ya está asignado a esta credencial");
@@ -74,8 +74,7 @@ public class CredencialService implements ICredencialService{
 
     @Override
     public void activarCredencial(UUID uuid) {
-        CredencialEntity credencial = credencialRepository.findByUuid(uuid)
-                .orElseThrow(()-> new EntidadNoEncontradaException("No se ha encontrado la credencial"));
+        CredencialEntity credencial = obtenerCredencialUuid(uuid);
         if(credencial.getEstado() == Estado.ACTIVA){
             throw new OperacionNoPermitidaException("La credencial ya se encuentra activa");
         }
@@ -85,12 +84,17 @@ public class CredencialService implements ICredencialService{
 
     @Override
     public void desactivarCredencial(UUID uuid) {
-        CredencialEntity credencial = credencialRepository.findByUuid(uuid)
-                .orElseThrow(()-> new EntidadNoEncontradaException("No se ha encontrado la credencial"));
+        CredencialEntity credencial = obtenerCredencialUuid(uuid);
         if(credencial.getEstado() == Estado.INACTIVA){
             throw new OperacionNoPermitidaException("La credencial ya se encuentra inactiva");
         }
         credencial.setEstado(Estado.INACTIVA);
         credencialRepository.save(credencial);
+    }
+
+    @Override
+    public CredencialEntity obtenerCredencialUuid(UUID uuid) {
+        return credencialRepository.findByUuid(uuid)
+                .orElseThrow(()-> new EntidadNoEncontradaException("No se ha encontrado la credencial"));
     }
 }
