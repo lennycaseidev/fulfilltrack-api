@@ -60,4 +60,20 @@ public class StockService implements IStockService {
                 .orElse(false);
     }
 
+    @Override
+    public boolean tieneStockSuficiente(UUID productoUuid, int cantidad) {
+        return stockRepository.findByProducto_Uuid(productoUuid)
+                .map(stock -> stock.getCantidadDisponible() >= cantidad)
+                .orElse(false);
+    }
+
+    @Override
+    public void reservarStock(UUID productoUuid, int cantidad) {
+        StockEntity stock = stockRepository.findByProducto_Uuid(productoUuid)
+                .orElseThrow(() -> new EntidadNoEncontradaException("Stock no encontrado para el producto indicado"));
+        stock.setCantidadDisponible(stock.getCantidadDisponible() - cantidad);
+        stock.setCantidadReservada(stock.getCantidadReservada() + cantidad);
+        stockRepository.save(stock);
+    }
+
 }
