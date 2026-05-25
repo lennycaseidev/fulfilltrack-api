@@ -3,7 +3,7 @@ package com.fulfilltrack.FulfillTrack.features.liquidacion;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
 import com.fulfilltrack.FulfillTrack.features.empresa.EmpresaEntity;
-import com.fulfilltrack.FulfillTrack.features.empresa.EmpresaRepository;
+import com.fulfilltrack.FulfillTrack.features.empresa.IEmpresaService;
 import com.fulfilltrack.FulfillTrack.features.liquidacion.dto.LiquidacionRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.liquidacion.dto.LiquidacionResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.liquidacion.mapper.LiquidacionMapper;
@@ -18,20 +18,17 @@ public class LiquidacionService implements ILiquidacionService {
 
     private final LiquidacionRepository liquidacionRepository;
     private final LiquidacionMapper liquidacionMapper;
-    private final EmpresaRepository empresaRepository;
+    private final IEmpresaService empresaService;
 
-    public LiquidacionService(LiquidacionRepository liquidacionRepository,
-                               LiquidacionMapper liquidacionMapper,
-                               EmpresaRepository empresaRepository) {
+    public LiquidacionService(LiquidacionRepository liquidacionRepository, LiquidacionMapper liquidacionMapper, IEmpresaService empresaService) {
         this.liquidacionRepository = liquidacionRepository;
         this.liquidacionMapper = liquidacionMapper;
-        this.empresaRepository = empresaRepository;
+        this.empresaService = empresaService;
     }
 
     @Override
     public LiquidacionResponseDTO crearLiquidacion(LiquidacionRequestDTO request) {
-        EmpresaEntity empresa = empresaRepository.findByUuid(request.getEmpresaUuid())
-                .orElseThrow(() -> new EntidadNoEncontradaException("Empresa no encontrada con UUID " + request.getEmpresaUuid()));
+        EmpresaEntity empresa = empresaService.obtenerEmpresaUuid(request.getEmpresaUuid());
 
         LiquidacionEntity liquidacion = liquidacionMapper.toEntity(request);
         liquidacion.setEmpresa(empresa);
@@ -44,8 +41,7 @@ public class LiquidacionService implements ILiquidacionService {
 
     @Override
     public LiquidacionResponseDTO obtenerLiquidacionPorUuid(UUID uuid) {
-        LiquidacionEntity liquidacion = liquidacionRepository.findByUuid(uuid)
-                .orElseThrow(() -> new EntidadNoEncontradaException("Liquidación no encontrada con UUID " + uuid));
+        LiquidacionEntity liquidacion = obtenerLiquidacionUuid(uuid);
         return liquidacionMapper.toResponseDTO(liquidacion);
     }
 
@@ -56,21 +52,19 @@ public class LiquidacionService implements ILiquidacionService {
 
     @Override
     public List<LiquidacionResponseDTO> listarLiquidacionesPorEmpresa(UUID empresaUuid) {
-        if (!empresaRepository.existsByUuid(empresaUuid)) {
-            throw new EntidadNoEncontradaException("Empresa no encontrada con UUID " + empresaUuid);
+        if (!empresaService.existeEmpresaPorUuid(empresaUuid)) {
+            throw new EntidadNoEncontradaException("Empresa no encontrada");
         }
         return liquidacionMapper.toResponseList(liquidacionRepository.findByEmpresa_Uuid(empresaUuid));
     }
 
     @Override
     public LiquidacionResponseDTO actualizarLiquidacion(UUID uuid, LiquidacionRequestDTO request) {
-        LiquidacionEntity liquidacion = liquidacionRepository.findByUuid(uuid)
-                .orElseThrow(() -> new EntidadNoEncontradaException("Liquidación no encontrada con UUID " + uuid));
+        LiquidacionEntity liquidacion = obtenerLiquidacionUuid(uuid);
         if (liquidacion.getEstadoPago() == EstadoPago.PAGO) {
             throw new OperacionNoPermitidaException("No se puede modificar una liquidación ya pagada");
         }
-        EmpresaEntity empresa = empresaRepository.findByUuid(request.getEmpresaUuid())
-                .orElseThrow(() -> new EntidadNoEncontradaException("Empresa no encontrada con UUID " + request.getEmpresaUuid()));
+        EmpresaEntity empresa = empresaService.obtenerEmpresaUuid(request.getEmpresaUuid());
 
         liquidacion.setPeriodo(request.getPeriodo());
         liquidacion.setTotalDespachos(request.getTotalDespachos());
@@ -83,8 +77,7 @@ public class LiquidacionService implements ILiquidacionService {
 
     @Override
     public void marcarComoPagada(UUID uuid) {
-        LiquidacionEntity liquidacion = liquidacionRepository.findByUuid(uuid)
-                .orElseThrow(() -> new EntidadNoEncontradaException("Liquidación no encontrada con UUID " + uuid));
+        LiquidacionEntity liquidacion = obtenerLiquidacionUuid(uuid);
         if (liquidacion.getEstadoPago() == EstadoPago.PAGO) {
             throw new OperacionNoPermitidaException("La liquidación ya se encuentra pagada");
         }
@@ -94,12 +87,17 @@ public class LiquidacionService implements ILiquidacionService {
 
     @Override
     public void marcarComoImpaga(UUID uuid) {
-        LiquidacionEntity liquidacion = liquidacionRepository.findByUuid(uuid)
-                .orElseThrow(() -> new EntidadNoEncontradaException("Liquidación no encontrada con UUID " + uuid));
+        LiquidacionEntity liquidacion = obtenerLiquidacionUuid(uuid);
         if (liquidacion.getEstadoPago() == EstadoPago.IMPAGO) {
             throw new OperacionNoPermitidaException("La liquidación ya se encuentra impaga");
         }
         liquidacion.setEstadoPago(EstadoPago.IMPAGO);
         liquidacionRepository.save(liquidacion);
+    }
+
+    @Override
+    public LiquidacionEntity obtenerLiquidacionUuid(UUID uuid) {
+        return liquidacionRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntidadNoEncontradaException("Liquidación no encontrada"));
     }
 }

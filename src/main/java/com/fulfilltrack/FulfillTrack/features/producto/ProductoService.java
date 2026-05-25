@@ -5,12 +5,11 @@ import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaExcepti
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
 import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import com.fulfilltrack.FulfillTrack.features.empresa.EmpresaEntity;
-import com.fulfilltrack.FulfillTrack.features.empresa.EmpresaRepository;
+import com.fulfilltrack.FulfillTrack.features.empresa.IEmpresaService;
 import com.fulfilltrack.FulfillTrack.features.producto.dto.ProductoRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.producto.dto.ProductoResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.producto.mapper.ProductoMapper;
-import com.fulfilltrack.FulfillTrack.features.stock.StockEntity;
-import com.fulfilltrack.FulfillTrack.features.stock.StockRepository;
+import com.fulfilltrack.FulfillTrack.features.stock.IStockService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,40 +19,34 @@ import java.util.UUID;
 @Service
 public class ProductoService implements IProductoService{
     private final ProductoRepository productoRepository;
-    private final EmpresaRepository empresaRepository;
+    private final IEmpresaService empresaService;
     private final ProductoMapper productoMapper;
-    private final StockRepository stockRepository;
+    private final IStockService stockService;
 
-    public ProductoService(ProductoRepository productoRepository, EmpresaRepository empresaRepository, ProductoMapper productoMapper, StockRepository stockRepository) {
+    public ProductoService(ProductoRepository productoRepository, IEmpresaService empresaService, ProductoMapper productoMapper, IStockService stockService) {
         this.productoRepository = productoRepository;
-        this.empresaRepository = empresaRepository;
+        this.empresaService = empresaService;
         this.productoMapper = productoMapper;
-        this.stockRepository = stockRepository;
+        this.stockService = stockService;
     }
 
     @Override
     @Transactional
     public ProductoResponseDTO crearProducto(ProductoRequestDTO request) {
-        EmpresaEntity empresa = empresaRepository.findByUuid(request.getEmpresaUuid())
-                .orElseThrow(() -> new EntidadNoEncontradaException("La empresa no ha sido encontrada"));
+        EmpresaEntity empresa = empresaService.obtenerEmpresaUuid(request.getEmpresaUuid());
         if(productoRepository.existsBySkuAndEmpresa_Uuid(request.getSku(), request.getEmpresaUuid())){
             throw new EntidadDuplicadaException("El sku ya está registrado para un producto de esta empresa");
         }
         ProductoEntity producto = productoMapper.toEntity(request);
         producto.setEmpresa(empresa);
         ProductoEntity productoGuardado = productoRepository.save(producto);
-        stockRepository.save(StockEntity.builder()
-                .producto(productoGuardado)
-                .cantidadDisponible(0)
-                .cantidadReservada(0)
-                .build());
+        stockService.crearStockInicial(productoGuardado);
         return productoMapper.toResponseDTO(productoGuardado);
     }
 
     @Override
     public ProductoResponseDTO obtenerProductoPorUuid(UUID uuid) {
-        ProductoEntity producto = productoRepository.findByUuid(uuid)
-                .orElseThrow(()-> new EntidadNoEncontradaException("El producto no ha sido encontrado"));
+        ProductoEntity producto = obtenerProductoUuid(uuid);
         return productoMapper.toResponseDTO(producto);
     }
 
@@ -66,7 +59,7 @@ public class ProductoService implements IProductoService{
 
     @Override
     public List<ProductoResponseDTO> listarProductosPorEmpresa(UUID empresaUuid) {
-        if (!empresaRepository.existsByUuid(empresaUuid)) {
+        if (!empresaService.existeEmpresaPorUuid(empresaUuid)) {
             throw new EntidadNoEncontradaException("La empresa no ha sido encontrada");
         }
         return productoMapper.toResponseList(productoRepository.findByEmpresa_Uuid(empresaUuid));
@@ -79,8 +72,7 @@ public class ProductoService implements IProductoService{
 
     @Override
     public ProductoResponseDTO actualizarProducto(UUID uuid, ProductoRequestDTO request) {
-        ProductoEntity producto = productoRepository.findByUuid(uuid)
-                .orElseThrow(() -> new EntidadNoEncontradaException("El producto no ha sido encontrado"));
+        ProductoEntity producto = obtenerProductoUuid(uuid);
 
         if(!producto.getSku().equals(request.getSku()) && productoRepository.existsBySkuAndEmpresa_Uuid(request.getSku(), request.getEmpresaUuid())){
             throw new EntidadDuplicadaException("El sku ya está registrado para un producto de esta empresa");
@@ -94,8 +86,7 @@ public class ProductoService implements IProductoService{
 
     @Override
     public void activarProducto(UUID uuid) {
-        ProductoEntity producto = productoRepository.findByUuid(uuid)
-                .orElseThrow(()-> new EntidadNoEncontradaException("El producto no ha sido encontrado"));
+        ProductoEntity producto = obtenerProductoUuid(uuid);
         if(producto.getEstado() == Estado.ACTIVA){
             throw new OperacionNoPermitidaException("El producto ya se encuentra activo");
         }
@@ -105,17 +96,23 @@ public class ProductoService implements IProductoService{
 
     @Override
     public void desactivarProducto(UUID uuid) {
-        ProductoEntity producto = productoRepository.findByUuid(uuid)
-                .orElseThrow(()-> new EntidadNoEncontradaException("El producto no ha sido encontrado"));
+        ProductoEntity producto = obtenerProductoUuid(uuid);
         if(producto.getEstado() == Estado.INACTIVA){
             throw new OperacionNoPermitidaException("El producto ya se encuentra inactivo");
         }
-        stockRepository.findByProducto_Uuid(uuid).ifPresent(stock -> {
-            if(stock.getCantidadDisponible() > 0 || stock.getCantidadReservada() > 0){
+            if(stockService.tieneStockActivo(uuid)){
                 throw new OperacionNoPermitidaException("No se puede desactivar un producto con stock disponible o reservado");
             }
-        });
+
         producto.setEstado(Estado.INACTIVA);
         productoRepository.save(producto);
     }
+
+    @Override
+    public ProductoEntity obtenerProductoUuid(UUID uuid) {
+        return productoRepository.findByUuid(uuid)
+                .orElseThrow(()-> new EntidadNoEncontradaException("El producto no ha sido encontrado"));
+    }
+
+
 }

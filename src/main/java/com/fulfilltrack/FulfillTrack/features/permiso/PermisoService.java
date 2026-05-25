@@ -37,6 +37,12 @@ public class PermisoService implements IPermisoService{
     }
 
     @Override
+    public PermisoEntity obtenerPermisoPorUuid(UUID uuid) {
+        return permisoRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntidadNoEncontradaException("El permiso no se ha encontrado"));
+    }
+
+    @Override
     public PermisoResponseDTO actualizarPermiso(UUID uuid, PermisoRequestDTO request) {
         PermisoEntity permiso = permisoRepository.findByUuid(uuid)
                 .orElseThrow(() -> new EntidadNoEncontradaException("el permiso no se ha encontrado"));

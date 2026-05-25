@@ -13,5 +13,6 @@ List<DepositoResponseDTO> obtenerDepositos();
 DepositoResponseDTO actualizarDeposito(UUID uuid, DepositoRequestDTO request);
 void desactivarDeposito(UUID uuid);
 void activarDeposito(UUID uuid);
+DepositoEntity obtenerDepositoUuid(UUID uuid);
 
 }

@@ -13,7 +13,7 @@ public interface IInfoEmpleadosService {
     InfoEmpleadosResponseDTO actualizarEmpleado(UUID uuid, InfoEmpleadosRequestDTO request);
     void activarEmpleado(UUID uuid);
     void desactivarEmpleado(UUID uuid);
-
+    InfoEmpleadosEntity obtenerEmpleadoUuid(UUID uuid);
 
 
 }

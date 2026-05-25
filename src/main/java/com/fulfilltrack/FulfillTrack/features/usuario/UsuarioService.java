@@ -1,14 +1,14 @@
 package com.fulfilltrack.FulfillTrack.features.usuario;
 
-import com.fulfilltrack.FulfillTrack.common.exception.EntidadDuplicadaException;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import com.fulfilltrack.FulfillTrack.features.credencial.CredencialEntity;
-import com.fulfilltrack.FulfillTrack.features.credencial.CredencialRepository;
+import com.fulfilltrack.FulfillTrack.features.credencial.ICredencialService;
 import com.fulfilltrack.FulfillTrack.features.usuario.dto.UsuarioRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.usuario.dto.UsuarioResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.usuario.mapper.UsuarioMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,29 +16,18 @@ import java.util.UUID;
 public class UsuarioService implements IUsuarioService{
     private final UsuarioRepository usuarioRepository;
     private final UsuarioMapper usuarioMapper;
-    private final CredencialRepository credencialRepository;
+    private final ICredencialService credencialService;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, CredencialRepository credencialRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, ICredencialService credencialService) {
         this.usuarioRepository = usuarioRepository;
         this.usuarioMapper = usuarioMapper;
-        this.credencialRepository = credencialRepository;
+        this.credencialService = credencialService;
     }
 
     @Override
-    public UsuarioResponseDTO registrarUsuario(UsuarioRequestDTO request) {
-        if (credencialRepository.existsByEmail(request.getEmail())) {
-            throw new EntidadDuplicadaException("El email ya está en uso");
-        }
-        if (credencialRepository.existsByNombreUsuario(request.getNombreUsuario())) {
-            throw new EntidadDuplicadaException("El nombre de usuario ya está en uso");
-        }
-
-        CredencialEntity credencial = CredencialEntity.builder().
-                nombreUsuario(request.getNombreUsuario())
-                .email(request.getEmail())
-                .contrasena(request.getContrasena())
-                .build();
-        credencialRepository.save(credencial);
+    @Transactional
+   public UsuarioResponseDTO registrarUsuario(UsuarioRequestDTO request) {
+        CredencialEntity credencial = credencialService.registrarCredencial(request.getNombreUsuario(), request.getEmail(), request.getContrasena());
 
         UsuarioEntity usuario = UsuarioEntity.builder()
                 .nombre(request.getNombre())

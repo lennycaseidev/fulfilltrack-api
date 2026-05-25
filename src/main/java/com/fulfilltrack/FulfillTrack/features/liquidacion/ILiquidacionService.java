@@ -14,4 +14,5 @@ public interface ILiquidacionService {
     LiquidacionResponseDTO actualizarLiquidacion(UUID uuid, LiquidacionRequestDTO request);
     void marcarComoPagada(UUID uuid);
     void marcarComoImpaga(UUID uuid);
+    LiquidacionEntity obtenerLiquidacionUuid(UUID uuid);
 }

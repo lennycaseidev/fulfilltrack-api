@@ -5,7 +5,7 @@ import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaExcepti
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
 import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import com.fulfilltrack.FulfillTrack.features.deposito.DepositoEntity;
-import com.fulfilltrack.FulfillTrack.features.deposito.DepositoRepository;
+import com.fulfilltrack.FulfillTrack.features.deposito.IDepositoService;
 import com.fulfilltrack.FulfillTrack.features.infoEmpleados.dto.InfoEmpleadosRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.infoEmpleados.dto.InfoEmpleadosResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.infoEmpleados.mapper.InfoEmpleadosMapper;
@@ -17,14 +17,14 @@ import java.util.UUID;
 public class InfoEmpleadosService implements IInfoEmpleadosService{
     private final InfoEmpleadosRepository infoEmpleadosRepository;
     private final InfoEmpleadosMapper infoEmpleadosMapper;
-    private final DepositoRepository depositoRepository;
+    private final IDepositoService depositoService;
 //    private final PuestoRepository puestoRepository;
     //private final UsuarioRepository usuarioRepository;
 
-    public InfoEmpleadosService(InfoEmpleadosRepository infoEmpleadosRepository, InfoEmpleadosMapper infoEmpleadosMapper, DepositoRepository depositoRepository) {
+    public InfoEmpleadosService(InfoEmpleadosRepository infoEmpleadosRepository, InfoEmpleadosMapper infoEmpleadosMapper, IDepositoService depositoService) {
         this.infoEmpleadosRepository = infoEmpleadosRepository;
         this.infoEmpleadosMapper = infoEmpleadosMapper;
-        this.depositoRepository = depositoRepository;
+        this.depositoService = depositoService;
     }
 
     @Override
@@ -35,8 +35,7 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
 
     @Override
     public InfoEmpleadosResponseDTO obtenerEmpleadoPorUuid(UUID uuid) {
-        InfoEmpleadosEntity empleado = infoEmpleadosRepository.findByUuid(uuid)
-                .orElseThrow(()-> new EntidadNoEncontradaException("El empleado no ha sido encontrado"));
+        InfoEmpleadosEntity empleado = obtenerEmpleadoUuid(uuid);
         return infoEmpleadosMapper.toResponseDTO(empleado);
     }
 
@@ -45,8 +44,7 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
         if(infoEmpleadosRepository.existsByDocumento(request.getDocumento())){
             throw new EntidadDuplicadaException("El documento ya esta registrado");
         }
-        DepositoEntity deposito = depositoRepository.findByUuid(request.getDepositoUuid())
-                .orElseThrow(() -> new EntidadNoEncontradaException("El depósito no ha sido encontrado"));
+        DepositoEntity deposito = depositoService.obtenerDepositoUuid(request.getDepositoUuid());
 
 //        PuestoEntity puesto = puestoRepository.findByUuid(request.getPuestoUuid())
 //                .orElseThrow(() -> new EntidadNoEncontradaException("El puesto no ha sido encontrado"));
@@ -65,10 +63,9 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
 
     @Override
     public InfoEmpleadosResponseDTO actualizarEmpleado(UUID uuid, InfoEmpleadosRequestDTO request) {
-        InfoEmpleadosEntity empleado = infoEmpleadosRepository.findByUuid(uuid)
-                .orElseThrow(()-> new EntidadNoEncontradaException("El empleado no ha sido encontrado"));
-        DepositoEntity deposito = depositoRepository.findByUuid(request.getDepositoUuid())
-                .orElseThrow(() -> new EntidadNoEncontradaException("El depósito no ha sido encontrado"));
+        InfoEmpleadosEntity empleado = obtenerEmpleadoUuid(uuid);
+        DepositoEntity deposito = depositoService.obtenerDepositoUuid(request.getDepositoUuid());
+
 
 //        PuestoEntity puesto = puestoRepository.findByUuid(request.getPuestoUuid())
 //                .orElseThrow(() -> new EntidadNoEncontradaException("El puesto no ha sido encontrado"));
@@ -83,8 +80,7 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
 
     @Override
     public void activarEmpleado(UUID uuid) {
-        InfoEmpleadosEntity empleado = infoEmpleadosRepository.findByUuid(uuid)
-                .orElseThrow(() -> new EntidadNoEncontradaException("El empleado no ha sido encontrado"));
+        InfoEmpleadosEntity empleado = obtenerEmpleadoUuid(uuid);
         if (empleado.getEstado() == Estado.ACTIVA) {
             throw new OperacionNoPermitidaException("El empleado ya está activo");
         }
@@ -94,12 +90,17 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
 
     @Override
     public void desactivarEmpleado(UUID uuid) {
-        InfoEmpleadosEntity empleado = infoEmpleadosRepository.findByUuid(uuid)
-                .orElseThrow(() -> new EntidadNoEncontradaException("El empleado no ha sido encontrado"));
+        InfoEmpleadosEntity empleado = obtenerEmpleadoUuid(uuid);
         if (empleado.getEstado() == Estado.INACTIVA) {
             throw new OperacionNoPermitidaException("El empleado ya está inactivo");
         }
         empleado.setEstado(Estado.INACTIVA);
         infoEmpleadosRepository.save(empleado);
+    }
+
+    @Override
+    public InfoEmpleadosEntity obtenerEmpleadoUuid(UUID uuid) {
+        return infoEmpleadosRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntidadNoEncontradaException("El empleado no ha sido encontrado"));
     }
 }

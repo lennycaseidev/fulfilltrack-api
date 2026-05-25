@@ -15,4 +15,5 @@ public interface IProductoService {
     ProductoResponseDTO actualizarProducto(UUID uuid, ProductoRequestDTO request);
     void activarProducto(UUID uuid);
     void desactivarProducto(UUID uuid);
+    ProductoEntity obtenerProductoUuid(UUID uuid);
 }
