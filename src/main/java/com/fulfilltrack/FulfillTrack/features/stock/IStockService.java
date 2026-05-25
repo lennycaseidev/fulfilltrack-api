@@ -14,4 +14,5 @@ public interface IStockService {
     boolean tieneStockActivo(UUID productoUuid);
     boolean tieneStockSuficiente(UUID productoUuid, int cantidad);
     void reservarStock(UUID productoUuid, int cantidad);
+    StockResponseDTO agregarStock(UUID productoUuid, int cantidad);
 }

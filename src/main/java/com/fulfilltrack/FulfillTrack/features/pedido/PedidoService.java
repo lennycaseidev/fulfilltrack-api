@@ -50,7 +50,7 @@ public class PedidoService implements IPedidoService{
                 throw new OperacionNoPermitidaException("este producto no pertenece a la empresa indicada");
             }
             if(!stockService.tieneStockSuficiente(producto.getUuid(), itemRequest.getCantidad())){
-                throw new OperacionNoPermitidaException("no hay stock suficiente para el producto" + producto.getSku());
+                throw new OperacionNoPermitidaException("no hay stock suficiente para el producto " + producto.getSku());
             }
             productos.add(producto);
         }
@@ -62,7 +62,7 @@ public class PedidoService implements IPedidoService{
                 .build();
         PedidoEntity pedidoGuardado = pedidoRepository.save(pedido);
 
-        guardarItemsYReservarStock(request.getItems(), pedidoGuardado, productos);
+        pedidoGuardado.setItems(guardarItemsYReservarStock(request.getItems(), pedidoGuardado, productos));
 
         return pedidoMapper.toResponseDTO(pedidoGuardado);
     }
@@ -89,16 +89,18 @@ public class PedidoService implements IPedidoService{
                 .orElseThrow(()-> new EntidadNoEncontradaException("no se ha encontrado el pedido"));
     }
 
-    private void guardarItemsYReservarStock(List<ItemPedidoRequestDTO> items, PedidoEntity pedidoGuardado, List<ProductoEntity> productos){
+    private List<ItemPedidoEntity> guardarItemsYReservarStock(List<ItemPedidoRequestDTO> items, PedidoEntity pedidoGuardado, List<ProductoEntity> productos){
+        List<ItemPedidoEntity> itemsGuardados = new ArrayList<>();
         for (int i = 0; i < items.size(); i++) {
             ItemPedidoRequestDTO itemRequest = items.get(i);
-            itemPedidoRepository.save(ItemPedidoEntity.builder()
+            itemsGuardados.add(itemPedidoRepository.save(ItemPedidoEntity.builder()
                     .pedido(pedidoGuardado)
                     .producto(productos.get(i))
                     .cantidad(itemRequest.getCantidad())
-                    .build());
+                    .build()));
             stockService.reservarStock(itemRequest.getProductoUuid(), itemRequest.getCantidad());
         }
+        return itemsGuardados;
     }
 
 }

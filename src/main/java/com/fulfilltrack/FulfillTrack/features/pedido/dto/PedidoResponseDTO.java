@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,7 +23,7 @@ public class PedidoResponseDTO {
     private String nombreDestinatario;
     private EstadoPedido estado;
     private LocalDateTime fechaRecepcion;
-    private UUID empresaUuid;
+    private String nombreEmpresa;
     private List<ItemPedidoResponseDTO> items;
 
 }

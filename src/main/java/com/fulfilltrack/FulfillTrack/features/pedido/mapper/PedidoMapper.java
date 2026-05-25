@@ -10,7 +10,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {ItemPedidoMapper.class})
 public interface PedidoMapper {
-    @Mapping(source = "empresa.uuid", target = "empresaUuid")
+    @Mapping(source = "empresa.nombreEmpresa", target = "nombreEmpresa")
     PedidoResponseDTO toResponseDTO(PedidoEntity entity);
 
     List<PedidoResponseDTO> toResponseList(List<PedidoEntity> entities);
