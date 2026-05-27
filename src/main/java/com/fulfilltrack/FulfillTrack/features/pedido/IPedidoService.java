@@ -12,4 +12,8 @@ public interface IPedidoService {
     List<PedidoResponseDTO> listarPedidos();
     List<PedidoResponseDTO> listarPedidosPorEmpresa(UUID empresaUuid);
     PedidoEntity obtenerPedidoUuid(UUID uuid);
+    PedidoResponseDTO confirmarPedido(UUID uuid);
+    PedidoResponseDTO iniciarPreparacion(UUID uuid);
+    PedidoResponseDTO marcarListoParaDespacho(UUID uuid);
+    PedidoResponseDTO devolverPedido(UUID uuid);
 }

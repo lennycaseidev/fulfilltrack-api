@@ -37,4 +37,24 @@ public class PedidoController {
     ResponseEntity<PedidoResponseDTO> crearPedido(@Valid @RequestBody PedidoRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(pedidoService.crearPedido(request));
     }
+
+    @PatchMapping("/{uuid}/confirmar")
+    ResponseEntity<PedidoResponseDTO> confirmarPedido(@PathVariable UUID uuid) {
+        return ResponseEntity.ok(pedidoService.confirmarPedido(uuid));
+    }
+
+    @PatchMapping("/{uuid}/iniciar-preparacion")
+    ResponseEntity<PedidoResponseDTO> iniciarPreparacion(@PathVariable UUID uuid) {
+        return ResponseEntity.ok(pedidoService.iniciarPreparacion(uuid));
+    }
+
+    @PatchMapping("/{uuid}/listo-para-despacho")
+    ResponseEntity<PedidoResponseDTO> marcarListoParaDespacho(@PathVariable UUID uuid) {
+        return ResponseEntity.ok(pedidoService.marcarListoParaDespacho(uuid));
+    }
+
+    @PatchMapping("/{uuid}/devolver")
+    ResponseEntity<PedidoResponseDTO> devolverPedido(@PathVariable UUID uuid) {
+        return ResponseEntity.ok(pedidoService.devolverPedido(uuid));
+    }
 }

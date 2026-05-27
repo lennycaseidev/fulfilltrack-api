@@ -77,6 +77,23 @@ public class StockService implements IStockService {
     }
 
     @Override
+    public void confirmarConsumoStock(UUID productoUuid, int cantidad) {
+        StockEntity stock = stockRepository.findByProducto_Uuid(productoUuid)
+                .orElseThrow(() -> new EntidadNoEncontradaException("Stock no encontrado para el producto indicado"));
+        stock.setCantidadReservada(stock.getCantidadReservada() - cantidad);
+        stockRepository.save(stock);
+    }
+
+    @Override
+    public void liberarReservaStock(UUID productoUuid, int cantidad) {
+        StockEntity stock = stockRepository.findByProducto_Uuid(productoUuid)
+                .orElseThrow(() -> new EntidadNoEncontradaException("Stock no encontrado para el producto indicado"));
+        stock.setCantidadReservada(stock.getCantidadReservada() - cantidad);
+        stock.setCantidadDisponible(stock.getCantidadDisponible() + cantidad);
+        stockRepository.save(stock);
+    }
+
+    @Override
     public StockResponseDTO agregarStock(UUID productoUuid, int cantidad) {
         StockEntity stock = stockRepository.findByProducto_Uuid(productoUuid)
                 .orElseThrow(() -> new EntidadNoEncontradaException("Stock no encontrado para el producto indicado"));
