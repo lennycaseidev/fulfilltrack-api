@@ -17,6 +17,6 @@ public class PedidoMovimientoController {
 
     @GetMapping("/{uuid}/movimientos")
     ResponseEntity<List<PedidoMovimientoResponseDTO>> listarMovimientos(@PathVariable UUID uuid) {
-        return null;
+        return ResponseEntity.ok(pedidoMovimientoService.listarMovimientosPorPedido(uuid));
     }
 }
