@@ -89,6 +89,61 @@ public class PedidoService implements IPedidoService{
                 .orElseThrow(()-> new EntidadNoEncontradaException("no se ha encontrado el pedido"));
     }
 
+    @Override
+    @Transactional
+    public PedidoResponseDTO confirmarPedido(UUID uuid) {
+        PedidoEntity pedido = obtenerPedidoUuid(uuid);
+        validarTransicion(pedido.getEstado(), EstadoPedido.RECIBIDO, EstadoPedido.CONFIRMADO);
+        pedido.getItems().forEach(item ->
+                stockService.confirmarConsumoStock(item.getProducto().getUuid(), item.getCantidad()));
+        pedido.setEstado(EstadoPedido.CONFIRMADO);
+        return pedidoMapper.toResponseDTO(pedidoRepository.save(pedido));
+    }
+
+    @Override
+    @Transactional
+    public PedidoResponseDTO iniciarPreparacion(UUID uuid) {
+        PedidoEntity pedido = obtenerPedidoUuid(uuid);
+        validarTransicion(pedido.getEstado(), EstadoPedido.CONFIRMADO, EstadoPedido.EN_PREPARACION);
+        pedido.setEstado(EstadoPedido.EN_PREPARACION);
+        return pedidoMapper.toResponseDTO(pedidoRepository.save(pedido));
+    }
+
+    @Override
+    @Transactional
+    public PedidoResponseDTO marcarListoParaDespacho(UUID uuid) {
+        PedidoEntity pedido = obtenerPedidoUuid(uuid);
+        validarTransicion(pedido.getEstado(), EstadoPedido.EN_PREPARACION, EstadoPedido.LISTO_PARA_DESPACHO);
+        pedido.setEstado(EstadoPedido.LISTO_PARA_DESPACHO);
+        return pedidoMapper.toResponseDTO(pedidoRepository.save(pedido));
+    }
+
+    @Override
+    @Transactional
+    public PedidoResponseDTO devolverPedido(UUID uuid) {
+        PedidoEntity pedido = obtenerPedidoUuid(uuid);
+        EstadoPedido estadoActual = pedido.getEstado();
+        if (estadoActual == EstadoPedido.DESPACHADO || estadoActual == EstadoPedido.ENTREGADO || estadoActual == EstadoPedido.DEVUELTO) {
+            throw new OperacionNoPermitidaException("no se puede devolver un pedido en estado " + estadoActual);
+        }
+        if (estadoActual == EstadoPedido.RECIBIDO) {
+            pedido.getItems().forEach(item ->
+                    stockService.liberarReservaStock(item.getProducto().getUuid(), item.getCantidad()));
+        } else {
+            pedido.getItems().forEach(item ->
+                    stockService.agregarStock(item.getProducto().getUuid(), item.getCantidad()));
+        }
+        pedido.setEstado(EstadoPedido.DEVUELTO);
+        return pedidoMapper.toResponseDTO(pedidoRepository.save(pedido));
+    }
+
+    private void validarTransicion(EstadoPedido actual, EstadoPedido requerido, EstadoPedido siguiente) {
+        if (actual != requerido) {
+            throw new OperacionNoPermitidaException(
+                    "el pedido debe estar en estado " + requerido + " para pasar a " + siguiente + ". Estado actual: " + actual);
+        }
+    }
+
     private List<ItemPedidoEntity> guardarItemsYReservarStock(List<ItemPedidoRequestDTO> items, PedidoEntity pedidoGuardado, List<ProductoEntity> productos){
         List<ItemPedidoEntity> itemsGuardados = new ArrayList<>();
         for (int i = 0; i < items.size(); i++) {
