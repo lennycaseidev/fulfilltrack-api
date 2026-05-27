@@ -10,6 +10,7 @@ import com.fulfilltrack.FulfillTrack.features.pedido.item.ItemPedidoEntity;
 import com.fulfilltrack.FulfillTrack.features.pedido.item.ItemPedidoRepository;
 import com.fulfilltrack.FulfillTrack.features.pedido.item.dto.ItemPedidoRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.pedido.mapper.PedidoMapper;
+import com.fulfilltrack.FulfillTrack.features.pedidoMovimiento.IPedidoMovimientoService;
 import com.fulfilltrack.FulfillTrack.features.producto.IProductoService;
 import com.fulfilltrack.FulfillTrack.features.producto.ProductoEntity;
 import com.fulfilltrack.FulfillTrack.features.stock.IStockService;
@@ -28,14 +29,16 @@ public class PedidoService implements IPedidoService{
     private final IEmpresaService empresaService;
     private final IProductoService productoService;
     private final IStockService stockService;
+    private final IPedidoMovimientoService pedidoMovimientoService;
 
-    public PedidoService(PedidoRepository pedidoRepository, ItemPedidoRepository itemPedidoRepository, PedidoMapper pedidoMapper, IEmpresaService empresaService, IProductoService productoService, IStockService stockService) {
+    public PedidoService(PedidoRepository pedidoRepository, ItemPedidoRepository itemPedidoRepository, PedidoMapper pedidoMapper, IEmpresaService empresaService, IProductoService productoService, IStockService stockService, IPedidoMovimientoService pedidoMovimientoService) {
         this.pedidoRepository = pedidoRepository;
         this.itemPedidoRepository = itemPedidoRepository;
         this.pedidoMapper = pedidoMapper;
         this.empresaService = empresaService;
         this.productoService = productoService;
         this.stockService = stockService;
+        this.pedidoMovimientoService = pedidoMovimientoService;
     }
 
     @Override
@@ -97,7 +100,9 @@ public class PedidoService implements IPedidoService{
         pedido.getItems().forEach(item ->
                 stockService.confirmarConsumoStock(item.getProducto().getUuid(), item.getCantidad()));
         pedido.setEstado(EstadoPedido.CONFIRMADO);
-        return pedidoMapper.toResponseDTO(pedidoRepository.save(pedido));
+        PedidoEntity guardado = pedidoRepository.save(pedido);
+        pedidoMovimientoService.registrarMovimiento(guardado, EstadoPedido.RECIBIDO, EstadoPedido.CONFIRMADO);
+        return pedidoMapper.toResponseDTO(guardado);
     }
 
     @Override
@@ -106,7 +111,9 @@ public class PedidoService implements IPedidoService{
         PedidoEntity pedido = obtenerPedidoUuid(uuid);
         validarTransicion(pedido.getEstado(), EstadoPedido.CONFIRMADO, EstadoPedido.EN_PREPARACION);
         pedido.setEstado(EstadoPedido.EN_PREPARACION);
-        return pedidoMapper.toResponseDTO(pedidoRepository.save(pedido));
+        PedidoEntity guardado = pedidoRepository.save(pedido);
+        pedidoMovimientoService.registrarMovimiento(guardado, EstadoPedido.CONFIRMADO, EstadoPedido.EN_PREPARACION);
+        return pedidoMapper.toResponseDTO(guardado);
     }
 
     @Override
@@ -115,18 +122,20 @@ public class PedidoService implements IPedidoService{
         PedidoEntity pedido = obtenerPedidoUuid(uuid);
         validarTransicion(pedido.getEstado(), EstadoPedido.EN_PREPARACION, EstadoPedido.LISTO_PARA_DESPACHO);
         pedido.setEstado(EstadoPedido.LISTO_PARA_DESPACHO);
-        return pedidoMapper.toResponseDTO(pedidoRepository.save(pedido));
+        PedidoEntity guardado = pedidoRepository.save(pedido);
+        pedidoMovimientoService.registrarMovimiento(guardado, EstadoPedido.EN_PREPARACION, EstadoPedido.LISTO_PARA_DESPACHO);
+        return pedidoMapper.toResponseDTO(guardado);
     }
 
     @Override
     @Transactional
     public PedidoResponseDTO devolverPedido(UUID uuid) {
         PedidoEntity pedido = obtenerPedidoUuid(uuid);
-        EstadoPedido estadoActual = pedido.getEstado();
-        if (estadoActual == EstadoPedido.DESPACHADO || estadoActual == EstadoPedido.ENTREGADO || estadoActual == EstadoPedido.DEVUELTO) {
-            throw new OperacionNoPermitidaException("no se puede devolver un pedido en estado " + estadoActual);
+        EstadoPedido estadoAnterior = pedido.getEstado();
+        if (estadoAnterior == EstadoPedido.DESPACHADO || estadoAnterior == EstadoPedido.ENTREGADO || estadoAnterior == EstadoPedido.DEVUELTO) {
+            throw new OperacionNoPermitidaException("no se puede devolver un pedido en estado " + estadoAnterior);
         }
-        if (estadoActual == EstadoPedido.RECIBIDO) {
+        if (estadoAnterior == EstadoPedido.RECIBIDO) {
             pedido.getItems().forEach(item ->
                     stockService.liberarReservaStock(item.getProducto().getUuid(), item.getCantidad()));
         } else {
@@ -134,7 +143,9 @@ public class PedidoService implements IPedidoService{
                     stockService.agregarStock(item.getProducto().getUuid(), item.getCantidad()));
         }
         pedido.setEstado(EstadoPedido.DEVUELTO);
-        return pedidoMapper.toResponseDTO(pedidoRepository.save(pedido));
+        PedidoEntity guardado = pedidoRepository.save(pedido);
+        pedidoMovimientoService.registrarMovimiento(guardado, estadoAnterior, EstadoPedido.DEVUELTO);
+        return pedidoMapper.toResponseDTO(guardado);
     }
 
     private void validarTransicion(EstadoPedido actual, EstadoPedido requerido, EstadoPedido siguiente) {
