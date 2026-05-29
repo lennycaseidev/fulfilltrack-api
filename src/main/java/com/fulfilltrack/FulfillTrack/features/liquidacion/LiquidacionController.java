@@ -1,4 +1,4 @@
-package com.fulfilltrack.FulfillTrack.features.liquidacion;
+    package com.fulfilltrack.FulfillTrack.features.liquidacion;
 
 import com.fulfilltrack.FulfillTrack.features.liquidacion.dto.LiquidacionRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.liquidacion.dto.LiquidacionResponseDTO;
@@ -36,6 +36,11 @@ public class LiquidacionController {
     @PostMapping
     ResponseEntity<LiquidacionResponseDTO> crearLiquidacion(@Valid @RequestBody LiquidacionRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(liquidacionService.crearLiquidacion(request));
+    }
+
+    @PutMapping("/{uuid}")
+    ResponseEntity<LiquidacionResponseDTO> actualizarLiquidacion(@PathVariable UUID uuid, @Valid @RequestBody LiquidacionRequestDTO request) {
+        return ResponseEntity.ok(liquidacionService.actualizarLiquidacion(uuid, request));
     }
 
     @PatchMapping("/{uuid}/marcar-pagada")
