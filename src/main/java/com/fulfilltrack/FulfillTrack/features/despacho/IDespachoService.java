@@ -11,5 +11,4 @@ public interface IDespachoService {
     DespachoResponseDTO obtenerDespachoPorUuid(UUID uuid);
     DespachoResponseDTO obtenerDespachoPorPedido(UUID pedidoUuid);
     List<DespachoResponseDTO> listarDespachos();
-    DespachoResponseDTO marcarEntregado(UUID uuid);
 }

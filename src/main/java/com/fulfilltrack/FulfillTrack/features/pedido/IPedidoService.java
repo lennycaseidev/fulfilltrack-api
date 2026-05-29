@@ -15,5 +15,6 @@ public interface IPedidoService {
     PedidoResponseDTO confirmarPedido(UUID uuid);
     PedidoResponseDTO iniciarPreparacion(UUID uuid);
     PedidoResponseDTO marcarListoParaDespacho(UUID uuid);
+    PedidoResponseDTO marcarDespachado(UUID uuid);
     PedidoResponseDTO devolverPedido(UUID uuid);
 }
