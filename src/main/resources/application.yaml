@@ -13,3 +13,14 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  mail:
+    host: mail.privateemail.com
+    port: 587
+    username: hello@shreddingstudio.com
+    password: 46112163
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
