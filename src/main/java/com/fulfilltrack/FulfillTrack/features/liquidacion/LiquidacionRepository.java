@@ -11,4 +11,6 @@ import java.util.UUID;
 public interface LiquidacionRepository extends JpaRepository<LiquidacionEntity, Long> {
     Optional<LiquidacionEntity> findByUuid(UUID uuid);
     List<LiquidacionEntity> findByEmpresa_Uuid(UUID empresaUuid);
+    List<LiquidacionEntity> findByEstadoPago(EstadoPago estadoPago);
+    boolean existsByEmpresa_UuidAndPeriodo(UUID empresaUuid, String periodo);
 }

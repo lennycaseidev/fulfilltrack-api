@@ -9,6 +9,10 @@ import com.fulfilltrack.FulfillTrack.features.deposito.IDepositoService;
 import com.fulfilltrack.FulfillTrack.features.infoEmpleados.dto.InfoEmpleadosRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.infoEmpleados.dto.InfoEmpleadosResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.infoEmpleados.mapper.InfoEmpleadosMapper;
+import com.fulfilltrack.FulfillTrack.features.puesto.IPuestoService;
+import com.fulfilltrack.FulfillTrack.features.puesto.PuestoEntity;
+import com.fulfilltrack.FulfillTrack.features.usuario.IUsuarioService;
+import com.fulfilltrack.FulfillTrack.features.usuario.UsuarioEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,13 +22,15 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
     private final InfoEmpleadosRepository infoEmpleadosRepository;
     private final InfoEmpleadosMapper infoEmpleadosMapper;
     private final IDepositoService depositoService;
-//    private final PuestoRepository puestoRepository;
-    //private final UsuarioRepository usuarioRepository;
+    private final IPuestoService puestoService;
+    private final IUsuarioService usuarioService;
 
-    public InfoEmpleadosService(InfoEmpleadosRepository infoEmpleadosRepository, InfoEmpleadosMapper infoEmpleadosMapper, IDepositoService depositoService) {
+    public InfoEmpleadosService(InfoEmpleadosRepository infoEmpleadosRepository, InfoEmpleadosMapper infoEmpleadosMapper, IDepositoService depositoService, IPuestoService puestoService, IUsuarioService usuarioService) {
         this.infoEmpleadosRepository = infoEmpleadosRepository;
         this.infoEmpleadosMapper = infoEmpleadosMapper;
         this.depositoService = depositoService;
+        this.puestoService = puestoService;
+        this.usuarioService = usuarioService;
     }
 
     @Override
@@ -46,16 +52,16 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
         }
         DepositoEntity deposito = depositoService.obtenerDepositoUuid(request.getDepositoUuid());
 
-//        PuestoEntity puesto = puestoRepository.findByUuid(request.getPuestoUuid())
-//                .orElseThrow(() -> new EntidadNoEncontradaException("El puesto no ha sido encontrado"));
-//        UsuarioEntity usuario = usuarioRepository.findByUuid(request.getUsuarioUuid())
-//                .orElseThrow(()-> new EntidadNoEncontradaException("El usuario no ha sido encontrado"));
+        PuestoEntity puesto = puestoService.obtenerPuestoEntidad(request.getPuestoUuid());
+        UsuarioEntity usuario = usuarioService.obtenerUsuarioEntidad(request.getUsuarioUuid());
 
         InfoEmpleadosEntity empleado = InfoEmpleadosEntity.builder()
                 .documento(request.getDocumento())
                 .salario(request.getSalario())
                 .fechaContratacion(request.getFechaContratacion())
                 .deposito(deposito)
+                .puesto(puesto)
+                .usuario(usuario)
                 .build();
 
         return infoEmpleadosMapper.toResponseDTO(infoEmpleadosRepository.save(empleado));
@@ -67,13 +73,12 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
         DepositoEntity deposito = depositoService.obtenerDepositoUuid(request.getDepositoUuid());
 
 
-//        PuestoEntity puesto = puestoRepository.findByUuid(request.getPuestoUuid())
-//                .orElseThrow(() -> new EntidadNoEncontradaException("El puesto no ha sido encontrado"));
+        PuestoEntity puesto = puestoService.obtenerPuestoEntidad(request.getPuestoUuid());
 
         empleado.setSalario(request.getSalario());
         empleado.setFechaContratacion(request.getFechaContratacion());
         empleado.setDeposito(deposito);
-//        empleado.setPuesto(puesto);
+        empleado.setPuesto(puesto);
 
         return infoEmpleadosMapper.toResponseDTO(infoEmpleadosRepository.save(empleado));
     }

@@ -12,4 +12,5 @@ public interface IPuestoService {
     PuestoResponseDTO actualizarPuesto(UUID uuid, PuestoRequestDTO request);
     void eliminarPuesto(UUID uuid);
     PuestoResponseDTO crearPuesto(PuestoRequestDTO request);
+    PuestoEntity obtenerPuestoEntidad(UUID uuid);
 }

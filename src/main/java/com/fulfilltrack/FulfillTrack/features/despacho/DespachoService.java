@@ -47,7 +47,7 @@ public class DespachoService implements IDespachoService {
         DespachoEntity despacho = DespachoEntity.builder()
                 .pedido(pedido)
                 .usuario(usuario)
-                .tracking(request.getTracking())
+                .tracking("TRK-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase())
                 .courier(request.getCourier())
                 .build();
         DespachoEntity guardado = despachoRepository.save(despacho);

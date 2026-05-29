@@ -18,8 +18,5 @@ public class DespachoRequestDTO {
     private UUID usuarioUuid;
 
     @NotBlank
-    private String tracking;
-
-    @NotBlank
     private String courier;
 }
