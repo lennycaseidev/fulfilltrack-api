@@ -14,13 +14,15 @@ spring:
       hibernate:
         format_sql: true
   mail:
-    host: mail.privateemail.com
+    host: smtp.gmail.com
     port: 587
-    username: hello@shreddingstudio.com
-    password: 46112163
+    username: lenny310804@gmail.com
+    password: qnoymymefbvrcmgg
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
+          ssl:
+            trust: smtp.gmail.com

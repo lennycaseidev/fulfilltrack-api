@@ -39,7 +39,11 @@ public class LiquidacionService implements ILiquidacionService {
                 request.getPrecioUnitario().multiply(BigDecimal.valueOf(request.getTotalDespachos()))
         );
         LiquidacionEntity liquidacionGuardada = liquidacionRepository.save(liquidacion);
-        emailService.enviarLiquidacionAPagar(liquidacionGuardada);
+        try {
+            emailService.enviarLiquidacionAPagar(liquidacionGuardada);
+        } catch (Exception e) {
+            System.err.println("Error al enviar email: " + e.getMessage());
+        }
         return liquidacionMapper.toResponseDTO(liquidacionGuardada);
     }
 
