@@ -27,15 +27,13 @@ public class PuestoService implements IPuestoService{
 
     @Override
     public PuestoResponseDTO obtenerPuestoPorUuid(UUID uuid) {
-        PuestoEntity puesto = puestoRepository.findByUuid(uuid)
-                .orElseThrow(()-> new EntidadNoEncontradaException("el puesto no se ha encontrado"));
+        PuestoEntity puesto = obtenerPuestoEntidad(uuid);
         return puestoMapper.toResponseDTO(puesto);
     }
 
     @Override
     public PuestoResponseDTO actualizarPuesto(UUID uuid, PuestoRequestDTO request) {
-        PuestoEntity puesto = puestoRepository.findByUuid(uuid)
-                .orElseThrow(()-> new EntidadNoEncontradaException("el puesto no se ha encontrado"));
+        PuestoEntity puesto = obtenerPuestoEntidad(uuid);
         puesto.setNombrePuesto(request.getNombrePuesto());
         puesto.setDescripcion(request.getDescripcion());
         return puestoMapper.toResponseDTO(puestoRepository.save(puesto));
@@ -43,8 +41,7 @@ public class PuestoService implements IPuestoService{
 
     @Override
     public void eliminarPuesto(UUID uuid) {
-        PuestoEntity puesto = puestoRepository.findByUuid(uuid)
-                .orElseThrow(()-> new EntidadNoEncontradaException("el puesto no se ha encontrado"));
+        PuestoEntity puesto = obtenerPuestoEntidad(uuid);
         puestoRepository.delete(puesto);
     }
 
@@ -52,5 +49,11 @@ public class PuestoService implements IPuestoService{
     public PuestoResponseDTO crearPuesto(PuestoRequestDTO request) {
         PuestoEntity puesto = puestoMapper.toEntity(request);
         return puestoMapper.toResponseDTO(puestoRepository.save(puesto));
+    }
+
+    @Override
+    public PuestoEntity obtenerPuestoEntidad(UUID uuid) {
+        return puestoRepository.findByUuid(uuid)
+                .orElseThrow(()-> new EntidadNoEncontradaException("el puesto no se ha encontrado"));
     }
 }

@@ -52,16 +52,16 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
         }
         DepositoEntity deposito = depositoService.obtenerDepositoUuid(request.getDepositoUuid());
 
-        PuestoEntity puesto = puestoRepository.findByUuid(request.getPuestoUuid())
-                .orElseThrow(() -> new EntidadNoEncontradaException("El puesto no ha sido encontrado"));
-        UsuarioEntity usuario = usuarioRepository.findByUuid(request.getUsuarioUuid())
-                .orElseThrow(()-> new EntidadNoEncontradaException("El usuario no ha sido encontrado"));
+        PuestoEntity puesto = puestoService.obtenerPuestoEntidad(request.getPuestoUuid());
+        UsuarioEntity usuario = usuarioService.obtenerUsuarioEntidad(request.getUsuarioUuid());
 
         InfoEmpleadosEntity empleado = InfoEmpleadosEntity.builder()
                 .documento(request.getDocumento())
                 .salario(request.getSalario())
                 .fechaContratacion(request.getFechaContratacion())
                 .deposito(deposito)
+                .puesto(puesto)
+                .usuario(usuario)
                 .build();
 
         return infoEmpleadosMapper.toResponseDTO(infoEmpleadosRepository.save(empleado));
@@ -73,13 +73,12 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
         DepositoEntity deposito = depositoService.obtenerDepositoUuid(request.getDepositoUuid());
 
 
-//        PuestoEntity puesto = puestoRepository.findByUuid(request.getPuestoUuid())
-//                .orElseThrow(() -> new EntidadNoEncontradaException("El puesto no ha sido encontrado"));
+        PuestoEntity puesto = puestoService.obtenerPuestoEntidad(request.getPuestoUuid());
 
         empleado.setSalario(request.getSalario());
         empleado.setFechaContratacion(request.getFechaContratacion());
         empleado.setDeposito(deposito);
-//        empleado.setPuesto(puesto);
+        empleado.setPuesto(puesto);
 
         return infoEmpleadosMapper.toResponseDTO(infoEmpleadosRepository.save(empleado));
     }
