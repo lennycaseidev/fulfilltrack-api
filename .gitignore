@@ -31,3 +31,14 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Claude Code ###
+CLAUDE.md
+.claude/
+
+
+### Frontend (local testing only) ###
+frontend/
+
+### Local config (contains credentials) ###
+src/main/resources/application.yaml

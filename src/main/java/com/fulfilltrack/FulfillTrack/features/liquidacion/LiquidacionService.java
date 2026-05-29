@@ -2,6 +2,7 @@ package com.fulfilltrack.FulfillTrack.features.liquidacion;
 
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
+import com.fulfilltrack.FulfillTrack.features.email.IEmailService;
 import com.fulfilltrack.FulfillTrack.features.empresa.EmpresaEntity;
 import com.fulfilltrack.FulfillTrack.features.empresa.IEmpresaService;
 import com.fulfilltrack.FulfillTrack.features.liquidacion.dto.LiquidacionRequestDTO;
@@ -19,11 +20,13 @@ public class LiquidacionService implements ILiquidacionService {
     private final LiquidacionRepository liquidacionRepository;
     private final LiquidacionMapper liquidacionMapper;
     private final IEmpresaService empresaService;
+    private final IEmailService emailService;
 
-    public LiquidacionService(LiquidacionRepository liquidacionRepository, LiquidacionMapper liquidacionMapper, IEmpresaService empresaService) {
+    public LiquidacionService(LiquidacionRepository liquidacionRepository, LiquidacionMapper liquidacionMapper, IEmpresaService empresaService, IEmailService emailService) {
         this.liquidacionRepository = liquidacionRepository;
         this.liquidacionMapper = liquidacionMapper;
         this.empresaService = empresaService;
+        this.emailService = emailService;
     }
 
     @Override
@@ -35,8 +38,9 @@ public class LiquidacionService implements ILiquidacionService {
         liquidacion.setTotal(
                 request.getPrecioUnitario().multiply(BigDecimal.valueOf(request.getTotalDespachos()))
         );
-
-        return liquidacionMapper.toResponseDTO(liquidacionRepository.save(liquidacion));
+        LiquidacionEntity liquidacionGuardada = liquidacionRepository.save(liquidacion);
+        emailService.enviarLiquidacionAPagar(liquidacionGuardada);
+        return liquidacionMapper.toResponseDTO(liquidacionGuardada);
     }
 
     @Override
@@ -83,6 +87,7 @@ public class LiquidacionService implements ILiquidacionService {
         }
         liquidacion.setEstadoPago(EstadoPago.PAGO);
         liquidacionRepository.save(liquidacion);
+        emailService.enviarLiquidacionAbonada(liquidacion);
     }
 
     @Override
