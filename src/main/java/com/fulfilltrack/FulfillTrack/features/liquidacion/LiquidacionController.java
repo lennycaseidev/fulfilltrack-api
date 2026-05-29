@@ -15,7 +15,7 @@ import java.util.UUID;
 @RequestMapping("/api/liquidaciones")
 @RequiredArgsConstructor
 public class LiquidacionController {
-
+    private final LiquidacionScheduler liquidacionScheduler;
     private final ILiquidacionService liquidacionService;
 
     @GetMapping
@@ -54,4 +54,11 @@ public class LiquidacionController {
         liquidacionService.marcarComoImpaga(uuid);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/test-scheduler")
+    ResponseEntity<Void> testScheduler() {
+        liquidacionScheduler.procesarLiquidacionesMensuales();
+        return ResponseEntity.ok().build();
+    }
+
 }
