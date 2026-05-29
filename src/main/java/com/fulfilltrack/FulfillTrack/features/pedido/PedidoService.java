@@ -30,7 +30,6 @@ public class PedidoService implements IPedidoService{
     private final IProductoService productoService;
     private final IStockService stockService;
     private final IPedidoMovimientoService pedidoMovimientoService;
-
     public PedidoService(PedidoRepository pedidoRepository, ItemPedidoRepository itemPedidoRepository, PedidoMapper pedidoMapper, IEmpresaService empresaService, IProductoService productoService, IStockService stockService, IPedidoMovimientoService pedidoMovimientoService) {
         this.pedidoRepository = pedidoRepository;
         this.itemPedidoRepository = itemPedidoRepository;
@@ -129,10 +128,21 @@ public class PedidoService implements IPedidoService{
 
     @Override
     @Transactional
+    public PedidoResponseDTO marcarDespachado(UUID uuid) {
+        PedidoEntity pedido = obtenerPedidoUuid(uuid);
+        validarTransicion(pedido.getEstado(), EstadoPedido.LISTO_PARA_DESPACHO, EstadoPedido.DESPACHADO);
+        pedido.setEstado(EstadoPedido.DESPACHADO);
+        PedidoEntity guardado = pedidoRepository.save(pedido);
+        pedidoMovimientoService.registrarMovimiento(guardado, EstadoPedido.LISTO_PARA_DESPACHO, EstadoPedido.DESPACHADO);
+        return pedidoMapper.toResponseDTO(guardado);
+    }
+
+    @Override
+    @Transactional
     public PedidoResponseDTO devolverPedido(UUID uuid) {
         PedidoEntity pedido = obtenerPedidoUuid(uuid);
         EstadoPedido estadoAnterior = pedido.getEstado();
-        if (estadoAnterior == EstadoPedido.DESPACHADO || estadoAnterior == EstadoPedido.ENTREGADO || estadoAnterior == EstadoPedido.DEVUELTO) {
+        if (estadoAnterior == EstadoPedido.DESPACHADO || estadoAnterior == EstadoPedido.DEVUELTO) {
             throw new OperacionNoPermitidaException("no se puede devolver un pedido en estado " + estadoAnterior);
         }
         if (estadoAnterior == EstadoPedido.RECIBIDO) {
