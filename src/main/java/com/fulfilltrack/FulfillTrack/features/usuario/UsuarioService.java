@@ -54,4 +54,10 @@ public class UsuarioService implements IUsuarioService{
     public List<UsuarioResponseDTO> listarUsuariosActivos() {
         return usuarioMapper.toResponseList(usuarioRepository.findByCredencial_Estado(Estado.ACTIVA));
     }
+
+    @Override
+    public UsuarioEntity obtenerUsuarioEntidad(UUID uuid) {
+        return usuarioRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntidadNoEncontradaException("El usuario no se ha encontrado"));
+    }
 }

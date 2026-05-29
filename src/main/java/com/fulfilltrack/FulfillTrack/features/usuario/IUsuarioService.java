@@ -11,4 +11,5 @@ public interface IUsuarioService {
     UsuarioResponseDTO obtenerUsuarioPorUuid(UUID uuid);
     List<UsuarioResponseDTO> listarUsuarios();
     List<UsuarioResponseDTO> listarUsuariosActivos();
+    UsuarioEntity obtenerUsuarioEntidad(UUID uuid);
 }
