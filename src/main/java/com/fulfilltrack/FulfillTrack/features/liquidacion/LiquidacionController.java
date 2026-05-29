@@ -55,10 +55,5 @@ public class LiquidacionController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/test-scheduler")
-    ResponseEntity<Void> testScheduler() {
-        liquidacionScheduler.procesarLiquidacionesMensuales();
-        return ResponseEntity.ok().build();
-    }
 
 }
