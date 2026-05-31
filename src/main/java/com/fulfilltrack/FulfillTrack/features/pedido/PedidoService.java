@@ -81,7 +81,6 @@ public class PedidoService implements IPedidoService{
 
     @Override
     public List<PedidoResponseDTO> listarPedidosPorEmpresa(UUID empresaUuid) {
-        EmpresaEntity empresa = empresaService.obtenerEmpresaUuid(empresaUuid);
         return pedidoMapper.toResponseList(pedidoRepository.findByEmpresa_Uuid(empresaUuid));
     }
 
