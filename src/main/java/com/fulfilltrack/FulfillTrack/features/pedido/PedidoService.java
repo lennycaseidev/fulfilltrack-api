@@ -14,6 +14,7 @@ import com.fulfilltrack.FulfillTrack.features.pedidoMovimiento.IPedidoMovimiento
 import com.fulfilltrack.FulfillTrack.features.producto.IProductoService;
 import com.fulfilltrack.FulfillTrack.features.producto.ProductoEntity;
 import com.fulfilltrack.FulfillTrack.features.stock.IStockService;
+import com.fulfilltrack.FulfillTrack.features.stockMovimiento.TipoMovimientoStock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,7 +97,8 @@ public class PedidoService implements IPedidoService{
         PedidoEntity pedido = obtenerPedidoUuid(uuid);
         validarTransicion(pedido.getEstado(), EstadoPedido.RECIBIDO, EstadoPedido.CONFIRMADO);
         pedido.getItems().forEach(item ->
-                stockService.confirmarConsumoStock(item.getProducto().getUuid(), item.getCantidad()));
+                stockService.confirmarConsumoStock(item.getProducto().getUuid(), item.getCantidad(),
+                        "Confirmación de pedido " + pedido.getNumeroOrden()));
         pedido.setEstado(EstadoPedido.CONFIRMADO);
         PedidoEntity guardado = pedidoRepository.save(pedido);
         pedidoMovimientoService.registrarMovimiento(guardado, EstadoPedido.RECIBIDO, EstadoPedido.CONFIRMADO);
@@ -146,10 +148,12 @@ public class PedidoService implements IPedidoService{
         }
         if (estadoAnterior == EstadoPedido.RECIBIDO) {
             pedido.getItems().forEach(item ->
-                    stockService.liberarReservaStock(item.getProducto().getUuid(), item.getCantidad()));
+                    stockService.liberarReservaStock(item.getProducto().getUuid(), item.getCantidad(),
+                            "Liberación de reserva - pedido " + pedido.getNumeroOrden()));
         } else {
             pedido.getItems().forEach(item ->
-                    stockService.agregarStock(item.getProducto().getUuid(), item.getCantidad()));
+                    stockService.agregarStock(item.getProducto().getUuid(), item.getCantidad(),
+                            TipoMovimientoStock.DEVOLUCION, "Devolución de pedido " + pedido.getNumeroOrden()));
         }
         pedido.setEstado(EstadoPedido.DEVUELTO);
         PedidoEntity guardado = pedidoRepository.save(pedido);
@@ -173,7 +177,8 @@ public class PedidoService implements IPedidoService{
                     .producto(productos.get(i))
                     .cantidad(itemRequest.getCantidad())
                     .build()));
-            stockService.reservarStock(itemRequest.getProductoUuid(), itemRequest.getCantidad());
+            stockService.reservarStock(itemRequest.getProductoUuid(), itemRequest.getCantidad(),
+                    "Reserva por pedido " + pedidoGuardado.getNumeroOrden());
         }
         return itemsGuardados;
     }

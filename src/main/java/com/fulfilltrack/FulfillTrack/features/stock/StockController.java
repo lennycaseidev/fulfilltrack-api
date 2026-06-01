@@ -1,6 +1,7 @@
 package com.fulfilltrack.FulfillTrack.features.stock;
 
 import com.fulfilltrack.FulfillTrack.features.stock.dto.StockResponseDTO;
+import com.fulfilltrack.FulfillTrack.features.stockMovimiento.TipoMovimientoStock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,6 @@ public class StockController {
 
     @PatchMapping("/producto/{productoUuid}/agregar")
     ResponseEntity<StockResponseDTO> agregarStock(@PathVariable UUID productoUuid, @RequestParam int cantidad) {
-        return ResponseEntity.ok(stockService.agregarStock(productoUuid, cantidad));
+        return ResponseEntity.ok(stockService.agregarStock(productoUuid, cantidad, TipoMovimientoStock.INGRESO, "Ingreso manual de stock"));
     }
 }
