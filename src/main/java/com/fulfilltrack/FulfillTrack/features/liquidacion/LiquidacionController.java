@@ -15,7 +15,6 @@ import java.util.UUID;
 @RequestMapping("/api/liquidaciones")
 @RequiredArgsConstructor
 public class LiquidacionController {
-    private final LiquidacionScheduler liquidacionScheduler;
     private final ILiquidacionService liquidacionService;
 
     @GetMapping
