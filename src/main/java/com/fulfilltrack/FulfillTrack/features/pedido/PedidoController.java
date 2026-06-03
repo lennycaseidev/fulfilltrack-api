@@ -2,6 +2,10 @@ package com.fulfilltrack.FulfillTrack.features.pedido;
 
 import com.fulfilltrack.FulfillTrack.features.pedido.dto.PedidoRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.pedido.dto.PedidoResponseDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Pedidos", description = "Gestión de pedidos y su ciclo de vida")
 @RestController
 @RequestMapping("/api/pedidos")
 @RequiredArgsConstructor
@@ -18,41 +23,82 @@ public class PedidoController {
 
     private final IPedidoService pedidoService;
 
+    @Operation(summary = "Listar todos los pedidos")
     @GetMapping
     ResponseEntity<List<PedidoResponseDTO>> listarPedidos() {
         return ResponseEntity.ok(pedidoService.listarPedidos());
     }
 
+    @Operation(summary = "Listar pedidos por empresa")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Listado de pedidos"),
+        @ApiResponse(responseCode = "404", description = "Empresa no encontrada")
+    })
     @GetMapping("/empresa/{empresaUuid}")
     ResponseEntity<List<PedidoResponseDTO>> listarPedidosPorEmpresa(@PathVariable UUID empresaUuid) {
         return ResponseEntity.ok(pedidoService.listarPedidosPorEmpresa(empresaUuid));
     }
 
+    @Operation(summary = "Obtener pedido por UUID")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Pedido encontrado"),
+        @ApiResponse(responseCode = "404", description = "Pedido no encontrado")
+    })
     @GetMapping("/{uuid}")
     ResponseEntity<PedidoResponseDTO> obtenerPedido(@PathVariable UUID uuid) {
         return ResponseEntity.ok(pedidoService.obtenerPedidoPorUuid(uuid));
     }
 
+    @Operation(summary = "Crear pedido", description = "Crea el pedido en estado RECIBIDO y reserva el stock de cada ítem")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Pedido creado"),
+        @ApiResponse(responseCode = "400", description = "Stock insuficiente para algún ítem"),
+        @ApiResponse(responseCode = "404", description = "Empresa o producto no encontrado")
+    })
     @PostMapping
     ResponseEntity<PedidoResponseDTO> crearPedido(@Valid @RequestBody PedidoRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(pedidoService.crearPedido(request));
     }
 
+    @Operation(summary = "Confirmar pedido", description = "Transición RECIBIDO → CONFIRMADO. Consume el stock reservado")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Pedido confirmado"),
+        @ApiResponse(responseCode = "404", description = "Pedido no encontrado"),
+        @ApiResponse(responseCode = "400", description = "Transición de estado no permitida")
+    })
     @PatchMapping("/{uuid}/confirmar")
     ResponseEntity<PedidoResponseDTO> confirmarPedido(@PathVariable UUID uuid) {
         return ResponseEntity.ok(pedidoService.confirmarPedido(uuid));
     }
 
+    @Operation(summary = "Iniciar preparación", description = "Transición CONFIRMADO → EN_PREPARACION")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Preparación iniciada"),
+        @ApiResponse(responseCode = "404", description = "Pedido no encontrado"),
+        @ApiResponse(responseCode = "400", description = "Transición de estado no permitida")
+    })
     @PatchMapping("/{uuid}/iniciar-preparacion")
     ResponseEntity<PedidoResponseDTO> iniciarPreparacion(@PathVariable UUID uuid) {
         return ResponseEntity.ok(pedidoService.iniciarPreparacion(uuid));
     }
 
+    @Operation(summary = "Marcar listo para despacho", description = "Transición EN_PREPARACION → LISTO_PARA_DESPACHO")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Pedido listo para despacho"),
+        @ApiResponse(responseCode = "404", description = "Pedido no encontrado"),
+        @ApiResponse(responseCode = "400", description = "Transición de estado no permitida")
+    })
     @PatchMapping("/{uuid}/listo-para-despacho")
     ResponseEntity<PedidoResponseDTO> marcarListoParaDespacho(@PathVariable UUID uuid) {
         return ResponseEntity.ok(pedidoService.marcarListoParaDespacho(uuid));
     }
 
+    @Operation(summary = "Devolver pedido", description = "Desde RECIBIDO libera la reserva de stock; desde cualquier otro estado devuelve el stock como DEVOLUCION")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Pedido devuelto"),
+        @ApiResponse(responseCode = "404", description = "Pedido no encontrado"),
+        @ApiResponse(responseCode = "400", description = "Transición de estado no permitida")
+    })
     @PatchMapping("/{uuid}/devolver")
     ResponseEntity<PedidoResponseDTO> devolverPedido(@PathVariable UUID uuid) {
         return ResponseEntity.ok(pedidoService.devolverPedido(uuid));

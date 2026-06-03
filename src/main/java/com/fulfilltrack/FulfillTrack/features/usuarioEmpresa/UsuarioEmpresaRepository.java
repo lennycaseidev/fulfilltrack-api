@@ -12,4 +12,6 @@ import java.util.UUID;
 public interface UsuarioEmpresaRepository extends JpaRepository<UsuarioEmpresaEntity, Long> {
     Optional<UsuarioEmpresaEntity> findByUuid(UUID uuid);
     List<UsuarioEmpresaEntity> findByEmpresa_Uuid(UUID empresaUuid);
+    boolean existsByUsuario_Uuid(UUID usuarioUuid);
+
 }

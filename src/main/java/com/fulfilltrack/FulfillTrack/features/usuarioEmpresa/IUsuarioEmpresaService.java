@@ -14,4 +14,5 @@ public interface IUsuarioEmpresaService {
     UsuarioEmpresaResponseDTO actualizarUsuarioEmpresa(UUID uuid, UsuarioEmpresaRequestDTO request);
     void activarUsuarioEmpresa(UUID uuid);
     void desactivarUsuarioEmpresa(UUID uuid);
+    boolean existeUsuarioEmpresa(UUID uuid);
 }

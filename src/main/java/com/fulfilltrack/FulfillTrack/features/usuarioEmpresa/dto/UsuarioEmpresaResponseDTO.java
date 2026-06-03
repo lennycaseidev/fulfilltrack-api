@@ -17,5 +17,5 @@ public class UsuarioEmpresaResponseDTO {
     private String telefono;
     private Estado estado;
     private UUID empresaUuid;
-//    private UUID usuarioUuid;
+    private UUID usuarioUuid;
 }
