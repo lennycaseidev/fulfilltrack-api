@@ -27,7 +27,7 @@ public class ProductoEntity {
     private String nombreProducto;
     @Column(name="descripcion_producto")
     private String descripcion;
-    @Column(name = "sku",unique = true,nullable = false)
+    @Column(name = "sku",nullable = false)
     private String sku;
     @Enumerated(EnumType.STRING)
     @Column(name="estado")

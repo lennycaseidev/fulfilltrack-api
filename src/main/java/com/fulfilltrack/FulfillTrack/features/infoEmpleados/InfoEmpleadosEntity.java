@@ -25,7 +25,7 @@ public class InfoEmpleadosEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_empleado")
-    private long idEmpleado;
+    private Long idEmpleado;
 
     @Column(name="documento_empleado", nullable = false, unique = true, updatable = false)
     private String documento;

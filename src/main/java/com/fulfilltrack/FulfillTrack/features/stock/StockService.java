@@ -5,7 +5,10 @@ import com.fulfilltrack.FulfillTrack.features.empresa.IEmpresaService;
 import com.fulfilltrack.FulfillTrack.features.producto.ProductoEntity;
 import com.fulfilltrack.FulfillTrack.features.stock.dto.StockResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.stock.mapper.StockMapper;
+import com.fulfilltrack.FulfillTrack.features.stockMovimiento.IStockMovimientoService;
+import com.fulfilltrack.FulfillTrack.features.stockMovimiento.TipoMovimientoStock;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,11 +19,14 @@ public class StockService implements IStockService {
     private final StockRepository stockRepository;
     private final StockMapper stockMapper;
     private final IEmpresaService empresaService;
+    private final IStockMovimientoService stockMovimientoService;
 
-    public StockService(StockRepository stockRepository, StockMapper stockMapper, IEmpresaService empresaService) {
+    public StockService(StockRepository stockRepository, StockMapper stockMapper,
+                        IEmpresaService empresaService, IStockMovimientoService stockMovimientoService) {
         this.stockRepository = stockRepository;
         this.stockMapper = stockMapper;
         this.empresaService = empresaService;
+        this.stockMovimientoService = stockMovimientoService;
     }
 
     @Override
@@ -68,38 +74,45 @@ public class StockService implements IStockService {
     }
 
     @Override
-    public void reservarStock(UUID productoUuid, int cantidad) {
+    @Transactional
+    public void reservarStock(UUID productoUuid, int cantidad, String motivo) {
         StockEntity stock = stockRepository.findByProducto_Uuid(productoUuid)
                 .orElseThrow(() -> new EntidadNoEncontradaException("Stock no encontrado para el producto indicado"));
         stock.setCantidadDisponible(stock.getCantidadDisponible() - cantidad);
         stock.setCantidadReservada(stock.getCantidadReservada() + cantidad);
         stockRepository.save(stock);
+        stockMovimientoService.registrarMovimiento(stock.getProducto(), TipoMovimientoStock.RESERVA, motivo, cantidad);
     }
 
     @Override
-    public void confirmarConsumoStock(UUID productoUuid, int cantidad) {
+    @Transactional
+    public void confirmarConsumoStock(UUID productoUuid, int cantidad, String motivo) {
         StockEntity stock = stockRepository.findByProducto_Uuid(productoUuid)
                 .orElseThrow(() -> new EntidadNoEncontradaException("Stock no encontrado para el producto indicado"));
         stock.setCantidadReservada(stock.getCantidadReservada() - cantidad);
         stockRepository.save(stock);
+        stockMovimientoService.registrarMovimiento(stock.getProducto(), TipoMovimientoStock.CONSUMO, motivo, cantidad);
     }
 
     @Override
-    public void liberarReservaStock(UUID productoUuid, int cantidad) {
+    @Transactional
+    public void liberarReservaStock(UUID productoUuid, int cantidad, String motivo) {
         StockEntity stock = stockRepository.findByProducto_Uuid(productoUuid)
                 .orElseThrow(() -> new EntidadNoEncontradaException("Stock no encontrado para el producto indicado"));
         stock.setCantidadReservada(stock.getCantidadReservada() - cantidad);
         stock.setCantidadDisponible(stock.getCantidadDisponible() + cantidad);
         stockRepository.save(stock);
+        stockMovimientoService.registrarMovimiento(stock.getProducto(), TipoMovimientoStock.LIBERACION, motivo, cantidad);
     }
 
     @Override
-    public StockResponseDTO agregarStock(UUID productoUuid, int cantidad) {
+    @Transactional
+    public StockResponseDTO agregarStock(UUID productoUuid, int cantidad, TipoMovimientoStock tipo, String motivo) {
         StockEntity stock = stockRepository.findByProducto_Uuid(productoUuid)
                 .orElseThrow(() -> new EntidadNoEncontradaException("Stock no encontrado para el producto indicado"));
         stock.setCantidadDisponible(stock.getCantidadDisponible() + cantidad);
         stockRepository.save(stock);
+        stockMovimientoService.registrarMovimiento(stock.getProducto(), tipo, motivo, cantidad);
         return stockMapper.toResponseDTO(stock);
     }
-
 }
