@@ -24,6 +24,6 @@ public class UsuarioEmpresaRequestDTO {
     @NotNull(message = "El UUID de la empresa es obligatorio")
     private UUID empresaUuid;
 
-//    @NotNull(message = "El UUID del usuario es obligatorio")
-//    private UUID usuarioUuid;
+    @NotNull(message = "El UUID del usuario es obligatorio")
+    private UUID usuarioUuid;
 }

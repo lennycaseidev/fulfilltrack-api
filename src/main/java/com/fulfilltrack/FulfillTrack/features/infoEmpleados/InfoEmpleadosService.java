@@ -13,6 +13,8 @@ import com.fulfilltrack.FulfillTrack.features.puesto.IPuestoService;
 import com.fulfilltrack.FulfillTrack.features.puesto.PuestoEntity;
 import com.fulfilltrack.FulfillTrack.features.usuario.IUsuarioService;
 import com.fulfilltrack.FulfillTrack.features.usuario.UsuarioEntity;
+import com.fulfilltrack.FulfillTrack.features.usuarioEmpresa.IUsuarioEmpresaService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,13 +26,15 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
     private final IDepositoService depositoService;
     private final IPuestoService puestoService;
     private final IUsuarioService usuarioService;
+    private final IUsuarioEmpresaService usuarioEmpresaService;
 
-    public InfoEmpleadosService(InfoEmpleadosRepository infoEmpleadosRepository, InfoEmpleadosMapper infoEmpleadosMapper, IDepositoService depositoService, IPuestoService puestoService, IUsuarioService usuarioService) {
+    public InfoEmpleadosService(InfoEmpleadosRepository infoEmpleadosRepository, InfoEmpleadosMapper infoEmpleadosMapper, IDepositoService depositoService, IPuestoService puestoService, IUsuarioService usuarioService, @Lazy IUsuarioEmpresaService usuarioEmpresaService) {
         this.infoEmpleadosRepository = infoEmpleadosRepository;
         this.infoEmpleadosMapper = infoEmpleadosMapper;
         this.depositoService = depositoService;
         this.puestoService = puestoService;
         this.usuarioService = usuarioService;
+        this.usuarioEmpresaService = usuarioEmpresaService;
     }
 
     @Override
@@ -47,8 +51,11 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
 
     @Override
     public InfoEmpleadosResponseDTO crearEmpleado(InfoEmpleadosRequestDTO request) {
-        if(infoEmpleadosRepository.existsByDocumento(request.getDocumento())){
+        if (infoEmpleadosRepository.existsByDocumento(request.getDocumento())) {
             throw new EntidadDuplicadaException("El documento ya esta registrado");
+        }
+        if (usuarioEmpresaService.existeUsuarioEmpresa(request.getUsuarioUuid())) {
+            throw new OperacionNoPermitidaException("El usuario ya está vinculado como contacto de empresa");
         }
         DepositoEntity deposito = depositoService.obtenerDepositoUuid(request.getDepositoUuid());
 
@@ -107,5 +114,10 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
     public InfoEmpleadosEntity obtenerEmpleadoUuid(UUID uuid) {
         return infoEmpleadosRepository.findByUuid(uuid)
                 .orElseThrow(() -> new EntidadNoEncontradaException("El empleado no ha sido encontrado"));
+    }
+
+    @Override
+    public boolean existeEmpleadoPorUsuario(UUID usuarioUuid) {
+        return infoEmpleadosRepository.existsByUsuario_Uuid(usuarioUuid);
     }
 }

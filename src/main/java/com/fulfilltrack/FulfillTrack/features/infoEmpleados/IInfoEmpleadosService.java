@@ -14,6 +14,7 @@ public interface IInfoEmpleadosService {
     void activarEmpleado(UUID uuid);
     void desactivarEmpleado(UUID uuid);
     InfoEmpleadosEntity obtenerEmpleadoUuid(UUID uuid);
+    boolean existeEmpleadoPorUsuario(UUID usuarioUuid);
 
 
 }

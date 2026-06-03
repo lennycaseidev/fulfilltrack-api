@@ -2,6 +2,7 @@ package com.fulfilltrack.FulfillTrack.features.usuarioEmpresa;
 
 import com.fulfilltrack.FulfillTrack.common.utils.Estado;
 import com.fulfilltrack.FulfillTrack.features.empresa.EmpresaEntity;
+import com.fulfilltrack.FulfillTrack.features.usuario.UsuarioEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,9 +39,9 @@ public class UsuarioEmpresaEntity {
     @JoinColumn(name = "id_empresa", nullable = false)
     private EmpresaEntity empresa;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id_usuario", nullable = false, unique = true)
-//    private UsuarioEntity usuario;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", nullable = false, unique = true)
+    private UsuarioEntity usuario;
 
     @PrePersist
     public void prePersist() {
