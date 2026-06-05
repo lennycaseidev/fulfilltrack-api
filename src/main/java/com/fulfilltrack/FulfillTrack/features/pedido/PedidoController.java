@@ -1,5 +1,6 @@
 package com.fulfilltrack.FulfillTrack.features.pedido;
 
+import com.fulfilltrack.FulfillTrack.features.pedido.dto.PedidoImportResultDTO;
 import com.fulfilltrack.FulfillTrack.features.pedido.dto.PedidoRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.pedido.dto.PedidoResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +24,7 @@ import java.util.UUID;
 public class PedidoController {
 
     private final IPedidoService pedidoService;
+    private final IPedidoCsvService pedidoCsvService;
 
     @Operation(summary = "Listar todos los pedidos")
     @GetMapping
@@ -91,6 +94,16 @@ public class PedidoController {
     @PatchMapping("/{uuid}/listo-para-despacho")
     ResponseEntity<PedidoResponseDTO> marcarListoParaDespacho(@PathVariable UUID uuid) {
         return ResponseEntity.ok(pedidoService.marcarListoParaDespacho(uuid));
+    }
+
+    @Operation(summary = "Importar pedidos desde CSV", description = "El archivo debe tener cabecera: numeroOrden,direccionEntrega,nombreDestinatario,empresaUuid,sku,cantidad. Una fila por ítem; filas con el mismo numeroOrden se agrupan en un solo pedido")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Importación procesada. Revisar errores en el response"),
+        @ApiResponse(responseCode = "400", description = "Archivo inválido o mal formado")
+    })
+    @PostMapping(value = "/importar", consumes = "multipart/form-data")
+    ResponseEntity<PedidoImportResultDTO> importarDesdeCsv(@RequestParam("archivo") MultipartFile archivo) {
+        return ResponseEntity.ok(pedidoCsvService.importarDesdeCsv(archivo));
     }
 
     @Operation(summary = "Devolver pedido", description = "Desde RECIBIDO libera la reserva de stock; desde cualquier otro estado devuelve el stock como DEVOLUCION")
