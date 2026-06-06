@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,12 +24,14 @@ public class DespachoController {
 
     private final IDespachoService despachoService;
 
+    @PreAuthorize("hasAuthority('VER_DESPACHOS')")
     @Operation(summary = "Listar todos los despachos")
     @GetMapping
     ResponseEntity<List<DespachoResponseDTO>> listarDespachos() {
         return ResponseEntity.ok(despachoService.listarDespachos());
     }
 
+    @PreAuthorize("hasAuthority('VER_DESPACHOS')")
     @Operation(summary = "Obtener despacho por UUID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Despacho encontrado"),
@@ -39,6 +42,7 @@ public class DespachoController {
         return ResponseEntity.ok(despachoService.obtenerDespachoPorUuid(uuid));
     }
 
+    @PreAuthorize("hasAuthority('VER_DESPACHOS')")
     @Operation(summary = "Obtener despacho por pedido")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Despacho encontrado"),
@@ -49,6 +53,7 @@ public class DespachoController {
         return ResponseEntity.ok(despachoService.obtenerDespachoPorPedido(pedidoUuid));
     }
 
+    @PreAuthorize("hasAuthority('CREAR_DESPACHO')")
     @Operation(summary = "Crear despacho", description = "Registra el despacho de un pedido y lo avanza al estado DESPACHADO")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Despacho creado"),

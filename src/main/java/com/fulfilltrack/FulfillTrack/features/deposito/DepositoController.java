@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,12 +23,14 @@ import java.util.UUID;
 public class DepositoController {
     private final IDepositoService depositoService;
 
+    @PreAuthorize("hasAuthority('VER_DEPOSITOS')")
     @Operation(summary = "Listar todos los depósitos")
     @GetMapping
     ResponseEntity<List<DepositoResponseDTO>> listarDepositos(){
         return ResponseEntity.ok(depositoService.obtenerDepositos());
     }
 
+    @PreAuthorize("hasAuthority('VER_DEPOSITOS')")
     @Operation(summary = "Obtener depósito por UUID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Depósito encontrado"),
@@ -38,6 +41,7 @@ public class DepositoController {
         return ResponseEntity.ok(depositoService.obtenerDepositoPorUuid(uuid));
     }
 
+    @PreAuthorize("hasAuthority('CREAR_DEPOSITO')")
     @Operation(summary = "Crear depósito")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Depósito creado"),
@@ -49,6 +53,7 @@ public class DepositoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
     }
 
+    @PreAuthorize("hasAuthority('ACTUALIZAR_DEPOSITO')")
     @Operation(summary = "Actualizar depósito")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Depósito actualizado"),
@@ -59,6 +64,7 @@ public class DepositoController {
         return ResponseEntity.ok(depositoService.actualizarDeposito(uuid, request));
     }
 
+    @PreAuthorize("hasAuthority('DESACTIVAR_DEPOSITO')")
     @Operation(summary = "Desactivar depósito")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Depósito desactivado"),
@@ -71,6 +77,7 @@ public class DepositoController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAuthority('DESACTIVAR_DEPOSITO')")
     @Operation(summary = "Activar depósito")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Depósito activado"),

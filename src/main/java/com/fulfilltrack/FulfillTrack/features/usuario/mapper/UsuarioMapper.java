@@ -9,8 +9,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface UsuarioMapper {
-    @Mapping(source = "credencial.permiso.nombrePermiso", target = "nombrePermiso")
-    @Mapping(source = "credencial.uuid", target = "credencialUuid")
     UsuarioResponseDTO toResponseDTO(UsuarioEntity entity);
     List<UsuarioResponseDTO> toResponseList(List<UsuarioEntity> usuarios);
 }

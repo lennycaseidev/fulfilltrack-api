@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class PedidoMovimientoController {
 
     private final IPedidoMovimientoService pedidoMovimientoService;
 
+    @PreAuthorize("hasAuthority('VER_PEDIDOS')")
     @Operation(summary = "Listar historial de estados de un pedido", description = "Retorna cada transición de estado registrada para el pedido")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Historial de movimientos"),
