@@ -1,7 +1,6 @@
 package com.fulfilltrack.FulfillTrack.features.usuario;
 
 
-import com.fulfilltrack.FulfillTrack.features.credencial.CredencialEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,9 +26,7 @@ public class UsuarioEntity {
     @Column(name="apellido",nullable = false)
     private String apellido;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_credencial", nullable = false, unique = true)
-    private CredencialEntity credencial;
+
 
     @PrePersist
     public void prePersist() {

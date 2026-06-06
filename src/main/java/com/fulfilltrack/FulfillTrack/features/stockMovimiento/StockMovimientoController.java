@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class StockMovimientoController {
 
     private final IStockMovimientoService stockMovimientoService;
 
+    @PreAuthorize("hasAuthority('VER_STOCK')")
     @Operation(summary = "Listar movimientos de un producto", description = "Retorna el historial ordenado por fecha descendente")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Historial de movimientos"),
@@ -30,6 +32,7 @@ public class StockMovimientoController {
         return ResponseEntity.ok(stockMovimientoService.listarMovimientosPorProducto(productoUuid));
     }
 
+    @PreAuthorize("hasAuthority('VER_STOCK')")
     @Operation(summary = "Listar movimientos por empresa", description = "Retorna el historial de todos los productos de la empresa, ordenado por fecha descendente")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Historial de movimientos"),

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,12 +22,14 @@ public class StockController {
 
     private final IStockService stockService;
 
+    @PreAuthorize("hasAuthority('VER_STOCK')")
     @Operation(summary = "Listar todo el stock del sistema")
     @GetMapping
     ResponseEntity<List<StockResponseDTO>> listarTodoElStock() {
         return ResponseEntity.ok(stockService.listarTodoElStock());
     }
 
+    @PreAuthorize("hasAuthority('VER_STOCK')")
     @Operation(summary = "Listar stock por empresa")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Stock listado"),
@@ -37,6 +40,7 @@ public class StockController {
         return ResponseEntity.ok(stockService.listarStockPorEmpresa(empresaUuid));
     }
 
+    @PreAuthorize("hasAuthority('VER_STOCK')")
     @Operation(summary = "Obtener stock de un producto")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Stock encontrado"),
@@ -47,6 +51,7 @@ public class StockController {
         return ResponseEntity.ok(stockService.obtenerStockPorProductoUuid(productoUuid));
     }
 
+    @PreAuthorize("hasAuthority('GESTIONAR_STOCK')")
     @Operation(summary = "Agregar stock manualmente", description = "Incrementa la cantidad disponible y registra un movimiento de tipo INGRESO")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Stock actualizado"),

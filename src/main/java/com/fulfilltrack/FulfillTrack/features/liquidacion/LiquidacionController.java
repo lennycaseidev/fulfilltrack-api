@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,12 +23,14 @@ import java.util.UUID;
 public class LiquidacionController {
     private final ILiquidacionService liquidacionService;
 
+    @PreAuthorize("hasAuthority('VER_LIQUIDACIONES')")
     @Operation(summary = "Listar todas las liquidaciones")
     @GetMapping
     ResponseEntity<List<LiquidacionResponseDTO>> listarLiquidaciones() {
         return ResponseEntity.ok(liquidacionService.listarLiquidaciones());
     }
 
+    @PreAuthorize("hasAuthority('VER_LIQUIDACIONES')")
     @Operation(summary = "Obtener liquidación por UUID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Liquidación encontrada"),
@@ -38,6 +41,7 @@ public class LiquidacionController {
         return ResponseEntity.ok(liquidacionService.obtenerLiquidacionPorUuid(uuid));
     }
 
+    @PreAuthorize("hasAuthority('VER_LIQUIDACIONES')")
     @Operation(summary = "Listar liquidaciones por empresa")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Liquidaciones de la empresa"),
@@ -48,6 +52,7 @@ public class LiquidacionController {
         return ResponseEntity.ok(liquidacionService.listarLiquidacionesPorEmpresa(empresaUuid));
     }
 
+    @PreAuthorize("hasAuthority('CREAR_LIQUIDACION')")
     @Operation(summary = "Crear liquidación manualmente", description = "Las liquidaciones también se generan automáticamente cada mes vía scheduler")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Liquidación creada"),
@@ -59,6 +64,7 @@ public class LiquidacionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(liquidacionService.crearLiquidacion(request));
     }
 
+    @PreAuthorize("hasAuthority('CREAR_LIQUIDACION')")
     @Operation(summary = "Actualizar liquidación")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Liquidación actualizada"),
@@ -69,6 +75,7 @@ public class LiquidacionController {
         return ResponseEntity.ok(liquidacionService.actualizarLiquidacion(uuid, request));
     }
 
+    @PreAuthorize("hasAuthority('CREAR_LIQUIDACION')")
     @Operation(summary = "Marcar liquidación como pagada")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Liquidación marcada como pagada"),
@@ -81,6 +88,7 @@ public class LiquidacionController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAuthority('CREAR_LIQUIDACION')")
     @Operation(summary = "Marcar liquidación como impaga")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Liquidación marcada como impaga"),

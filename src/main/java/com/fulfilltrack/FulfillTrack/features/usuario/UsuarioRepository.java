@@ -12,5 +12,4 @@ import java.util.UUID;
 @Repository
 public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
     Optional<UsuarioEntity> findByUuid(UUID uuid);
-    List<UsuarioEntity> findByCredencial_Estado(Estado estado);
 }

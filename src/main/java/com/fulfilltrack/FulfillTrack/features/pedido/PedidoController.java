@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,12 +27,14 @@ public class PedidoController {
     private final IPedidoService pedidoService;
     private final IPedidoCsvService pedidoCsvService;
 
+    @PreAuthorize("hasAuthority('VER_PEDIDOS')")
     @Operation(summary = "Listar todos los pedidos")
     @GetMapping
     ResponseEntity<List<PedidoResponseDTO>> listarPedidos() {
         return ResponseEntity.ok(pedidoService.listarPedidos());
     }
 
+    @PreAuthorize("hasAuthority('VER_PEDIDOS')")
     @Operation(summary = "Listar pedidos por empresa")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Listado de pedidos"),
@@ -42,6 +45,7 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.listarPedidosPorEmpresa(empresaUuid));
     }
 
+    @PreAuthorize("hasAuthority('VER_PEDIDOS')")
     @Operation(summary = "Obtener pedido por UUID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Pedido encontrado"),
@@ -52,6 +56,7 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.obtenerPedidoPorUuid(uuid));
     }
 
+    @PreAuthorize("hasAuthority('CREAR_PEDIDO')")
     @Operation(summary = "Crear pedido", description = "Crea el pedido en estado RECIBIDO y reserva el stock de cada ítem")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Pedido creado"),
@@ -63,6 +68,7 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(pedidoService.crearPedido(request));
     }
 
+    @PreAuthorize("hasAuthority('ACTUALIZAR_ESTADO_PEDIDO')")
     @Operation(summary = "Confirmar pedido", description = "Transición RECIBIDO → CONFIRMADO. Consume el stock reservado")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Pedido confirmado"),
@@ -74,6 +80,7 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.confirmarPedido(uuid));
     }
 
+    @PreAuthorize("hasAuthority('ACTUALIZAR_ESTADO_PEDIDO')")
     @Operation(summary = "Iniciar preparación", description = "Transición CONFIRMADO → EN_PREPARACION")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Preparación iniciada"),
@@ -85,6 +92,7 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.iniciarPreparacion(uuid));
     }
 
+    @PreAuthorize("hasAuthority('ACTUALIZAR_ESTADO_PEDIDO')")
     @Operation(summary = "Marcar listo para despacho", description = "Transición EN_PREPARACION → LISTO_PARA_DESPACHO")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Pedido listo para despacho"),
@@ -96,6 +104,7 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.marcarListoParaDespacho(uuid));
     }
 
+    @PreAuthorize("hasAuthority('CREAR_PEDIDO')")
     @Operation(summary = "Importar pedidos desde CSV", description = "El archivo debe tener cabecera: numeroOrden,direccionEntrega,nombreDestinatario,empresaUuid,sku,cantidad. Una fila por ítem; filas con el mismo numeroOrden se agrupan en un solo pedido")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Importación procesada. Revisar errores en el response"),
@@ -106,6 +115,7 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoCsvService.importarDesdeCsv(archivo));
     }
 
+    @PreAuthorize("hasAuthority('ACTUALIZAR_ESTADO_PEDIDO')")
     @Operation(summary = "Devolver pedido", description = "Desde RECIBIDO libera la reserva de stock; desde cualquier otro estado devuelve el stock como DEVOLUCION")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Pedido devuelto"),

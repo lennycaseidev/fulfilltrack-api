@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,12 +23,14 @@ import java.util.UUID;
 public class PuestoController {
     private final IPuestoService puestoService;
 
+    @PreAuthorize("hasAuthority('VER_USUARIOS')")
     @Operation(summary = "Listar todos los puestos")
     @GetMapping
     public ResponseEntity<List<PuestoResponseDTO>> listarPuestos(){
         return ResponseEntity.ok(puestoService.listarPuestos());
     }
 
+    @PreAuthorize("hasAuthority('VER_USUARIOS')")
     @Operation(summary = "Obtener puesto por UUID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Puesto encontrado"),
@@ -38,6 +41,7 @@ public class PuestoController {
         return ResponseEntity.ok(puestoService.obtenerPuestoPorUuid(uuid));
     }
 
+    @PreAuthorize("hasAuthority('CREAR_USUARIO')")
     @Operation(summary = "Crear puesto")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Puesto creado"),
@@ -48,6 +52,7 @@ public class PuestoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(puestoService.crearPuesto(request));
     }
 
+    @PreAuthorize("hasAuthority('ACTUALIZAR_USUARIO')")
     @Operation(summary = "Actualizar puesto")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Puesto actualizado"),
@@ -58,6 +63,7 @@ public class PuestoController {
         return ResponseEntity.ok(puestoService.actualizarPuesto(uuid, request));
     }
 
+    @PreAuthorize("hasAuthority('DESACTIVAR_USUARIO')")
     @Operation(summary = "Eliminar puesto")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Puesto eliminado"),

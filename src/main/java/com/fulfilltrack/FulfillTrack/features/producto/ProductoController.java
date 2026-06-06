@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.UUID;
 public class ProductoController {
     private final IProductoService productoService;
 
+    @PreAuthorize("hasAuthority('VER_PRODUCTOS')")
     @Operation(summary = "Listar productos", description = "Si se provee empresaUuid, filtra por empresa")
     @GetMapping
     ResponseEntity<List<ProductoResponseDTO>> listarProductos(@RequestParam(required = false) UUID empresaUuid){
@@ -29,6 +31,7 @@ public class ProductoController {
         return ResponseEntity.ok(productoService.listarProductos());
     }
 
+    @PreAuthorize("hasAuthority('VER_PRODUCTOS')")
     @Operation(summary = "Obtener producto por UUID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Producto encontrado"),
@@ -39,6 +42,7 @@ public class ProductoController {
         return ResponseEntity.ok(productoService.obtenerProductoPorUuid(productoUuid));
     }
 
+    @PreAuthorize("hasAuthority('VER_PRODUCTOS')")
     @Operation(summary = "Obtener producto por SKU")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Producto encontrado"),
@@ -49,6 +53,7 @@ public class ProductoController {
         return ResponseEntity.ok(productoService.obtenerProductoPorSku(productoSku));
     }
 
+    @PreAuthorize("hasAuthority('CREAR_PRODUCTO')")
     @Operation(summary = "Crear producto", description = "El SKU debe ser único por empresa. Crea el registro de stock automáticamente con cantidades en 0")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Producto creado"),
@@ -61,6 +66,7 @@ public class ProductoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productoService.crearProducto(request));
     }
 
+    @PreAuthorize("hasAuthority('ACTUALIZAR_PRODUCTO')")
     @Operation(summary = "Actualizar producto")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Producto actualizado"),
@@ -71,6 +77,7 @@ public class ProductoController {
         return ResponseEntity.ok(productoService.actualizarProducto(uuid, request));
     }
 
+    @PreAuthorize("hasAuthority('DESACTIVAR_PRODUCTO')")
     @Operation(summary = "Activar producto")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Producto activado"),
@@ -83,6 +90,7 @@ public class ProductoController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAuthority('DESACTIVAR_PRODUCTO')")
     @Operation(summary = "Desactivar producto", description = "No se puede desactivar si tiene stock disponible o reservado")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Producto desactivado"),

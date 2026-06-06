@@ -1,6 +1,6 @@
 package com.fulfilltrack.FulfillTrack.features.usuario;
 
-import com.fulfilltrack.FulfillTrack.features.usuario.dto.UsuarioRequestDTO;
+import com.fulfilltrack.FulfillTrack.auth.permisos.Roles;
 import com.fulfilltrack.FulfillTrack.features.usuario.dto.UsuarioResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -8,8 +8,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,18 +22,21 @@ import java.util.UUID;
 public class UsuarioController {
     private final IUsuarioService usuarioService;
 
+    @PreAuthorize("hasAuthority('VER_USUARIOS')")
     @Operation(summary = "Listar todos los usuarios")
     @GetMapping
     ResponseEntity<List<UsuarioResponseDTO>> listarUsuarios(){
         return ResponseEntity.ok(usuarioService.listarUsuarios());
     }
 
+    @PreAuthorize("hasAuthority('VER_USUARIOS')")
     @Operation(summary = "Listar usuarios activos")
     @GetMapping("/activos")
     ResponseEntity<List<UsuarioResponseDTO>> listarUsuariosActivos(){
         return ResponseEntity.ok(usuarioService.listarUsuariosActivos());
     }
 
+    @PreAuthorize("hasAuthority('VER_USUARIOS')")
     @Operation(summary = "Obtener usuario por UUID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
@@ -44,13 +47,11 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.obtenerUsuarioPorUuid(uuid));
     }
 
-    @Operation(summary = "Registrar usuario")
-    @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "Usuario registrado"),
-        @ApiResponse(responseCode = "400", description = "Datos inválidos")
-    })
-    @PostMapping
-    ResponseEntity<UsuarioResponseDTO> registrarUsuario(@Valid @RequestBody UsuarioRequestDTO request){
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.registrarUsuario(request));
+    @PreAuthorize("hasAuthority('ACTUALIZAR_USUARIO')")
+    @PatchMapping("/{uuid}/rol")
+    ResponseEntity<Void> asignarRol(@PathVariable UUID uuid, @RequestParam Roles rol){
+        usuarioService.asignarRol(uuid, rol);
+        return ResponseEntity.noContent().build();
     }
+
 }

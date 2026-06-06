@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,12 +23,14 @@ import java.util.UUID;
 public class EmpresaController {
     private final IEmpresaService empresaService;
 
+    @PreAuthorize("hasAuthority('VER_EMPRESAS')")
     @Operation(summary = "Listar todas las empresas")
     @GetMapping
     public ResponseEntity<List<EmpresaResponseDTO>> listarEmpresas(){
         return ResponseEntity.ok(empresaService.listarEmpresas());
     }
 
+    @PreAuthorize("hasAuthority('VER_EMPRESAS')")
     @Operation(summary = "Obtener empresa por UUID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Empresa encontrada"),
@@ -38,6 +41,7 @@ public class EmpresaController {
         return ResponseEntity.ok(empresaService.obtenerEmpresaPorUuid(uuid));
     }
 
+    @PreAuthorize("hasAuthority('CREAR_EMPRESA')")
     @Operation(summary = "Crear empresa")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Empresa creada"),
@@ -50,6 +54,7 @@ public class EmpresaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
     }
 
+    @PreAuthorize("hasAuthority('ACTUALIZAR_EMPRESA')")
     @Operation(summary = "Actualizar empresa")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Empresa actualizada"),
@@ -62,6 +67,7 @@ public class EmpresaController {
         return ResponseEntity.ok(empresaService.actualizarEmpresa(uuid, modificar));
     }
 
+    @PreAuthorize("hasAuthority('DESACTIVAR_EMPRESA')")
     @Operation(summary = "Desactivar empresa")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Empresa desactivada"),
@@ -74,6 +80,7 @@ public class EmpresaController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAuthority('DESACTIVAR_EMPRESA')")
     @Operation(summary = "Activar empresa")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Empresa activada"),

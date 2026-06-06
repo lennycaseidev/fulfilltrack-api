@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,12 +23,14 @@ import java.util.UUID;
 public class InfoEmpleadosController {
     private final IInfoEmpleadosService infoEmpleadosService;
 
+    @PreAuthorize("hasAuthority('VER_USUARIOS')")
     @Operation(summary = "Listar todos los empleados")
     @GetMapping
     public ResponseEntity<List<InfoEmpleadosResponseDTO>> listarEmpleados(){
         return ResponseEntity.ok(infoEmpleadosService.listarEmpleados());
     }
 
+    @PreAuthorize("hasAuthority('VER_USUARIOS')")
     @Operation(summary = "Obtener empleado por UUID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Empleado encontrado"),
@@ -38,6 +41,7 @@ public class InfoEmpleadosController {
         return ResponseEntity.ok(infoEmpleadosService.obtenerEmpleadoPorUuid(uuid));
     }
 
+    @PreAuthorize("hasAuthority('CREAR_USUARIO')")
     @Operation(summary = "Registrar empleado", description = "El usuario no puede estar vinculado como contacto de empresa")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Empleado registrado"),
@@ -50,6 +54,7 @@ public class InfoEmpleadosController {
         return ResponseEntity.status(HttpStatus.CREATED).body(infoEmpleadosService.crearEmpleado(request));
     }
 
+    @PreAuthorize("hasAuthority('ACTUALIZAR_USUARIO')")
     @Operation(summary = "Actualizar empleado")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Empleado actualizado"),
@@ -61,6 +66,7 @@ public class InfoEmpleadosController {
         return ResponseEntity.ok(infoEmpleadosService.actualizarEmpleado(uuid, request));
     }
 
+    @PreAuthorize("hasAuthority('DESACTIVAR_USUARIO')")
     @Operation(summary = "Activar empleado")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Empleado activado"),
@@ -73,6 +79,7 @@ public class InfoEmpleadosController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAuthority('DESACTIVAR_USUARIO')")
     @Operation(summary = "Desactivar empleado")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Empleado desactivado"),
