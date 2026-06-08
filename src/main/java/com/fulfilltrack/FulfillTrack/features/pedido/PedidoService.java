@@ -145,7 +145,7 @@ public class PedidoService implements IPedidoService{
     public PedidoResponseDTO devolverPedido(UUID uuid) {
         PedidoEntity pedido = obtenerPedidoUuid(uuid);
         EstadoPedido estadoAnterior = pedido.getEstado();
-        if (estadoAnterior == EstadoPedido.DESPACHADO || estadoAnterior == EstadoPedido.DEVUELTO) {
+        if (estadoAnterior == EstadoPedido.DEVUELTO) {
             throw new OperacionNoPermitidaException("no se puede devolver un pedido en estado " + estadoAnterior);
         }
         if (estadoAnterior == EstadoPedido.RECIBIDO) {

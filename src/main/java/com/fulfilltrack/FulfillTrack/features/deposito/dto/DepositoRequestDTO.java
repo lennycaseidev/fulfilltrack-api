@@ -22,7 +22,7 @@ public class DepositoRequestDTO {
     @NotBlank(message = "La direccion del deposito es obligatoria")
     @Size(max = 200, message = "La dirección no puede superar los 200 caracteres")
     private String direccionDeposito;
-    @NotNull(message = "El telefono del deposito es obligatorio")
+    @NotBlank(message = "El telefono del deposito es obligatorio")
     @Size(max = 20, message = "El teléfono no puede superar los 20 caracteres")
     private String telefonoDeposito;
     @NotNull(message = "El horario de apertura es obligatorio")

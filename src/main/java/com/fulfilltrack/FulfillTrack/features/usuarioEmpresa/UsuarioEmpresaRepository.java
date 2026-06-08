@@ -1,6 +1,7 @@
 package com.fulfilltrack.FulfillTrack.features.usuarioEmpresa;
 
 
+import com.fulfilltrack.FulfillTrack.features.usuario.UsuarioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +14,5 @@ public interface UsuarioEmpresaRepository extends JpaRepository<UsuarioEmpresaEn
     Optional<UsuarioEmpresaEntity> findByUuid(UUID uuid);
     List<UsuarioEmpresaEntity> findByEmpresa_Uuid(UUID empresaUuid);
     boolean existsByUsuario_Uuid(UUID usuarioUuid);
-
+    Optional<UsuarioEmpresaEntity> findByUsuario(UsuarioEntity usuario);
 }

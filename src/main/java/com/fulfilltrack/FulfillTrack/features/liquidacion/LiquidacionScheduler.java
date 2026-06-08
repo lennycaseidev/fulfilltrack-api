@@ -6,6 +6,7 @@ import com.fulfilltrack.FulfillTrack.features.empresa.EmpresaEntity;
 import com.fulfilltrack.FulfillTrack.features.empresa.EmpresaRepository;
 import com.fulfilltrack.FulfillTrack.features.despacho.DespachoRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +38,13 @@ public class LiquidacionScheduler {
 
     private void enviarRecordatoriosPagoAtrasado() {
         liquidacionRepository.findByEstadoPago(EstadoPago.IMPAGO)
-                .forEach(emailService::enviarPagoAtrasado);
+                .forEach(liq -> {
+                    try {
+                        emailService.enviarPagoAtrasado(liq);
+                    } catch (Exception e) {
+                        // fallo de email no debe detener el resto de recordatorios
+                    }
+                });
     }
 
     private void generarLiquidaciones(LocalDateTime inicio, LocalDateTime fin, String periodo) {
@@ -60,7 +67,11 @@ public class LiquidacionScheduler {
                     .build();
 
             LiquidacionEntity guardada = liquidacionRepository.save(liquidacion);
-            emailService.enviarLiquidacionAPagar(guardada);
+            try {
+                emailService.enviarLiquidacionAPagar(guardada);
+            } catch (Exception e) {
+                // fallo de email no debe revertir la liquidación guardada
+            }
         }
     }
 }

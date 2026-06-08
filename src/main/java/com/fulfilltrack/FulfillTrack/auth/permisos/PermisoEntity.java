@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(of = "permiso")
 public class PermisoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

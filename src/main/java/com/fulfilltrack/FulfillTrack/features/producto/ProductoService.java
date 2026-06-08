@@ -1,5 +1,6 @@
 package com.fulfilltrack.FulfillTrack.features.producto;
 
+import com.fulfilltrack.FulfillTrack.auth.TenantContext;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadDuplicadaException;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
@@ -22,12 +23,14 @@ public class ProductoService implements IProductoService{
     private final IEmpresaService empresaService;
     private final ProductoMapper productoMapper;
     private final IStockService stockService;
+    private final TenantContext tenantContext;
 
-    public ProductoService(ProductoRepository productoRepository, IEmpresaService empresaService, ProductoMapper productoMapper, IStockService stockService) {
+    public ProductoService(ProductoRepository productoRepository, IEmpresaService empresaService, ProductoMapper productoMapper, IStockService stockService, TenantContext tenantContext) {
         this.productoRepository = productoRepository;
         this.empresaService = empresaService;
         this.productoMapper = productoMapper;
         this.stockService = stockService;
+        this.tenantContext = tenantContext;
     }
 
     @Override
@@ -52,8 +55,11 @@ public class ProductoService implements IProductoService{
 
     @Override
     public ProductoResponseDTO obtenerProductoPorSku(String sku) {
-        ProductoEntity producto = productoRepository.findBySku(sku)
-                .orElseThrow(()-> new EntidadNoEncontradaException("El producto no ha sido encontrado"));
+        ProductoEntity producto = tenantContext.getEmpresaUuid()
+                .map(empresaUuid -> productoRepository.findBySkuAndEmpresa_Uuid(sku, empresaUuid)
+                        .orElseThrow(() -> new EntidadNoEncontradaException("El producto no ha sido encontrado")))
+                .orElseGet(() -> productoRepository.findBySku(sku)
+                        .orElseThrow(() -> new EntidadNoEncontradaException("El producto no ha sido encontrado")));
         return productoMapper.toResponseDTO(producto);
     }
 

@@ -16,6 +16,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -34,12 +36,21 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
     public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
+        return generateToken(userDetails, new HashMap<>());
+    }
+
+    public String generateToken(UserDetails userDetails, Map<String, Object> extraClaims) {
+        Map<String, Object> claims = new HashMap<>(extraClaims);
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
         claims.put("roles", roles);
         return buildToken(claims, userDetails, jwtExpiration);
+    }
+
+    public Optional<UUID> extractEmpresaUuid(String token) {
+        String value = extractAllClaims(token).get("empresaUuid", String.class);
+        return value != null ? Optional.of(UUID.fromString(value)) : Optional.empty();
     }
     public List<GrantedAuthority> extractAuthorities(String token) {
         Claims claims = extractAllClaims(token);

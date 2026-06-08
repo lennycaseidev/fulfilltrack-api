@@ -58,6 +58,6 @@ public class InfoEmpleadosEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario", nullable = false, updatable = false)
+    @JoinColumn(name = "id_usuario", nullable = false, updatable = false, unique = true)
     private UsuarioEntity usuario;
 }
