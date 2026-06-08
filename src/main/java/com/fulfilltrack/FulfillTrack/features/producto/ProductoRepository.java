@@ -11,6 +11,7 @@ import java.util.UUID;
 public interface ProductoRepository extends JpaRepository<ProductoEntity, Long> {
     Optional<ProductoEntity> findByUuid(UUID uuid);
     Optional<ProductoEntity> findBySku(String sku);
+    Optional<ProductoEntity> findBySkuAndEmpresa_Uuid(String sku, UUID empresaUuid);
     List<ProductoEntity> findByEmpresa_Uuid(UUID empresaUuid);
     boolean existsBySkuAndEmpresa_Uuid(String sku, UUID empresaUuid);
 

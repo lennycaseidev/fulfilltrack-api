@@ -9,6 +9,7 @@ import com.fulfilltrack.FulfillTrack.features.liquidacion.dto.LiquidacionRequest
 import com.fulfilltrack.FulfillTrack.features.liquidacion.dto.LiquidacionResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.liquidacion.mapper.LiquidacionMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -30,6 +31,7 @@ public class LiquidacionService implements ILiquidacionService {
     }
 
     @Override
+    @Transactional
     public LiquidacionResponseDTO crearLiquidacion(LiquidacionRequestDTO request) {
         EmpresaEntity empresa = empresaService.obtenerEmpresaUuid(request.getEmpresaUuid());
 
@@ -63,6 +65,7 @@ public class LiquidacionService implements ILiquidacionService {
     }
 
     @Override
+    @Transactional
     public LiquidacionResponseDTO actualizarLiquidacion(UUID uuid, LiquidacionRequestDTO request) {
         LiquidacionEntity liquidacion = obtenerLiquidacionUuid(uuid);
         if (liquidacion.getEstadoPago() == EstadoPago.PAGO) {
@@ -80,6 +83,7 @@ public class LiquidacionService implements ILiquidacionService {
     }
 
     @Override
+    @Transactional
     public void marcarComoPagada(UUID uuid) {
         LiquidacionEntity liquidacion = obtenerLiquidacionUuid(uuid);
         if (liquidacion.getEstadoPago() == EstadoPago.PAGO) {
