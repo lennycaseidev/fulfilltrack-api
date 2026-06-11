@@ -18,8 +18,12 @@ public class InfoEmpleadosResponseDTO {
     private BigDecimal salario;
     private LocalDateTime fechaContratacion;
     private UUID puestoUuid;
+    private String nombrePuesto;
     private UUID usuarioUuid;
+    private String nombreUsuario;
+    private String apellidoUsuario;
     private UUID depositoUuid;
+    private String nombreDeposito;
     private Estado estado;
 
 

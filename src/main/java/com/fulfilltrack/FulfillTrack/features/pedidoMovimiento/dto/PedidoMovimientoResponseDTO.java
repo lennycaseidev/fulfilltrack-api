@@ -11,6 +11,5 @@ public class PedidoMovimientoResponseDTO {
     private UUID uuid;
     private EstadoPedido estadoAnterior;
     private EstadoPedido estadoNuevo;
-    private UUID usuarioUuid;
     private LocalDateTime fecha;
 }

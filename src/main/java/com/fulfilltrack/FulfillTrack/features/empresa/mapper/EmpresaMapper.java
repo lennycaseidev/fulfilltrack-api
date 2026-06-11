@@ -19,6 +19,7 @@ public interface EmpresaMapper {
     EmpresaEntity toEntity(EmpresaRequestDTO request);
 
     @Mapping(source = "deposito.uuid", target = "depositoUuid")
+    @Mapping(source = "deposito.nombreDeposito", target = "nombreDeposito")
     EmpresaResponseDTO toResponseDTO(EmpresaEntity entity);
 
     List<EmpresaResponseDTO> toResponseList(List<EmpresaEntity> empresas);

@@ -12,8 +12,12 @@ import java.util.List;
 public interface InfoEmpleadosMapper {
 
     @Mapping(source = "puesto.uuid", target = "puestoUuid")
+    @Mapping(source = "puesto.nombrePuesto", target = "nombrePuesto")
     @Mapping(source = "usuario.uuid", target = "usuarioUuid")
+    @Mapping(source = "usuario.nombre", target = "nombreUsuario")
+    @Mapping(source = "usuario.apellido", target = "apellidoUsuario")
     @Mapping(source = "deposito.uuid", target = "depositoUuid")
+    @Mapping(source = "deposito.nombreDeposito", target = "nombreDeposito")
     InfoEmpleadosResponseDTO toResponseDTO(InfoEmpleadosEntity entity);
 
     List<InfoEmpleadosResponseDTO> toResponseList(List<InfoEmpleadosEntity> list);
