@@ -36,8 +36,9 @@ public class ProductoService implements IProductoService{
     @Override
     @Transactional
     public ProductoResponseDTO crearProducto(ProductoRequestDTO request) {
-        EmpresaEntity empresa = empresaService.obtenerEmpresaUuid(request.getEmpresaUuid());
-        if(productoRepository.existsBySkuAndEmpresa_Uuid(request.getSku(), request.getEmpresaUuid())){
+        UUID empresaId = tenantContext.getEmpresaUuid().orElse(request.getEmpresaUuid());
+        EmpresaEntity empresa = empresaService.obtenerEmpresaUuid(empresaId);
+        if(productoRepository.existsBySkuAndEmpresa_Uuid(request.getSku(), empresaId)){
             throw new EntidadDuplicadaException("El sku ya está registrado para un producto de esta empresa");
         }
         ProductoEntity producto = productoMapper.toEntity(request);
@@ -65,22 +66,26 @@ public class ProductoService implements IProductoService{
 
     @Override
     public List<ProductoResponseDTO> listarProductosPorEmpresa(UUID empresaUuid) {
-        if (!empresaService.existeEmpresaPorUuid(empresaUuid)) {
+        UUID efectivo = tenantContext.getEmpresaUuid().orElse(empresaUuid);
+        if (!empresaService.existeEmpresaPorUuid(efectivo)) {
             throw new EntidadNoEncontradaException("La empresa no ha sido encontrada");
         }
-        return productoMapper.toResponseList(productoRepository.findByEmpresa_Uuid(empresaUuid));
+        return productoMapper.toResponseList(productoRepository.findByEmpresa_Uuid(efectivo));
     }
 
     @Override
     public List<ProductoResponseDTO> listarProductos() {
-        return productoMapper.toResponseList(productoRepository.findAll());
+        return tenantContext.getEmpresaUuid()
+                .map(uuid -> productoMapper.toResponseList(productoRepository.findByEmpresa_Uuid(uuid)))
+                .orElseGet(() -> productoMapper.toResponseList(productoRepository.findAll()));
     }
 
     @Override
     public ProductoResponseDTO actualizarProducto(UUID uuid, ProductoRequestDTO request) {
         ProductoEntity producto = obtenerProductoUuid(uuid);
+        UUID empresaId = tenantContext.getEmpresaUuid().orElse(request.getEmpresaUuid());
 
-        if(!producto.getSku().equals(request.getSku()) && productoRepository.existsBySkuAndEmpresa_Uuid(request.getSku(), request.getEmpresaUuid())){
+        if(!producto.getSku().equals(request.getSku()) && productoRepository.existsBySkuAndEmpresa_Uuid(request.getSku(), empresaId)){
             throw new EntidadDuplicadaException("El sku ya está registrado para un producto de esta empresa");
         }
         producto.setNombreProducto(request.getNombreProducto());

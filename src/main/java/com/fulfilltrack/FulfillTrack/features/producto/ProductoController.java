@@ -24,11 +24,17 @@ public class ProductoController {
     private final IProductoService productoService;
 
     @PreAuthorize("hasAuthority('VER_PRODUCTOS')")
-    @Operation(summary = "Listar productos", description = "Si se provee empresaUuid, filtra por empresa")
+    @Operation(summary = "Listar productos", description = "ROLE_EMPRESA ve solo los suyos. ADMIN/OPERADOR ven todos")
     @GetMapping
-    ResponseEntity<List<ProductoResponseDTO>> listarProductos(@RequestParam(required = false) UUID empresaUuid){
-        if(empresaUuid != null) return ResponseEntity.ok(productoService.listarProductosPorEmpresa(empresaUuid));
+    ResponseEntity<List<ProductoResponseDTO>> listarProductos(){
         return ResponseEntity.ok(productoService.listarProductos());
+    }
+
+    @PreAuthorize("hasAuthority('VER_PRODUCTOS_EMPRESA')")
+    @Operation(summary = "Listar productos por empresa")
+    @GetMapping("/empresa/{empresaUuid}")
+    ResponseEntity<List<ProductoResponseDTO>> listarProductosPorEmpresa(@PathVariable UUID empresaUuid){
+        return ResponseEntity.ok(productoService.listarProductosPorEmpresa(empresaUuid));
     }
 
     @PreAuthorize("hasAuthority('VER_PRODUCTOS')")

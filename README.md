@@ -151,3 +151,5 @@ com.fulfilltrack.FulfillTrack
 
 - No incluye integración real con couriers ni pasarelas de pago (alcance académico).
 - El scheduler de liquidaciones requiere configuración de servidor SMTP para el envío de emails.
+  "username": "KevinLomonaco",
+  "password": "admin123"

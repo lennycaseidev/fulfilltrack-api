@@ -11,7 +11,6 @@ public class FulfillTrackApplication {
 
 	public static void main(String[] args) {
 		Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
-		System.out.println(">>> JWT_SECRET: " + dotenv.get("JWT_SECRET"));
 		dotenv.entries().forEach(entry ->
 				System.setProperty(entry.getKey(), entry.getValue())
 		);
