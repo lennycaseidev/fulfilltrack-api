@@ -39,12 +39,12 @@ public class AuthService {
         String username = jwtService.extractUsername(refreshToken);
         CredencialEntity user =
                 credencialRepository.findByUsername(username)
-                        .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        if (!user.getRefreshToken().equals(refreshToken)) {
-            throw new IllegalArgumentException("Refresh token does not match");
+                        .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+        if (!refreshToken.equals(user.getRefreshToken())) {
+            throw new IllegalArgumentException("El refresh token no coincide");
         }
         if (!jwtService.validateRefreshToken(refreshToken, user)) {
-            throw new IllegalArgumentException("Refresh token expired or invalid");
+            throw new IllegalArgumentException("El refresh token expiró o es inválido");
         }
         String newAccessToken = jwtService.generateToken(user);
         String newRefreshToken = jwtService.generateRefreshToken(user);

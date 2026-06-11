@@ -7,6 +7,7 @@ import com.fulfilltrack.FulfillTrack.auth.dto.RefreshTokenRequest;
 import com.fulfilltrack.FulfillTrack.features.usuario.UsuarioService;
 import com.fulfilltrack.FulfillTrack.features.usuario.dto.UsuarioResponseDTO;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,12 +23,12 @@ public class AuthController {
     private final UsuarioService usuarioService;
 
     @PostMapping("/ingresar")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest authRequest) {
         return ResponseEntity.ok(authService.authenticate(authRequest));
     }
 
     @PostMapping("/registrarse")
-    public ResponseEntity<UsuarioResponseDTO> register(@RequestBody NewAccountRequest newAccountRequest) {
+    public ResponseEntity<UsuarioResponseDTO> register(@Valid @RequestBody NewAccountRequest newAccountRequest) {
         return new ResponseEntity<>(usuarioService.guardar(newAccountRequest), HttpStatus.CREATED);
     }
 

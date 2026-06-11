@@ -3,6 +3,7 @@ package com.fulfilltrack.FulfillTrack.features.email;
 import com.fulfilltrack.FulfillTrack.features.liquidacion.LiquidacionEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,6 +15,7 @@ public class EmailService implements IEmailService{
     }
 
 
+    @Async
     @Override
     public void enviarLiquidacionAbonada(LiquidacionEntity liquidacion) {
         SimpleMailMessage mensaje = new SimpleMailMessage();
@@ -31,6 +33,7 @@ public class EmailService implements IEmailService{
         javaMailSender.send(mensaje);
     }
 
+    @Async
     @Override
     public void enviarLiquidacionAPagar(LiquidacionEntity liquidacion) {
         SimpleMailMessage mensaje = new SimpleMailMessage();
@@ -49,6 +52,7 @@ public class EmailService implements IEmailService{
         javaMailSender.send(mensaje);
     }
 
+    @Async
     @Override
     public void enviarPagoAtrasado(LiquidacionEntity liquidacion) {
         SimpleMailMessage mensaje = new SimpleMailMessage();
