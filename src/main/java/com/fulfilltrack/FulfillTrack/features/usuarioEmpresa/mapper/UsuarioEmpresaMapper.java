@@ -19,7 +19,10 @@ public interface UsuarioEmpresaMapper {
     UsuarioEmpresaEntity toEntity(UsuarioEmpresaRequestDTO request);
 
     @Mapping(source = "empresa.uuid", target = "empresaUuid")
+    @Mapping(source = "empresa.nombreEmpresa", target = "nombreEmpresa")
     @Mapping(source = "usuario.uuid", target = "usuarioUuid")
+    @Mapping(source = "usuario.nombre", target = "nombreUsuario")
+    @Mapping(source = "usuario.apellido", target = "apellidoUsuario")
     UsuarioEmpresaResponseDTO toResponseDTO(UsuarioEmpresaEntity entity);
 
     List<UsuarioEmpresaResponseDTO> toResponseList(List<UsuarioEmpresaEntity> usuariosEmpresa);

@@ -21,4 +21,5 @@ public class LiquidacionResponseDTO {
     private EstadoPago estadoPago;
     private LocalDateTime fechaCreacion;
     private UUID empresaUuid;
+    private String nombreEmpresa;
 }

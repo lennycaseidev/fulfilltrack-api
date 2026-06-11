@@ -8,9 +8,7 @@ import com.fulfilltrack.FulfillTrack.auth.permisos.RolRepository;
 import com.fulfilltrack.FulfillTrack.auth.permisos.Roles;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
-import com.fulfilltrack.FulfillTrack.features.usuario.dto.NuevoUsuarioDTO;
 import com.fulfilltrack.FulfillTrack.features.usuario.dto.UsuarioResponseDTO;
-import com.fulfilltrack.FulfillTrack.features.usuario.mapper.NuevoUsuarioMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,23 +22,22 @@ public class UsuarioService implements IUsuarioService{
     private final CredencialRepository credencialRepository;
     private final RolRepository rolRepository;
     private final PasswordEncoder passwordEncoder;
-    private final NuevoUsuarioMapper nuevoUsuarioMapper;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, CredencialRepository credencialRepository, RolRepository rolRepository, PasswordEncoder passwordEncoder, NuevoUsuarioMapper nuevoUsuarioMapper) {
+    public UsuarioService(UsuarioRepository usuarioRepository, CredencialRepository credencialRepository, RolRepository rolRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.credencialRepository = credencialRepository;
         this.rolRepository = rolRepository;
         this.passwordEncoder = passwordEncoder;
-        this.nuevoUsuarioMapper = nuevoUsuarioMapper;
     }
 
 
     @Override
     @Transactional
     public UsuarioResponseDTO guardar(NewAccountRequest newAccountRequest) {
-        NuevoUsuarioDTO nuevoUsuarioDTO = new NuevoUsuarioDTO(newAccountRequest.nombre(), newAccountRequest.apellido());
-
-        UsuarioEntity guardado = usuarioRepository.save(nuevoUsuarioMapper.toEntity(nuevoUsuarioDTO));
+        UsuarioEntity guardado = usuarioRepository.save(UsuarioEntity.builder()
+                .nombre(newAccountRequest.nombre())
+                .apellido(newAccountRequest.apellido())
+                .build());
 
         RolEntity rolPendiente = rolRepository.findByRol(Roles.ROLE_PENDIENTE)
                 .orElseThrow(() -> new EntidadNoEncontradaException("Rol PENDIENTE no encontrado"));

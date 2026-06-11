@@ -20,6 +20,7 @@ public interface LiquidacionMapper {
     LiquidacionEntity toEntity(LiquidacionRequestDTO request);
 
     @Mapping(source = "empresa.uuid", target = "empresaUuid")
+    @Mapping(source = "empresa.nombreEmpresa", target = "nombreEmpresa")
     LiquidacionResponseDTO toResponseDTO(LiquidacionEntity entity);
 
     List<LiquidacionResponseDTO> toResponseList(List<LiquidacionEntity> liquidaciones);

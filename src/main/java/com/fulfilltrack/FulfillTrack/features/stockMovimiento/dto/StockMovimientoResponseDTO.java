@@ -15,6 +15,5 @@ public class StockMovimientoResponseDTO {
     private TipoMovimientoStock tipo;
     private String motivo;
     private Integer cantidad;
-    private UUID usuarioUuid;
     private LocalDateTime fecha;
 }
