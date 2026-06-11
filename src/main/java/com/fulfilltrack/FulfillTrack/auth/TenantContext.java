@@ -1,6 +1,7 @@
 package com.fulfilltrack.FulfillTrack.auth;
 
-import com.fulfilltrack.FulfillTrack.auth.jwt.JwtService;
+import com.fulfilltrack.FulfillTrack.auth.credenciales.CredencialRepository;
+import com.fulfilltrack.FulfillTrack.features.usuarioEmpresa.UsuarioEmpresaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,11 +14,15 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TenantContext {
 
-    private final JwtService jwtService;
+    private final CredencialRepository credencialRepository;
+    private final UsuarioEmpresaRepository usuarioEmpresaRepository;
 
     public Optional<UUID> getEmpresaUuid() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || auth.getCredentials() == null) return Optional.empty();
-        return jwtService.extractEmpresaUuid(auth.getCredentials().toString());
+        if (auth == null) return Optional.empty();
+        return credencialRepository.findByUsername(auth.getName())
+                .filter(c -> c.getUsuario() != null)
+                .flatMap(c -> usuarioEmpresaRepository.findByUsuario(c.getUsuario()))
+                .map(ue -> ue.getEmpresa().getUuid());
     }
 }
