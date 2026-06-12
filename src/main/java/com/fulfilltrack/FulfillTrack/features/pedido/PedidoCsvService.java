@@ -1,5 +1,6 @@
 package com.fulfilltrack.FulfillTrack.features.pedido;
 
+import com.fulfilltrack.FulfillTrack.common.exception.ArchivoInvalidoException;
 import com.fulfilltrack.FulfillTrack.features.pedido.dto.PedidoImportErrorDTO;
 import com.fulfilltrack.FulfillTrack.features.pedido.dto.PedidoImportResultDTO;
 import com.fulfilltrack.FulfillTrack.features.pedido.dto.PedidoRequestDTO;
@@ -76,7 +77,7 @@ public class PedidoCsvService implements IPedidoCsvService {
             }
 
         } catch (Exception e) {
-            throw new RuntimeException("Error al leer el archivo CSV: " + e.getMessage());
+            throw new ArchivoInvalidoException("No se pudo leer el archivo CSV: " + e.getMessage());
         }
 
         for (PedidoRequestDTO pedidoRequest : pedidosPorOrden.values()) {
