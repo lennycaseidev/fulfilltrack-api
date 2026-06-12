@@ -65,6 +65,45 @@
       "name": "Usuarios",
       "item": [
         {
+          "name": "Listar usuarios",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios",
+              "host": ["{{base_url}}"],
+              "path": ["api", "usuarios"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar usuarios activos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios/activos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "usuarios", "activos"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener usuario por UUID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios/UUID_USUARIO",
+              "host": ["{{base_url}}"],
+              "path": ["api", "usuarios", "UUID_USUARIO"]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Asignar rol",
           "request": {
             "method": "PATCH",
@@ -82,12 +121,47 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Cambiar password",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"passwordActual\": \"admin123\",\n  \"passwordNueva\": \"nuevaPass456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/usuarios/UUID_USUARIO/password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "usuarios", "UUID_USUARIO", "password"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
       "name": "Depositos",
       "item": [
+        {
+          "name": "Listar depositos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/depositos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "depositos"]
+            }
+          },
+          "response": []
+        },
         {
           "name": "Crear deposito",
           "request": {
@@ -155,6 +229,32 @@
     {
       "name": "Empleados",
       "item": [
+        {
+          "name": "Listar empleados",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/empleados",
+              "host": ["{{base_url}}"],
+              "path": ["api", "empleados"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener empleado por UUID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/empleados/UUID_EMPLEADO",
+              "host": ["{{base_url}}"],
+              "path": ["api", "empleados", "UUID_EMPLEADO"]
+            }
+          },
+          "response": []
+        },
         {
           "name": "Crear empleado",
           "request": {
