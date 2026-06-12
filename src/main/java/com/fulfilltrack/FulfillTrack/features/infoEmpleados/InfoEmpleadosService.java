@@ -105,6 +105,10 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
         }
         empleado.setEstado(Estado.ACTIVA);
         infoEmpleadosRepository.save(empleado);
+        credencialRepository.findByUsuario(empleado.getUsuario()).ifPresent(credencial -> {
+            credencial.setActivo(true);
+            credencialRepository.save(credencial);
+        });
     }
 
     @Override
@@ -119,6 +123,9 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
             if (esAdmin) {
                 throw new OperacionNoPermitidaException("No se puede desactivar a un administrador");
             }
+            credencial.setActivo(false);
+            credencial.setRefreshToken(null);
+            credencialRepository.save(credencial);
         });
         empleado.setEstado(Estado.INACTIVA);
         infoEmpleadosRepository.save(empleado);

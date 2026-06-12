@@ -46,6 +46,9 @@ public class AuthService {
         if (!jwtService.validateRefreshToken(refreshToken, user)) {
             throw new IllegalArgumentException("El refresh token expiró o es inválido");
         }
+        if (!user.isEnabled()) {
+            throw new IllegalArgumentException("La cuenta está deshabilitada");
+        }
         String newAccessToken = jwtService.generateToken(user);
         String newRefreshToken = jwtService.generateRefreshToken(user);
         user.setRefreshToken(newRefreshToken);

@@ -1,0 +1,7 @@
+numeroOrden,direccionEntrega,nombreDestinatario,empresaUuid,sku,cantidad
+  ORD-001,Av. Corrientes 1234,Juan Pérez,facc0983-fad4-47a5-9961-4af217da6696,ARC-001,20
+  ORD-002,San Martín 567,María López,facc0983-fad4-47a5-9961-4af217da6696,ARC-001,15
+  ORD-003,Rivadavia 890,Carlos Gómez,facc0983-fad4-47a5-9961-4af217da6696,ARC-001,10
+  ORD-004,Belgrano 432,Ana Torres,facc0983-fad4-47a5-9961-4af217da6696,ARC-002,40
+  ORD-005,Mitre 789,Lucas Fernández,facc0983-fad4-47a5-9961-4af217da6696,ARC-002,60
+  ORD-006,Sarmiento 321,Sofía Díaz,facc0983-fad4-47a5-9961-4af217da6696,ARC-002,35
