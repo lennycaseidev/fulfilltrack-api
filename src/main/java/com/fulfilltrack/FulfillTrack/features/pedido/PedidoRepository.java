@@ -11,5 +11,7 @@ import java.util.UUID;
 public interface PedidoRepository extends JpaRepository<PedidoEntity, Long> {
     Optional<PedidoEntity> findByUuid(UUID uuid);
     List<PedidoEntity> findByEmpresa_Uuid(UUID empresaUuid);
+    List<PedidoEntity> findByEstadoNotIn(List<EstadoPedido> estados);
+    List<PedidoEntity> findByEmpresa_UuidAndEstadoNotIn(UUID empresaUuid, List<EstadoPedido> estados);
 }
 

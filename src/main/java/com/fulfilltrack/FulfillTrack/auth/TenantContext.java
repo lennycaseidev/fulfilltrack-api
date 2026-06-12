@@ -1,6 +1,7 @@
 package com.fulfilltrack.FulfillTrack.auth;
 
 import com.fulfilltrack.FulfillTrack.auth.credenciales.CredencialRepository;
+import com.fulfilltrack.FulfillTrack.features.usuario.UsuarioEntity;
 import com.fulfilltrack.FulfillTrack.features.usuarioEmpresa.UsuarioEmpresaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -24,5 +25,12 @@ public class TenantContext {
                 .filter(c -> c.getUsuario() != null)
                 .flatMap(c -> usuarioEmpresaRepository.findByUsuario(c.getUsuario()))
                 .map(ue -> ue.getEmpresa().getUuid());
+    }
+
+    public Optional<UsuarioEntity> getUsuarioActual() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) return Optional.empty();
+        return credencialRepository.findByUsername(auth.getName())
+                .map(c -> c.getUsuario());
     }
 }

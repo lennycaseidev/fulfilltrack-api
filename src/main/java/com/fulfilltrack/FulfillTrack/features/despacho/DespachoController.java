@@ -32,17 +32,6 @@ public class DespachoController {
     }
 
     @PreAuthorize("hasAuthority('VER_DESPACHOS')")
-    @Operation(summary = "Obtener despacho por UUID")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Despacho encontrado"),
-        @ApiResponse(responseCode = "404", description = "Despacho no encontrado")
-    })
-    @GetMapping("/{uuid}")
-    ResponseEntity<DespachoResponseDTO> obtenerDespacho(@PathVariable UUID uuid) {
-        return ResponseEntity.ok(despachoService.obtenerDespachoPorUuid(uuid));
-    }
-
-    @PreAuthorize("hasAuthority('VER_DESPACHOS')")
     @Operation(summary = "Obtener despacho por pedido")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Despacho encontrado"),

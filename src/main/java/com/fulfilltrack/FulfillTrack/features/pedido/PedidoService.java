@@ -81,8 +81,17 @@ public class PedidoService implements IPedidoService{
         return pedidoMapper.toResponseDTO(obtenerPedidoUuid(uuid));
     }
 
+    private static final List<EstadoPedido> ESTADOS_CERRADOS = List.of(EstadoPedido.DESPACHADO, EstadoPedido.DEVUELTO);
+
     @Override
-    public List<PedidoResponseDTO> listarPedidos() {
+    public List<PedidoResponseDTO> listarPedidosActivos() {
+        return tenantContext.getEmpresaUuid()
+                .map(uuid -> pedidoMapper.toResponseList(pedidoRepository.findByEmpresa_UuidAndEstadoNotIn(uuid, ESTADOS_CERRADOS)))
+                .orElseGet(() -> pedidoMapper.toResponseList(pedidoRepository.findByEstadoNotIn(ESTADOS_CERRADOS)));
+    }
+
+    @Override
+    public List<PedidoResponseDTO> listarHistorial() {
         return tenantContext.getEmpresaUuid()
                 .map(uuid -> pedidoMapper.toResponseList(pedidoRepository.findByEmpresa_Uuid(uuid)))
                 .orElseGet(() -> pedidoMapper.toResponseList(pedidoRepository.findAll()));

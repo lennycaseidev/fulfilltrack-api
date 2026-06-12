@@ -49,6 +49,11 @@ public class UsuarioController {
     }
 
     @PreAuthorize("hasAuthority('ACTUALIZAR_USUARIO')")
+    @Operation(summary = "Asignar rol en el sistema", description = "Reemplaza el rol actual del usuario por el nuevo rol indicado. Valores válidos: ROLE_ADMIN, ROLE_OPERADOR, ROLE_EMPRESA, ROLE_PENDIENTE.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Rol asignado correctamente"),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @PatchMapping("/{uuid}/rol")
     ResponseEntity<Void> asignarRol(@PathVariable UUID uuid, @RequestParam Roles rol){
         usuarioService.asignarRol(uuid, rol);
