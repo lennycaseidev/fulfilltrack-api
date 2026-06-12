@@ -7,14 +7,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Stock", description = "Gestión de stock de productos")
+@Validated
 @RestController
 @RequestMapping("/api/stock")
 @RequiredArgsConstructor
@@ -58,7 +61,7 @@ public class StockController {
         @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
     @PatchMapping("/producto/{productoUuid}/agregar")
-    ResponseEntity<StockResponseDTO> agregarStock(@PathVariable UUID productoUuid, @RequestParam int cantidad) {
+    ResponseEntity<StockResponseDTO> agregarStock(@PathVariable UUID productoUuid, @Positive @RequestParam int cantidad) {
         return ResponseEntity.ok(stockService.agregarStock(productoUuid, cantidad, TipoMovimientoStock.INGRESO, "Ingreso manual de stock"));
     }
 }

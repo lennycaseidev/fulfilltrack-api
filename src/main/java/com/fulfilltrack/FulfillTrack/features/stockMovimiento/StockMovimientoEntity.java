@@ -39,7 +39,6 @@ public class StockMovimientoEntity {
     @Column(nullable = false)
     private Integer cantidad;
 
-    // pendiente hasta implementar autenticación
     @Column(name = "usuario_uuid")
     private UUID usuarioUuid;
 

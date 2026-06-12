@@ -4,8 +4,9 @@ import com.fulfilltrack.FulfillTrack.auth.dto.AuthRequest;
 import com.fulfilltrack.FulfillTrack.auth.dto.AuthResponse;
 import com.fulfilltrack.FulfillTrack.auth.dto.NewAccountRequest;
 import com.fulfilltrack.FulfillTrack.auth.dto.RefreshTokenRequest;
-import com.fulfilltrack.FulfillTrack.features.usuario.UsuarioService;
+import com.fulfilltrack.FulfillTrack.features.usuario.IUsuarioService;
 import com.fulfilltrack.FulfillTrack.features.usuario.dto.UsuarioResponseDTO;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,20 +20,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
-    private final UsuarioService usuarioService;
+    private final IUsuarioService usuarioService;
 
     @PostMapping("/ingresar")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest authRequest) {
         return ResponseEntity.ok(authService.authenticate(authRequest));
     }
 
     @PostMapping("/registrarse")
-    public ResponseEntity<UsuarioResponseDTO> register(@RequestBody NewAccountRequest newAccountRequest) {
+    public ResponseEntity<UsuarioResponseDTO> register(@Valid @RequestBody NewAccountRequest newAccountRequest) {
         return new ResponseEntity<>(usuarioService.guardar(newAccountRequest), HttpStatus.CREATED);
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshTokenRequest request) {
+    public ResponseEntity<AuthResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
         return ResponseEntity.ok(authService.refreshAccessToken(request.refreshToken()));
     }
 }
