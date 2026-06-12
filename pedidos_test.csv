@@ -1,4 +1,4 @@
-no pnecnumeroOrden,direccionEntrega,nombreDestinatario,empresaUuid,sku,cantidad
+numeroOrden,direccionEntrega,nombreDestinatario,empresaUuid,sku,cantidad
 ORD-001,Av. Corrientes 1234 CABA,Jose maria Listorti,4ab27ad4-59ab-43a1-8e00-f2676b3ed326,DSTR-001,10
 ORD-001,Av. Corrientes 1234 CABA,Pepe sand,4ab27ad4-59ab-43a1-8e00-f2676b3ed326,DSTR-002,5
 ORD-002,Calle Falsa 123 Rosario,Roberto Carlos,4ab27ad4-59ab-43a1-8e00-f2676b3ed326,DSTR-001,20
