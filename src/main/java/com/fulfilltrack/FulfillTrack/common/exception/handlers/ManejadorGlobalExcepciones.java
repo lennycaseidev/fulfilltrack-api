@@ -1,5 +1,6 @@
 package com.fulfilltrack.FulfillTrack.common.exception.handlers;
 
+import com.fulfilltrack.FulfillTrack.common.exception.ArchivoInvalidoException;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadDuplicadaException;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
@@ -42,6 +43,12 @@ public class ManejadorGlobalExcepciones {
 
     @ExceptionHandler(OperacionNoPermitidaException.class)
     public ResponseEntity<ErrorResponseDTO> manejarOperacionNoPermitida(OperacionNoPermitidaException ex, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(buildError(HttpStatus.BAD_REQUEST, ex.getMessage(), request));
+    }
+
+    @ExceptionHandler(ArchivoInvalidoException.class)
+    public ResponseEntity<ErrorResponseDTO> manejarArchivoInvalido(ArchivoInvalidoException ex, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(buildError(HttpStatus.BAD_REQUEST, ex.getMessage(), request));
     }
