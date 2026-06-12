@@ -1,0 +1,586 @@
+{
+  "info": {
+    "_postman_id": "b94c08df-c044-40f2-8027-d3024a4983df",
+    "name": "FulfillTrack API",
+    "description": "---\n\n**Cómo usar esta colección**\n\n1. Ejecutar el request Auth → Login con las credenciales deseadas.\n    \n2. Copiar el accessToken de la respuesta.\n    \n3. En la colección, ir a Variables y pegar el valor en la variable token.\n    \n4. Todos los demás requests usarán ese token automáticamente.\n   \n\nNotas\n\n- Reemplazar los UUID_XXX en las URLs con los UUIDs reales obtenidos de los listados.\n    \n- base_url por defecto: [http://localhost:8080](http://localhost:8080).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/ingresar",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "ingresar"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Registrarse",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"juanperez\",\n  \"password\": \"pass123\",\n  \"email\": \"juan@empresa.com\",\n  \"nombre\": \"Juan\",\n  \"apellido\": \"Perez\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/registrarse",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "registrarse"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "Asignar rol",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios/UUID_USUARIO/rol?rol=ROLE_OPERADOR",
+              "host": ["{{base_url}}"],
+              "path": ["api", "usuarios", "UUID_USUARIO", "rol"],
+              "query": [
+                {
+                  "key": "rol",
+                  "value": "ROLE_OPERADOR"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Depositos",
+      "item": [
+        {
+          "name": "Crear deposito",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreDeposito\": \"Deposito Central\",\n  \"email\": \"deposito@fulfilltrack.com\",\n  \"direccionDeposito\": \"Av. Siempreviva 742\",\n  \"telefonoDeposito\": \"1134567890\",\n  \"aperturaDeposito\": \"08:00:00\",\n  \"cierreDeposito\": \"18:00:00\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/depositos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "depositos"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Puestos",
+      "item": [
+        {
+          "name": "Listar puestos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/puestos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "puestos"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear puesto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombrePuesto\": \"Operador de Almacen\",\n  \"descripcion\": \"Gestiona el inventario y despachos del deposito\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/puestos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "puestos"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Empleados",
+      "item": [
+        {
+          "name": "Crear empleado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documento\": \"30123456\",\n  \"salario\": 250000.00,\n  \"fechaContratacion\": \"2024-01-15T08:00:00\",\n  \"puestoUuid\": \"UUID_PUESTO\",\n  \"usuarioUuid\": \"UUID_USUARIO\",\n  \"depositoUuid\": \"UUID_DEPOSITO\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/empleados",
+              "host": ["{{base_url}}"],
+              "path": ["api", "empleados"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Empresas",
+      "item": [
+        {
+          "name": "Listar empresas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/empresas",
+              "host": ["{{base_url}}"],
+              "path": ["api", "empresas"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear empresa",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreEmpresa\": \"Empresa Demo SA\",\n  \"email\": \"empresa@demo.com\",\n  \"costoPorEnvio\": 1500.00,\n  \"depositoUuid\": \"UUID_DEPOSITO\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/empresas",
+              "host": ["{{base_url}}"],
+              "path": ["api", "empresas"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Usuarios Empresa",
+      "item": [
+        {
+          "name": "Listar por empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios-empresa/empresa/UUID_EMPRESA",
+              "host": ["{{base_url}}"],
+              "path": ["api", "usuarios-empresa", "empresa", "UUID_EMPRESA"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Vincular usuario a empresa",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cargo\": \"Gerente de Logistica\",\n  \"telefono\": \"1145678901\",\n  \"empresaUuid\": \"UUID_EMPRESA\",\n  \"usuarioUuid\": \"UUID_USUARIO\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/usuarios-empresa",
+              "host": ["{{base_url}}"],
+              "path": ["api", "usuarios-empresa"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "Listar productos por empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/productos/empresa/UUID_EMPRESA",
+              "host": ["{{base_url}}"],
+              "path": ["api", "productos", "empresa", "UUID_EMPRESA"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreProducto\": \"Remera Basica Blanca\",\n  \"descripcion\": \"Remera de algodon 100%, talle M\",\n  \"sku\": \"PROD-001\",\n  \"empresaUuid\": \"UUID_EMPRESA\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/productos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "productos"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Stock",
+      "item": [
+        {
+          "name": "Listar stock por empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/stock/empresa/UUID_EMPRESA",
+              "host": ["{{base_url}}"],
+              "path": ["api", "stock", "empresa", "UUID_EMPRESA"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Agregar stock",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/stock/producto/UUID_PRODUCTO/agregar?cantidad=50",
+              "host": ["{{base_url}}"],
+              "path": ["api", "stock", "producto", "UUID_PRODUCTO", "agregar"],
+              "query": [
+                {
+                  "key": "cantidad",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Pedidos",
+      "item": [
+        {
+          "name": "Listar pedidos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pedidos"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear pedido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numeroOrden\": \"ORD-0001\",\n  \"direccionEntrega\": \"Av. Corrientes 1234, CABA\",\n  \"nombreDestinatario\": \"Maria Garcia\",\n  \"empresaUuid\": \"UUID_EMPRESA\",\n  \"items\": [\n    {\n      \"productoUuid\": \"UUID_PRODUCTO\",\n      \"cantidad\": 3\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/pedidos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pedidos"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar pedidos CSV",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "archivo",
+                  "type": "file",
+                  "value": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/importar",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pedidos", "importar"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Confirmar pedido",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/UUID_PEDIDO/confirmar",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pedidos", "UUID_PEDIDO", "confirmar"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Iniciar preparacion",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/UUID_PEDIDO/iniciar-preparacion",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pedidos", "UUID_PEDIDO", "iniciar-preparacion"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listo para despacho",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/UUID_PEDIDO/listo-para-despacho",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pedidos", "UUID_PEDIDO", "listo-para-despacho"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Devolver pedido",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/UUID_PEDIDO/devolver",
+              "host": ["{{base_url}}"],
+              "path": ["api", "pedidos", "UUID_PEDIDO", "devolver"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Despachos",
+      "item": [
+        {
+          "name": "Listar despachos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/despachos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "despachos"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear despacho",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pedidoUuid\": \"UUID_PEDIDO\",\n  \"courier\": \"Andreani\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/despachos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "despachos"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Liquidaciones",
+      "item": [
+        {
+          "name": "Listar liquidaciones por empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/liquidaciones/empresa/UUID_EMPRESA",
+              "host": ["{{base_url}}"],
+              "path": ["api", "liquidaciones", "empresa", "UUID_EMPRESA"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear liquidacion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"periodo\": \"2025-05\",\n  \"empresaUuid\": \"UUID_EMPRESA\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/liquidaciones",
+              "host": ["{{base_url}}"],
+              "path": ["api", "liquidaciones"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Marcar pagada",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/liquidaciones/UUID_LIQUIDACION/marcar-pagada",
+              "host": ["{{base_url}}"],
+              "path": ["api", "liquidaciones", "UUID_LIQUIDACION", "marcar-pagada"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "token",
+      "secret": true
+    }
+  ]
+}

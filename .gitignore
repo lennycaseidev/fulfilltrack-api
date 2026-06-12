@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+### Frontend (local testing only) ###
+frontend/
+
+### Local config (contains credentials) ###
+src/main/resources/application.yaml
+
+.env

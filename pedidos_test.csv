@@ -1,0 +1,12 @@
+numeroOrden,direccionEntrega,nombreDestinatario,empresaUuid,sku,cantidad
+ORD-001,Av. Corrientes 1234 CABA,Jose maria Listorti,4ab27ad4-59ab-43a1-8e00-f2676b3ed326,DSTR-001,10
+ORD-001,Av. Corrientes 1234 CABA,Pepe sand,4ab27ad4-59ab-43a1-8e00-f2676b3ed326,DSTR-002,5
+ORD-002,Calle Falsa 123 Rosario,Roberto Carlos,4ab27ad4-59ab-43a1-8e00-f2676b3ed326,DSTR-001,20
+ORD-004,Mitre 456 Córdoba,Patricio Rodriguez,4ab27ad4-59ab-43a1-8e00-f2676b3ed326,DSTR-002,15
+ORD-003,Mitre 456 Córdoba,Carlos Lopez,4ab27ad4-59ab-43a1-8e00-f2676b3ed326,DSTR-001,8
+ORD-ERR-001,San Martin 789 Mendoza,Facundo perez,uuid-mal-formado,DSTR-001,10
+ORD-ERR-002,Belgrano 321 Tucuman,Tomas rodriguez,4ab27ad4-59ab-43a1-8e00-f2676b3ed326,SKU-INEXISTENTE,5
+ORD-ERR-003,Lavalle 654 La Plata,Laura Gomez
+ORD-ERR-004,Florida 987 CABA,Diego Ruiz,4ab27ad4-59ab-43a1-8e00-f2676b3ed326,DSTR-001,cantidad-invalida
+ORD-004,Rivadavia 111 CABA,Rodrigo Rey,4ab27ad4-59ab-43a1-8e00-f2676b3ed326,DSTR-002,50
+ORD-001,Av. Corrientes 1234 CABA,Ricardo Pavoni,4ab27ad4-59ab-43a1-8e00-f2676b3ed326,DSTR-001,10

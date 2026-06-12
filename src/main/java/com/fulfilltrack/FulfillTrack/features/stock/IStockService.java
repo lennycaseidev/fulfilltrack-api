@@ -1,0 +1,21 @@
+package com.fulfilltrack.FulfillTrack.features.stock;
+
+import com.fulfilltrack.FulfillTrack.features.producto.ProductoEntity;
+import com.fulfilltrack.FulfillTrack.features.stock.dto.StockResponseDTO;
+import com.fulfilltrack.FulfillTrack.features.stockMovimiento.TipoMovimientoStock;
+
+import java.util.List;
+import java.util.UUID;
+
+public interface IStockService {
+    StockResponseDTO obtenerStockPorProductoUuid(UUID productoUuid);
+    List<StockResponseDTO> listarStockPorEmpresa(UUID empresaUuid);
+    List<StockResponseDTO> listarTodoElStock();
+    void crearStockInicial(ProductoEntity producto);
+    boolean tieneStockActivo(UUID productoUuid);
+    boolean tieneStockSuficiente(UUID productoUuid, int cantidad);
+    void reservarStock(UUID productoUuid, int cantidad, String motivo);
+    void confirmarConsumoStock(UUID productoUuid, int cantidad, String motivo);
+    void liberarReservaStock(UUID productoUuid, int cantidad, String motivo);
+    StockResponseDTO agregarStock(UUID productoUuid, int cantidad, TipoMovimientoStock tipo, String motivo);
+}
