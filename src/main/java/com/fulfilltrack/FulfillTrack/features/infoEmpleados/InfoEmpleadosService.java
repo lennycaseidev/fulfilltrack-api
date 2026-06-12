@@ -1,5 +1,7 @@
 package com.fulfilltrack.FulfillTrack.features.infoEmpleados;
 
+import com.fulfilltrack.FulfillTrack.auth.credenciales.CredencialRepository;
+import com.fulfilltrack.FulfillTrack.auth.permisos.Roles;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadDuplicadaException;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
@@ -27,14 +29,16 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
     private final IPuestoService puestoService;
     private final IUsuarioService usuarioService;
     private final IUsuarioEmpresaService usuarioEmpresaService;
+    private final CredencialRepository credencialRepository;
 
-    public InfoEmpleadosService(InfoEmpleadosRepository infoEmpleadosRepository, InfoEmpleadosMapper infoEmpleadosMapper, IDepositoService depositoService, IPuestoService puestoService, IUsuarioService usuarioService, @Lazy IUsuarioEmpresaService usuarioEmpresaService) {
+    public InfoEmpleadosService(InfoEmpleadosRepository infoEmpleadosRepository, InfoEmpleadosMapper infoEmpleadosMapper, IDepositoService depositoService, IPuestoService puestoService, IUsuarioService usuarioService, @Lazy IUsuarioEmpresaService usuarioEmpresaService, CredencialRepository credencialRepository) {
         this.infoEmpleadosRepository = infoEmpleadosRepository;
         this.infoEmpleadosMapper = infoEmpleadosMapper;
         this.depositoService = depositoService;
         this.puestoService = puestoService;
         this.usuarioService = usuarioService;
         this.usuarioEmpresaService = usuarioEmpresaService;
+        this.credencialRepository = credencialRepository;
     }
 
     @Override
@@ -53,6 +57,9 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
     public InfoEmpleadosResponseDTO crearEmpleado(InfoEmpleadosRequestDTO request) {
         if (infoEmpleadosRepository.existsByDocumento(request.getDocumento())) {
             throw new EntidadDuplicadaException("El documento ya esta registrado");
+        }
+        if (infoEmpleadosRepository.existsByUsuario_Uuid(request.getUsuarioUuid())) {
+            throw new EntidadDuplicadaException("El usuario ya está registrado como empleado");
         }
         if (usuarioEmpresaService.existeUsuarioEmpresa(request.getUsuarioUuid())) {
             throw new OperacionNoPermitidaException("El usuario ya está vinculado como contacto de empresa");
@@ -106,6 +113,13 @@ public class InfoEmpleadosService implements IInfoEmpleadosService{
         if (empleado.getEstado() == Estado.INACTIVA) {
             throw new OperacionNoPermitidaException("El empleado ya está inactivo");
         }
+        credencialRepository.findByUsuario(empleado.getUsuario()).ifPresent(credencial -> {
+            boolean esAdmin = credencial.getRoles().stream()
+                    .anyMatch(rol -> rol.getRol() == Roles.ROLE_ADMIN);
+            if (esAdmin) {
+                throw new OperacionNoPermitidaException("No se puede desactivar a un administrador");
+            }
+        });
         empleado.setEstado(Estado.INACTIVA);
         infoEmpleadosRepository.save(empleado);
     }

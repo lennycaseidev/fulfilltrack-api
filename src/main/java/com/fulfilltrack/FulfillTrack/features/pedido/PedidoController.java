@@ -28,10 +28,17 @@ public class PedidoController {
     private final IPedidoCsvService pedidoCsvService;
 
     @PreAuthorize("hasAuthority('VER_PEDIDOS')")
-    @Operation(summary = "Listar todos los pedidos")
+    @Operation(summary = "Listar pedidos activos", description = "Devuelve todos los pedidos que no están en estado DESPACHADO ni DEVUELTO")
     @GetMapping
-    ResponseEntity<List<PedidoResponseDTO>> listarPedidos() {
-        return ResponseEntity.ok(pedidoService.listarPedidos());
+    ResponseEntity<List<PedidoResponseDTO>> listarPedidosActivos() {
+        return ResponseEntity.ok(pedidoService.listarPedidosActivos());
+    }
+
+    @PreAuthorize("hasAuthority('VER_PEDIDOS')")
+    @Operation(summary = "Historial de pedidos", description = "Devuelve todos los pedidos sin importar el estado, incluyendo despachados y devueltos")
+    @GetMapping("/historial")
+    ResponseEntity<List<PedidoResponseDTO>> listarHistorial() {
+        return ResponseEntity.ok(pedidoService.listarHistorial());
     }
 
     @PreAuthorize("hasAuthority('VER_PEDIDOS')")

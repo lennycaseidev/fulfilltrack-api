@@ -6,6 +6,7 @@ import com.fulfilltrack.FulfillTrack.auth.dto.NewAccountRequest;
 import com.fulfilltrack.FulfillTrack.auth.permisos.RolEntity;
 import com.fulfilltrack.FulfillTrack.auth.permisos.RolRepository;
 import com.fulfilltrack.FulfillTrack.auth.permisos.Roles;
+import com.fulfilltrack.FulfillTrack.common.exception.EntidadDuplicadaException;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
 import com.fulfilltrack.FulfillTrack.features.usuario.dto.CambiarPasswordDTO;
@@ -35,6 +36,12 @@ public class UsuarioService implements IUsuarioService{
     @Override
     @Transactional
     public UsuarioResponseDTO guardar(NewAccountRequest newAccountRequest) {
+        if (credencialRepository.existsByUsername(newAccountRequest.username())) {
+            throw new EntidadDuplicadaException("El nombre de usuario ya está en uso");
+        }
+        if (credencialRepository.existsByEmail(newAccountRequest.email())) {
+            throw new EntidadDuplicadaException("El email ya está registrado");
+        }
         UsuarioEntity guardado = usuarioRepository.save(UsuarioEntity.builder()
                 .nombre(newAccountRequest.nombre())
                 .apellido(newAccountRequest.apellido())

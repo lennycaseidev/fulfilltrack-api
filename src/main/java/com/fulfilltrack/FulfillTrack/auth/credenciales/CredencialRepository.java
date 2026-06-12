@@ -11,4 +11,6 @@ public interface CredencialRepository extends JpaRepository<CredencialEntity, Lo
     Optional<CredencialEntity> findByUsername(String username);
     List<CredencialEntity> findByActivo(Boolean activo);
     Optional<CredencialEntity> findByUsuario(com.fulfilltrack.FulfillTrack.features.usuario.UsuarioEntity usuario);
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
 }

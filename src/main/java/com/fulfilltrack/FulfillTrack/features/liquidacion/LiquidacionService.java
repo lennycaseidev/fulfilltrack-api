@@ -3,12 +3,14 @@ package com.fulfilltrack.FulfillTrack.features.liquidacion;
 import com.fulfilltrack.FulfillTrack.auth.TenantContext;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
+import com.fulfilltrack.FulfillTrack.features.despacho.IDespachoService;
 import com.fulfilltrack.FulfillTrack.features.email.IEmailService;
 import com.fulfilltrack.FulfillTrack.features.empresa.EmpresaEntity;
 import com.fulfilltrack.FulfillTrack.features.empresa.IEmpresaService;
 import com.fulfilltrack.FulfillTrack.features.liquidacion.dto.LiquidacionRequestDTO;
 import com.fulfilltrack.FulfillTrack.features.liquidacion.dto.LiquidacionResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.liquidacion.mapper.LiquidacionMapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,25 +26,30 @@ public class LiquidacionService implements ILiquidacionService {
     private final IEmpresaService empresaService;
     private final IEmailService emailService;
     private final TenantContext tenantContext;
+    private final IDespachoService despachoService;
 
-    public LiquidacionService(LiquidacionRepository liquidacionRepository, LiquidacionMapper liquidacionMapper, IEmpresaService empresaService, IEmailService emailService, TenantContext tenantContext) {
+    public LiquidacionService(LiquidacionRepository liquidacionRepository, LiquidacionMapper liquidacionMapper, IEmpresaService empresaService, IEmailService emailService, TenantContext tenantContext, @Lazy IDespachoService despachoService) {
         this.liquidacionRepository = liquidacionRepository;
         this.liquidacionMapper = liquidacionMapper;
         this.empresaService = empresaService;
         this.emailService = emailService;
         this.tenantContext = tenantContext;
+        this.despachoService = despachoService;
     }
 
     @Override
     @Transactional
     public LiquidacionResponseDTO crearLiquidacion(LiquidacionRequestDTO request) {
         EmpresaEntity empresa = empresaService.obtenerEmpresaUuid(request.getEmpresaUuid());
-
-        LiquidacionEntity liquidacion = liquidacionMapper.toEntity(request);
-        liquidacion.setEmpresa(empresa);
-        liquidacion.setTotal(
-                request.getPrecioUnitario().multiply(BigDecimal.valueOf(request.getTotalDespachos()))
-        );
+        int totalDespachos = despachoService.contarDespachosPorEmpresa(empresa.getUuid());
+        BigDecimal precioUnitario = empresa.getCostoPorEnvio();
+        LiquidacionEntity liquidacion = LiquidacionEntity.builder()
+                .empresa(empresa)
+                .periodo(request.getPeriodo())
+                .totalDespachos(totalDespachos)
+                .precioUnitario(precioUnitario)
+                .total(precioUnitario.multiply(BigDecimal.valueOf(totalDespachos)))
+                .build();
         LiquidacionEntity liquidacionGuardada = liquidacionRepository.save(liquidacion);
         emailService.enviarLiquidacionAPagar(liquidacionGuardada);
         return liquidacionMapper.toResponseDTO(liquidacionGuardada);
@@ -78,11 +85,13 @@ public class LiquidacionService implements ILiquidacionService {
             throw new OperacionNoPermitidaException("No se puede modificar una liquidación ya pagada");
         }
         EmpresaEntity empresa = empresaService.obtenerEmpresaUuid(request.getEmpresaUuid());
+        int totalDespachos = despachoService.contarDespachosPorEmpresa(empresa.getUuid());
+        BigDecimal precioUnitario = empresa.getCostoPorEnvio();
 
         liquidacion.setPeriodo(request.getPeriodo());
-        liquidacion.setTotalDespachos(request.getTotalDespachos());
-        liquidacion.setPrecioUnitario(request.getPrecioUnitario());
-        liquidacion.setTotal(request.getPrecioUnitario().multiply(BigDecimal.valueOf(request.getTotalDespachos())));
+        liquidacion.setTotalDespachos(totalDespachos);
+        liquidacion.setPrecioUnitario(precioUnitario);
+        liquidacion.setTotal(precioUnitario.multiply(BigDecimal.valueOf(totalDespachos)));
         liquidacion.setEmpresa(empresa);
 
         return liquidacionMapper.toResponseDTO(liquidacionRepository.save(liquidacion));

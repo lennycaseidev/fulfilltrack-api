@@ -14,9 +14,6 @@ public class DespachoRequestDTO {
     @NotNull(message = "el uuid del pedido no puede ser nulo")
     private UUID pedidoUuid;
 
-    @NotNull
-    private UUID usuarioUuid;
-
     @NotBlank(message = "el courier no puede ser nulo")
     private String courier;
 }
