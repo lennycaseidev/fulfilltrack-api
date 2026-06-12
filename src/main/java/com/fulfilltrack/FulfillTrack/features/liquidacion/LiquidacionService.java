@@ -1,5 +1,6 @@
 package com.fulfilltrack.FulfillTrack.features.liquidacion;
 
+import com.fulfilltrack.FulfillTrack.auth.TenantContext;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
 import com.fulfilltrack.FulfillTrack.features.email.IEmailService;
@@ -22,12 +23,14 @@ public class LiquidacionService implements ILiquidacionService {
     private final LiquidacionMapper liquidacionMapper;
     private final IEmpresaService empresaService;
     private final IEmailService emailService;
+    private final TenantContext tenantContext;
 
-    public LiquidacionService(LiquidacionRepository liquidacionRepository, LiquidacionMapper liquidacionMapper, IEmpresaService empresaService, IEmailService emailService) {
+    public LiquidacionService(LiquidacionRepository liquidacionRepository, LiquidacionMapper liquidacionMapper, IEmpresaService empresaService, IEmailService emailService, TenantContext tenantContext) {
         this.liquidacionRepository = liquidacionRepository;
         this.liquidacionMapper = liquidacionMapper;
         this.empresaService = empresaService;
         this.emailService = emailService;
+        this.tenantContext = tenantContext;
     }
 
     @Override
@@ -53,15 +56,18 @@ public class LiquidacionService implements ILiquidacionService {
 
     @Override
     public List<LiquidacionResponseDTO> listarLiquidaciones() {
-        return liquidacionMapper.toResponseList(liquidacionRepository.findAll());
+        return tenantContext.getEmpresaUuid()
+                .map(uuid -> liquidacionMapper.toResponseList(liquidacionRepository.findByEmpresa_Uuid(uuid)))
+                .orElseGet(() -> liquidacionMapper.toResponseList(liquidacionRepository.findAll()));
     }
 
     @Override
     public List<LiquidacionResponseDTO> listarLiquidacionesPorEmpresa(UUID empresaUuid) {
-        if (!empresaService.existeEmpresaPorUuid(empresaUuid)) {
+        UUID efectivo = tenantContext.getEmpresaUuid().orElse(empresaUuid);
+        if (!empresaService.existeEmpresaPorUuid(efectivo)) {
             throw new EntidadNoEncontradaException("Empresa no encontrada");
         }
-        return liquidacionMapper.toResponseList(liquidacionRepository.findByEmpresa_Uuid(empresaUuid));
+        return liquidacionMapper.toResponseList(liquidacionRepository.findByEmpresa_Uuid(efectivo));
     }
 
     @Override

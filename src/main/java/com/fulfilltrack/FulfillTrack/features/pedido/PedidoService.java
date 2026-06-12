@@ -1,5 +1,6 @@
 package com.fulfilltrack.FulfillTrack.features.pedido;
 
+import com.fulfilltrack.FulfillTrack.auth.TenantContext;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
 import com.fulfilltrack.FulfillTrack.features.empresa.EmpresaEntity;
@@ -31,9 +32,10 @@ public class PedidoService implements IPedidoService{
     private final IProductoService productoService;
     private final IStockService stockService;
     private final IPedidoMovimientoService pedidoMovimientoService;
+    private final TenantContext tenantContext;
 
 
-    public PedidoService(PedidoRepository pedidoRepository, ItemPedidoRepository itemPedidoRepository, PedidoMapper pedidoMapper, IEmpresaService empresaService, IProductoService productoService, IStockService stockService, IPedidoMovimientoService pedidoMovimientoService) {
+    public PedidoService(PedidoRepository pedidoRepository, ItemPedidoRepository itemPedidoRepository, PedidoMapper pedidoMapper, IEmpresaService empresaService, IProductoService productoService, IStockService stockService, IPedidoMovimientoService pedidoMovimientoService, TenantContext tenantContext) {
         this.pedidoRepository = pedidoRepository;
         this.itemPedidoRepository = itemPedidoRepository;
         this.pedidoMapper = pedidoMapper;
@@ -41,12 +43,14 @@ public class PedidoService implements IPedidoService{
         this.productoService = productoService;
         this.stockService = stockService;
         this.pedidoMovimientoService = pedidoMovimientoService;
+        this.tenantContext = tenantContext;
     }
 
     @Override
     @Transactional
     public PedidoResponseDTO crearPedido(PedidoRequestDTO request) {
-        EmpresaEntity empresa = empresaService.obtenerEmpresaUuid(request.getEmpresaUuid());
+        UUID empresaId = tenantContext.getEmpresaUuid().orElse(request.getEmpresaUuid());
+        EmpresaEntity empresa = empresaService.obtenerEmpresaUuid(empresaId);
         List<ProductoEntity> productos = new ArrayList<>();
 
         for(ItemPedidoRequestDTO itemRequest: request.getItems()){
@@ -79,12 +83,15 @@ public class PedidoService implements IPedidoService{
 
     @Override
     public List<PedidoResponseDTO> listarPedidos() {
-        return pedidoMapper.toResponseList(pedidoRepository.findAll());
+        return tenantContext.getEmpresaUuid()
+                .map(uuid -> pedidoMapper.toResponseList(pedidoRepository.findByEmpresa_Uuid(uuid)))
+                .orElseGet(() -> pedidoMapper.toResponseList(pedidoRepository.findAll()));
     }
 
     @Override
     public List<PedidoResponseDTO> listarPedidosPorEmpresa(UUID empresaUuid) {
-        return pedidoMapper.toResponseList(pedidoRepository.findByEmpresa_Uuid(empresaUuid));
+        UUID efectivo = tenantContext.getEmpresaUuid().orElse(empresaUuid);
+        return pedidoMapper.toResponseList(pedidoRepository.findByEmpresa_Uuid(efectivo));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.fulfilltrack.FulfillTrack.features.email;
 
 import com.fulfilltrack.FulfillTrack.features.liquidacion.LiquidacionEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -9,6 +10,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService implements IEmailService{
     private final JavaMailSender javaMailSender;
+
+    @Value("${spring.mail.from}")
+    private String mailFrom;
 
     public EmailService(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
@@ -19,7 +23,7 @@ public class EmailService implements IEmailService{
     @Override
     public void enviarLiquidacionAbonada(LiquidacionEntity liquidacion) {
         SimpleMailMessage mensaje = new SimpleMailMessage();
-        mensaje.setFrom("hello@shreddingstudio.com");
+        mensaje.setFrom(mailFrom);
         mensaje.setTo(liquidacion.getEmpresa().getEmail());
         mensaje.setSubject("Pago Recibido " + liquidacion.getPeriodo() + "-" + liquidacion.getEmpresa().getNombreEmpresa());
         mensaje.setText(  "Estimados,\n\n" +
@@ -37,7 +41,7 @@ public class EmailService implements IEmailService{
     @Override
     public void enviarLiquidacionAPagar(LiquidacionEntity liquidacion) {
         SimpleMailMessage mensaje = new SimpleMailMessage();
-        mensaje.setFrom("hello@shreddingstudio.com");
+        mensaje.setFrom(mailFrom);
         mensaje.setTo(liquidacion.getEmpresa().getEmail());
         mensaje.setSubject("Liquidación pendiente " + liquidacion.getPeriodo() + " - " + liquidacion.getEmpresa().getNombreEmpresa());
         mensaje.setText(  "Estimados,\n\n" +
@@ -56,7 +60,7 @@ public class EmailService implements IEmailService{
     @Override
     public void enviarPagoAtrasado(LiquidacionEntity liquidacion) {
         SimpleMailMessage mensaje = new SimpleMailMessage();
-        mensaje.setFrom("hello@shreddingstudio.com");
+        mensaje.setFrom(mailFrom);
         mensaje.setTo(liquidacion.getEmpresa().getEmail());
         mensaje.setSubject("Pago atrasado " + liquidacion.getPeriodo() + " - " + liquidacion.getEmpresa().getNombreEmpresa());
         mensaje.setText(  "Estimados,\n\n" +

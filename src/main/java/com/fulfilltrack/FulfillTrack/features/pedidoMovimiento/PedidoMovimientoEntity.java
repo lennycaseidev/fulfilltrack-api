@@ -38,7 +38,6 @@ public class PedidoMovimientoEntity {
     @Column(name = "estado_nuevo", nullable = false)
     private EstadoPedido estadoNuevo;
 
-    // pendiente hasta implementar autenticación
     @Column(name = "usuario_uuid")
     private UUID usuarioUuid;
 

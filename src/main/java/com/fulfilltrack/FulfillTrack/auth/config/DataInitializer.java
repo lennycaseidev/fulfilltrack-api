@@ -36,7 +36,7 @@ public class DataInitializer implements ApplicationRunner {
         crearRolConPermisos(Roles.ROLE_ADMIN, Permisos.values());
 
         crearRolConPermisos(Roles.ROLE_OPERADOR,
-                Permisos.VER_PRODUCTOS, Permisos.VER_STOCK, Permisos.GESTIONAR_STOCK,
+                Permisos.VER_PRODUCTOS, Permisos.VER_PRODUCTOS_EMPRESA, Permisos.VER_STOCK, Permisos.GESTIONAR_STOCK,
                 Permisos.VER_PEDIDOS, Permisos.ACTUALIZAR_ESTADO_PEDIDO,
                 Permisos.VER_DESPACHOS, Permisos.CREAR_DESPACHO,
                 Permisos.VER_USUARIOS

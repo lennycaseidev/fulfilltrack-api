@@ -11,6 +11,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ProductoMapper {
     @Mapping(source = "empresa.uuid", target = "empresaUuid")
+    @Mapping(source = "empresa.nombreEmpresa", target = "nombreEmpresa")
     ProductoResponseDTO toResponseDTO(ProductoEntity entity);
 
     @Mapping(target = "uuid", ignore = true)

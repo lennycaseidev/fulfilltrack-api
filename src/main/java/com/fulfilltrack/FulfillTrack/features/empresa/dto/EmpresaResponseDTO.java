@@ -21,4 +21,5 @@ public class EmpresaResponseDTO {
     private Estado estado;
     private LocalDateTime fechaCreacion;
     private UUID depositoUuid;
+    private String nombreDeposito;
 }

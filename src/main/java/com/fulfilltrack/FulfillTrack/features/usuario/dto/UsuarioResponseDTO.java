@@ -5,7 +5,6 @@ import lombok.*;
 import java.util.UUID;
 
 @Getter
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -13,6 +12,8 @@ public class UsuarioResponseDTO {
     private UUID uuid;
     private String nombre;
     private String apellido;
-    private String nombrePermiso;
-    private UUID credencialUuid;
+    private String username;
+    private String email;
+    private String rol;
+    private Boolean activo;
 }

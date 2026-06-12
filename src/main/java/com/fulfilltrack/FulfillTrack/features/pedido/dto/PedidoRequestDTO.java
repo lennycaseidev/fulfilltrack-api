@@ -22,7 +22,6 @@ public class PedidoRequestDTO {
     private String direccionEntrega;
     @NotBlank(message = "el nombre del destinatario es obligatorio")
     private String nombreDestinatario;
-    @NotNull(message = "el UUID de la empresa es obligatorio")
     private UUID empresaUuid;
     @NotEmpty(message = "la lista de items es obligatoria")
     private List<ItemPedidoRequestDTO> items;

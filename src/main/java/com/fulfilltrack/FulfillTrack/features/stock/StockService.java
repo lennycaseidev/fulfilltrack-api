@@ -1,5 +1,6 @@
 package com.fulfilltrack.FulfillTrack.features.stock;
 
+import com.fulfilltrack.FulfillTrack.auth.TenantContext;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.features.empresa.IEmpresaService;
 import com.fulfilltrack.FulfillTrack.features.producto.ProductoEntity;
@@ -20,13 +21,16 @@ public class StockService implements IStockService {
     private final StockMapper stockMapper;
     private final IEmpresaService empresaService;
     private final IStockMovimientoService stockMovimientoService;
+    private final TenantContext tenantContext;
 
     public StockService(StockRepository stockRepository, StockMapper stockMapper,
-                        IEmpresaService empresaService, IStockMovimientoService stockMovimientoService) {
+                        IEmpresaService empresaService, IStockMovimientoService stockMovimientoService,
+                        TenantContext tenantContext) {
         this.stockRepository = stockRepository;
         this.stockMapper = stockMapper;
         this.empresaService = empresaService;
         this.stockMovimientoService = stockMovimientoService;
+        this.tenantContext = tenantContext;
     }
 
     @Override
@@ -38,15 +42,18 @@ public class StockService implements IStockService {
 
     @Override
     public List<StockResponseDTO> listarStockPorEmpresa(UUID empresaUuid) {
-        if (!empresaService.existeEmpresaPorUuid(empresaUuid)) {
+        UUID efectivo = tenantContext.getEmpresaUuid().orElse(empresaUuid);
+        if (!empresaService.existeEmpresaPorUuid(efectivo)) {
             throw new EntidadNoEncontradaException("La empresa no ha sido encontrada");
         }
-        return stockMapper.toResponseList(stockRepository.findByProducto_Empresa_Uuid(empresaUuid));
+        return stockMapper.toResponseList(stockRepository.findByProducto_Empresa_Uuid(efectivo));
     }
 
     @Override
     public List<StockResponseDTO> listarTodoElStock() {
-        return stockMapper.toResponseList(stockRepository.findAll());
+        return tenantContext.getEmpresaUuid()
+                .map(uuid -> stockMapper.toResponseList(stockRepository.findByProducto_Empresa_Uuid(uuid)))
+                .orElseGet(() -> stockMapper.toResponseList(stockRepository.findAll()));
     }
 
     @Override

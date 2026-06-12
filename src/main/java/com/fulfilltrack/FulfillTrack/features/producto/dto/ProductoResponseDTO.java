@@ -17,4 +17,5 @@ public class ProductoResponseDTO {
     private String sku;
     private Estado estado;
     private UUID empresaUuid;
+    private String nombreEmpresa;
 }

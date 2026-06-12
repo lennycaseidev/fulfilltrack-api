@@ -23,6 +23,5 @@ public class ProductoRequestDTO {
     @NotBlank(message = "El sku del producto es obligatorio")
     @Size(max = 20, message = "el sku no puede superar los 20 caracteres")
     private String sku;
-    @NotNull(message = "El UUID de la empresa es obligatorio")
     private UUID empresaUuid;
 }

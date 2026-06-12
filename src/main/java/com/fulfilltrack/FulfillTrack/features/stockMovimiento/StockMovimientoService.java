@@ -1,5 +1,7 @@
 package com.fulfilltrack.FulfillTrack.features.stockMovimiento;
 
+import com.fulfilltrack.FulfillTrack.auth.TenantContext;
+import com.fulfilltrack.FulfillTrack.auth.credenciales.CredencialEntity;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.features.empresa.IEmpresaService;
 import com.fulfilltrack.FulfillTrack.features.producto.IProductoService;
@@ -7,6 +9,8 @@ import com.fulfilltrack.FulfillTrack.features.producto.ProductoEntity;
 import com.fulfilltrack.FulfillTrack.features.stockMovimiento.dto.StockMovimientoResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.stockMovimiento.mapper.StockMovimientoMapper;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,13 +23,15 @@ public class StockMovimientoService implements IStockMovimientoService {
     private final StockMovimientoMapper movimientoMapper;
     private final IProductoService productoService;
     private final IEmpresaService empresaService;
+    private final TenantContext tenantContext;
 
     public StockMovimientoService(StockMovimientoRepository movimientoRepository, StockMovimientoMapper movimientoMapper, @Lazy IProductoService productoService,
-                                  IEmpresaService empresaService) {
+                                  IEmpresaService empresaService, TenantContext tenantContext) {
         this.movimientoRepository = movimientoRepository;
         this.movimientoMapper = movimientoMapper;
         this.productoService = productoService;
         this.empresaService = empresaService;
+        this.tenantContext = tenantContext;
     }
 
     @Override
@@ -35,7 +41,17 @@ public class StockMovimientoService implements IStockMovimientoService {
                 .tipo(tipo)
                 .motivo(motivo)
                 .cantidad(cantidad)
+                .usuarioUuid(resolverUsuarioUuid())
                 .build());
+    }
+
+    private UUID resolverUsuarioUuid() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getPrincipal() instanceof CredencialEntity credencial
+                && credencial.getUsuario() != null) {
+            return credencial.getUsuario().getUuid();
+        }
+        return null;
     }
 
     @Override
@@ -47,10 +63,11 @@ public class StockMovimientoService implements IStockMovimientoService {
 
     @Override
     public List<StockMovimientoResponseDTO> listarMovimientosPorEmpresa(UUID empresaUuid) {
-        if (!empresaService.existeEmpresaPorUuid(empresaUuid)) {
+        UUID efectivo = tenantContext.getEmpresaUuid().orElse(empresaUuid);
+        if (!empresaService.existeEmpresaPorUuid(efectivo)) {
             throw new EntidadNoEncontradaException("La empresa no ha sido encontrada");
         }
         return movimientoMapper.toResponseList(
-                movimientoRepository.findByProducto_Empresa_UuidOrderByFechaDesc(empresaUuid));
+                movimientoRepository.findByProducto_Empresa_UuidOrderByFechaDesc(efectivo));
     }
 }
