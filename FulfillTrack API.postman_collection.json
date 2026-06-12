@@ -1,0 +1,1696 @@
+{
+  "info": {
+    "_postman_id": "b94c08df-c044-40f2-8027-d3024a4983df",
+    "name": "FulfillTrack API",
+    "description": "---\n\n**Cómo usar esta colección**\n\n1. Ejecutar el request Auth → Login con las credenciales deseadas.\n    \n2. Copiar el accessToken de la respuesta.\n    \n3. En la colección, ir a la Variables y pegar el valor en la variable token.\n    \n4. Todos los demás requests usarán ese token automáticamente.\n   \n\nNotas\n\n- Reemplazar los UUID_XXX en las URLs con los UUIDs reales obtenidos de los listados.\n    \n- base_url por defecto: [http://localhost:8080](http://localhost:8080).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53429345",
+    "_collection_link": "https://go.postman.co/collection/53429345-b94c08df-c044-40f2-8027-d3024a4983df?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/ingresar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "ingresar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Registrarse",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"juanperez\",\n  \"password\": \"pass123\",\n  \"email\": \"juan@empresa.com\",\n  \"nombre\": \"Juan\",\n  \"apellido\": \"Perez\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/registrarse",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "registrarse"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"PEGAR_REFRESH_TOKEN\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/refresh",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "refresh"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Depositos",
+      "item": [
+        {
+          "name": "Listar depositos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/depositos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "depositos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener deposito",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/depositos/UUID_DEPOSITO",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "depositos",
+                "UUID_DEPOSITO"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear deposito",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreDeposito\": \"Deposito Central\",\n  \"email\": \"deposito@fulfilltrack.com\",\n  \"direccionDeposito\": \"Av. Siempreviva 742\",\n  \"telefonoDeposito\": \"1134567890\",\n  \"aperturaDeposito\": \"08:00:00\",\n  \"cierreDeposito\": \"18:00:00\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/depositos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "depositos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar deposito",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreDeposito\": \"Deposito Central Norte\",\n  \"email\": \"deposito2@fulfilltrack.com\",\n  \"direccionDeposito\": \"Av. Siempreviva 999\",\n  \"telefonoDeposito\": \"1134567891\",\n  \"aperturaDeposito\": \"07:00:00\",\n  \"cierreDeposito\": \"20:00:00\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/depositos/UUID_DEPOSITO",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "depositos",
+                "UUID_DEPOSITO"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desactivar deposito",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/depositos/UUID_DEPOSITO/desactivar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "depositos",
+                "UUID_DEPOSITO",
+                "desactivar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activar deposito",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/depositos/UUID_DEPOSITO/activar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "depositos",
+                "UUID_DEPOSITO",
+                "activar"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Empresas",
+      "item": [
+        {
+          "name": "Listar empresas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/empresas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "empresas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/empresas/UUID_EMPRESA",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "empresas",
+                "UUID_EMPRESA"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear empresa",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreEmpresa\": \"Empresa Demo SA\",\n  \"email\": \"empresa@demo.com\",\n  \"costoPorEnvio\": 1500.00,\n  \"depositoUuid\": \"UUID_DEPOSITO\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/empresas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "empresas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar empresa",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreEmpresa\": \"Empresa Demo SA Actualizada\",\n  \"email\": \"empresa2@demo.com\",\n  \"costoPorEnvio\": 1800.00,\n  \"depositoUuid\": \"UUID_DEPOSITO\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/empresas/UUID_EMPRESA",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "empresas",
+                "UUID_EMPRESA"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desactivar empresa",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/empresas/UUID_EMPRESA/desactivar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "empresas",
+                "UUID_EMPRESA",
+                "desactivar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activar empresa",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/empresas/UUID_EMPRESA/activar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "empresas",
+                "UUID_EMPRESA",
+                "activar"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "Listar usuarios",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "usuarios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar usuarios activos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios/activos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "activos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener usuario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios/UUID_USUARIO",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "UUID_USUARIO"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Asignar rol",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios/UUID_USUARIO/rol?rol=ROLE_OPERADOR",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "UUID_USUARIO",
+                "rol"
+              ],
+              "query": [
+                {
+                  "key": "rol",
+                  "value": "ROLE_OPERADOR"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Usuarios Empresa",
+      "item": [
+        {
+          "name": "Listar usuarios empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios-empresa",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "usuarios-empresa"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener usuario empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios-empresa/UUID_USUARIO_EMPRESA",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "usuarios-empresa",
+                "UUID_USUARIO_EMPRESA"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar por empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios-empresa/empresa/UUID_EMPRESA",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "usuarios-empresa",
+                "empresa",
+                "UUID_EMPRESA"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear usuario empresa",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cargo\": \"Gerente de Logistica\",\n  \"telefono\": \"1145678901\",\n  \"empresaUuid\": \"UUID_EMPRESA\",\n  \"usuarioUuid\": \"UUID_USUARIO\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/usuarios-empresa",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "usuarios-empresa"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar usuario empresa",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cargo\": \"Director Comercial\",\n  \"telefono\": \"1145678902\",\n  \"empresaUuid\": \"UUID_EMPRESA\",\n  \"usuarioUuid\": \"UUID_USUARIO\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/usuarios-empresa/UUID_USUARIO_EMPRESA",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "usuarios-empresa",
+                "UUID_USUARIO_EMPRESA"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desactivar usuario empresa",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios-empresa/UUID_USUARIO_EMPRESA/desactivar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "usuarios-empresa",
+                "UUID_USUARIO_EMPRESA",
+                "desactivar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activar usuario empresa",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios-empresa/UUID_USUARIO_EMPRESA/activar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "usuarios-empresa",
+                "UUID_USUARIO_EMPRESA",
+                "activar"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Puestos",
+      "item": [
+        {
+          "name": "Listar puestos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/puestos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "puestos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener puesto",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/puestos/UUID_PUESTO",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "puestos",
+                "UUID_PUESTO"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear puesto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombrePuesto\": \"Operador de Almacen\",\n  \"descripcion\": \"Gestiona el inventario y despachos del deposito\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/puestos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "puestos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar puesto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombrePuesto\": \"Supervisor de Almacen\",\n  \"descripcion\": \"Supervisa las operaciones del deposito\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/puestos/UUID_PUESTO",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "puestos",
+                "UUID_PUESTO"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar puesto",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/puestos/UUID_PUESTO",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "puestos",
+                "UUID_PUESTO"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Empleados",
+      "item": [
+        {
+          "name": "Listar empleados",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/empleados",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "empleados"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener empleado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/empleados/UUID_EMPLEADO",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "empleados",
+                "UUID_EMPLEADO"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear empleado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documento\": \"30123456\",\n  \"salario\": 250000.00,\n  \"fechaContratacion\": \"2024-01-15T08:00:00\",\n  \"puestoUuid\": \"UUID_PUESTO\",\n  \"usuarioUuid\": \"UUID_USUARIO\",\n  \"depositoUuid\": \"UUID_DEPOSITO\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/empleados",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "empleados"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar empleado",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documento\": \"30123456\",\n  \"salario\": 280000.00,\n  \"fechaContratacion\": \"2024-01-15T08:00:00\",\n  \"puestoUuid\": \"UUID_PUESTO\",\n  \"usuarioUuid\": \"UUID_USUARIO\",\n  \"depositoUuid\": \"UUID_DEPOSITO\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/empleados/UUID_EMPLEADO",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "empleados",
+                "UUID_EMPLEADO"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desactivar empleado",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/empleados/UUID_EMPLEADO/desactivar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "empleados",
+                "UUID_EMPLEADO",
+                "desactivar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activar empleado",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/empleados/UUID_EMPLEADO/activar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "empleados",
+                "UUID_EMPLEADO",
+                "activar"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "Listar productos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/productos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar productos por empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/productos/empresa/UUID_EMPRESA",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "empresa",
+                "UUID_EMPRESA"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener producto por UUID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/productos/UUID_PRODUCTO",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "UUID_PRODUCTO"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener producto por SKU",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/productos/sku/PROD-001",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "sku",
+                "PROD-001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreProducto\": \"Remera Basica Blanca\",\n  \"descripcion\": \"Remera de algodon 100%, talle M\",\n  \"sku\": \"PROD-001\",\n  \"empresaUuid\": \"UUID_EMPRESA\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/productos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar producto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreProducto\": \"Remera Basica Blanca XL\",\n  \"descripcion\": \"Remera de algodon 100%, talle XL\",\n  \"sku\": \"PROD-001\",\n  \"empresaUuid\": \"UUID_EMPRESA\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/productos/UUID_PRODUCTO",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "UUID_PRODUCTO"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desactivar producto",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/productos/UUID_PRODUCTO/desactivar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "UUID_PRODUCTO",
+                "desactivar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activar producto",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/productos/UUID_PRODUCTO/activar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "UUID_PRODUCTO",
+                "activar"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Stock",
+      "item": [
+        {
+          "name": "Listar todo el stock",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/stock",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "stock"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar stock por empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/stock/empresa/UUID_EMPRESA",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "stock",
+                "empresa",
+                "UUID_EMPRESA"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener stock por producto",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/stock/producto/UUID_PRODUCTO",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "stock",
+                "producto",
+                "UUID_PRODUCTO"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Agregar stock",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/stock/producto/UUID_PRODUCTO/agregar?cantidad=50",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "stock",
+                "producto",
+                "UUID_PRODUCTO",
+                "agregar"
+              ],
+              "query": [
+                {
+                  "key": "cantidad",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar movimientos por producto",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/stock-movimientos/producto/UUID_PRODUCTO",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "stock-movimientos",
+                "producto",
+                "UUID_PRODUCTO"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar movimientos por empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/stock-movimientos/empresa/UUID_EMPRESA",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "stock-movimientos",
+                "empresa",
+                "UUID_EMPRESA"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Pedidos",
+      "item": [
+        {
+          "name": "Listar pedidos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar pedidos por empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/empresa/UUID_EMPRESA",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
+                "empresa",
+                "UUID_EMPRESA"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener pedido",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/UUID_PEDIDO",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
+                "UUID_PEDIDO"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear pedido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numeroOrden\": \"ORD-0001\",\n  \"direccionEntrega\": \"Av. Corrientes 1234, CABA\",\n  \"nombreDestinatario\": \"Maria Garcia\",\n  \"empresaUuid\": \"UUID_EMPRESA\",\n  \"items\": [\n    {\n      \"productoUuid\": \"UUID_PRODUCTO\",\n      \"cantidad\": 3\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/pedidos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar pedidos CSV",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "value": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/importar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
+                "importar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Confirmar pedido",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/UUID_PEDIDO/confirmar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
+                "UUID_PEDIDO",
+                "confirmar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Iniciar preparacion",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/UUID_PEDIDO/iniciar-preparacion",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
+                "UUID_PEDIDO",
+                "iniciar-preparacion"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listo para despacho",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/UUID_PEDIDO/listo-para-despacho",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
+                "UUID_PEDIDO",
+                "listo-para-despacho"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Devolver pedido",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/UUID_PEDIDO/devolver",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
+                "UUID_PEDIDO",
+                "devolver"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ver movimientos del pedido",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/UUID_PEDIDO/movimientos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
+                "UUID_PEDIDO",
+                "movimientos"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Despachos",
+      "item": [
+        {
+          "name": "Listar despachos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/despachos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "despachos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener despacho",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/despachos/UUID_DESPACHO",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "despachos",
+                "UUID_DESPACHO"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener despacho por pedido",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/despachos/pedido/UUID_PEDIDO",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "despachos",
+                "pedido",
+                "UUID_PEDIDO"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear despacho",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pedidoUuid\": \"UUID_PEDIDO\",\n  \"usuarioUuid\": \"UUID_USUARIO\",\n  \"courier\": \"Andreani\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/despachos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "despachos"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Liquidaciones",
+      "item": [
+        {
+          "name": "Listar liquidaciones",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/liquidaciones",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "liquidaciones"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar liquidaciones por empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/liquidaciones/empresa/UUID_EMPRESA",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "liquidaciones",
+                "empresa",
+                "UUID_EMPRESA"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener liquidacion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/liquidaciones/UUID_LIQUIDACION",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "liquidaciones",
+                "UUID_LIQUIDACION"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear liquidacion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"periodo\": \"2025-05\",\n  \"totalDespachos\": 42,\n  \"precioUnitario\": 1500.00,\n  \"empresaUuid\": \"UUID_EMPRESA\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/liquidaciones",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "liquidaciones"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar liquidacion",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"periodo\": \"2025-05\",\n  \"totalDespachos\": 45,\n  \"precioUnitario\": 1500.00,\n  \"empresaUuid\": \"UUID_EMPRESA\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/liquidaciones/UUID_LIQUIDACION",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "liquidaciones",
+                "UUID_LIQUIDACION"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Marcar pagada",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/liquidaciones/UUID_LIQUIDACION/marcar-pagada",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "liquidaciones",
+                "UUID_LIQUIDACION",
+                "marcar-pagada"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Marcar impaga",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/liquidaciones/UUID_LIQUIDACION/marcar-impaga",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "liquidaciones",
+                "UUID_LIQUIDACION",
+                "marcar-impaga"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "token",
+      "secret": true
+    }
+  ]
+}

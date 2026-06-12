@@ -1,6 +1,7 @@
 package com.fulfilltrack.FulfillTrack.features.usuario;
 
 import com.fulfilltrack.FulfillTrack.auth.permisos.Roles;
+import com.fulfilltrack.FulfillTrack.features.usuario.dto.CambiarPasswordDTO;
 import com.fulfilltrack.FulfillTrack.features.usuario.dto.UsuarioResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -51,6 +52,19 @@ public class UsuarioController {
     @PatchMapping("/{uuid}/rol")
     ResponseEntity<Void> asignarRol(@PathVariable UUID uuid, @RequestParam Roles rol){
         usuarioService.asignarRol(uuid, rol);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAuthority('ACTUALIZAR_USUARIO')")
+    @Operation(summary = "Cambiar contraseña de usuario")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Contraseña actualizada"),
+        @ApiResponse(responseCode = "400", description = "Contraseña actual incorrecta"),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    @PatchMapping("/{uuid}/password")
+    ResponseEntity<Void> cambiarPassword(@PathVariable UUID uuid, @Valid @RequestBody CambiarPasswordDTO dto){
+        usuarioService.cambiarPassword(uuid, dto);
         return ResponseEntity.noContent().build();
     }
 
