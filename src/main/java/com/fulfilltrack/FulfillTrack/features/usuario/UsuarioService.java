@@ -8,6 +8,7 @@ import com.fulfilltrack.FulfillTrack.auth.permisos.RolRepository;
 import com.fulfilltrack.FulfillTrack.auth.permisos.Roles;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
+import com.fulfilltrack.FulfillTrack.features.usuario.dto.CambiarPasswordDTO;
 import com.fulfilltrack.FulfillTrack.features.usuario.dto.UsuarioResponseDTO;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,8 +40,10 @@ public class UsuarioService implements IUsuarioService{
                 .apellido(newAccountRequest.apellido())
                 .build());
 
-        RolEntity rolPendiente = rolRepository.findByRol(Roles.ROLE_PENDIENTE)
-                .orElseThrow(() -> new EntidadNoEncontradaException("Rol PENDIENTE no encontrado"));
+        boolean esElPrimero = credencialRepository.count() == 0;
+        Roles rolAsignado = esElPrimero ? Roles.ROLE_ADMIN : Roles.ROLE_PENDIENTE;
+        RolEntity rol = rolRepository.findByRol(rolAsignado)
+                .orElseThrow(() -> new EntidadNoEncontradaException("Rol " + rolAsignado + " no encontrado"));
 
         CredencialEntity nuevaCredencial = CredencialEntity.builder()
                 .activo(true)
@@ -48,7 +51,7 @@ public class UsuarioService implements IUsuarioService{
                 .email(newAccountRequest.email())
                 .password(passwordEncoder.encode(newAccountRequest.password()))
                 .usuario(guardado)
-                .roles(new java.util.HashSet<>(java.util.Set.of(rolPendiente)))
+                .roles(new java.util.HashSet<>(java.util.Set.of(rol)))
                 .build();
         CredencialEntity credencialGuardada = credencialRepository.save(nuevaCredencial);
 
@@ -101,6 +104,19 @@ public class UsuarioService implements IUsuarioService{
                 .rol(rol)
                 .activo(credencial != null ? credencial.getActivo() : null)
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public void cambiarPassword(UUID usuarioUuid, CambiarPasswordDTO dto) {
+        UsuarioEntity usuario = obtenerUsuarioEntidad(usuarioUuid);
+        CredencialEntity credencial = credencialRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new EntidadNoEncontradaException("Credencial no encontrada"));
+        if (!passwordEncoder.matches(dto.getPasswordActual(), credencial.getPassword())) {
+            throw new OperacionNoPermitidaException("La contraseña actual es incorrecta");
+        }
+        credencial.setPassword(passwordEncoder.encode(dto.getPasswordNueva()));
+        credencialRepository.save(credencial);
     }
 
     @Override
