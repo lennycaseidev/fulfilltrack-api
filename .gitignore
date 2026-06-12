@@ -37,6 +37,4 @@ build/
 frontend/
 
 ### Local config (contains credentials) ###
-src/main/resources/application.yaml
-
 .env
