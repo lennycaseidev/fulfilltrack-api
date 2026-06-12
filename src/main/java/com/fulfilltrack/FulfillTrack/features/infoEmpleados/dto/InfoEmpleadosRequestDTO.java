@@ -1,8 +1,6 @@
 package com.fulfilltrack.FulfillTrack.features.infoEmpleados.dto;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class InfoEmpleadosRequestDTO {
     @NotBlank(message = "El documento es obligatorio")
+   @Size(min = 8, max = 8)
     private String documento;
     @NotNull(message = "El salario es obligatorio")
     @DecimalMin(value = "0.0", inclusive = false, message = "El salario debe ser mayor a cero")

@@ -10,6 +10,7 @@ import java.util.UUID;
 @Repository
 public interface InfoEmpleadosRepository extends JpaRepository<InfoEmpleadosEntity, Long> {
     Optional<InfoEmpleadosEntity> findByUuid(UUID uuid);
+    Optional<InfoEmpleadosEntity> findByUsuario_Uuid(UUID usuarioUuid);
     boolean existsByDocumento(String documento);
     boolean existsByUsuario_Uuid(UUID usuarioUuid);
 
