@@ -2,10 +2,12 @@ package com.fulfilltrack.FulfillTrack.features.liquidacion;
 
 import com.fulfilltrack.FulfillTrack.auth.TenantContext;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
+import com.fulfilltrack.FulfillTrack.features.despacho.IDespachoService;
 import com.fulfilltrack.FulfillTrack.features.email.IEmailService;
 import com.fulfilltrack.FulfillTrack.features.empresa.EmpresaEntity;
 import com.fulfilltrack.FulfillTrack.features.empresa.IEmpresaService;
 import com.fulfilltrack.FulfillTrack.features.liquidacion.dto.LiquidacionRequestDTO;
+import com.fulfilltrack.FulfillTrack.features.liquidacion.dto.LiquidacionResponseDTO;
 import com.fulfilltrack.FulfillTrack.features.liquidacion.mapper.LiquidacionMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +32,7 @@ class LiquidacionServiceTest {
     @Mock IEmpresaService empresaService;
     @Mock IEmailService emailService;
     @Mock TenantContext tenantContext;
+    @Mock IDespachoService despachoService;
 
     @InjectMocks LiquidacionService liquidacionService;
 
@@ -38,21 +41,17 @@ class LiquidacionServiceTest {
     @Test
     void crearLiquidacion_calculaTotalComoProductoDeDespachosPorPrecio() {
         UUID empresaUuid = UUID.randomUUID();
-        LiquidacionRequestDTO request = new LiquidacionRequestDTO(
-                "2025-06", 10, new BigDecimal("1500.00"), empresaUuid
-        );
+        LiquidacionRequestDTO request = new LiquidacionRequestDTO("2025-06", empresaUuid);
 
-        LiquidacionEntity entidadBase = new LiquidacionEntity();
-        entidadBase.setPeriodo("2025-06");
-        entidadBase.setTotalDespachos(10);
-        entidadBase.setPrecioUnitario(new BigDecimal("1500.00"));
+        EmpresaEntity empresa = new EmpresaEntity();
+        empresa.setCostoPorEnvio(new BigDecimal("1500.00"));
 
-        when(liquidacionMapper.toEntity(request)).thenReturn(entidadBase);
-        when(empresaService.obtenerEmpresaUuid(empresaUuid)).thenReturn(new EmpresaEntity());
+        when(empresaService.obtenerEmpresaUuid(empresaUuid)).thenReturn(empresa);
+        when(despachoService.contarDespachosPorEmpresa(any())).thenReturn(10);
         when(liquidacionRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
         when(liquidacionMapper.toResponseDTO(any())).thenAnswer(inv -> {
             LiquidacionEntity e = inv.getArgument(0);
-            var dto = new com.fulfilltrack.FulfillTrack.features.liquidacion.dto.LiquidacionResponseDTO();
+            LiquidacionResponseDTO dto = new LiquidacionResponseDTO();
             dto.setTotal(e.getTotal());
             return dto;
         });
@@ -100,9 +99,7 @@ class LiquidacionServiceTest {
         liquidacion.setEstadoPago(EstadoPago.PAGO);
         when(liquidacionRepository.findByUuid(uuid)).thenReturn(Optional.of(liquidacion));
 
-        LiquidacionRequestDTO request = new LiquidacionRequestDTO(
-                "2025-06", 5, new BigDecimal("1000.00"), UUID.randomUUID()
-        );
+        LiquidacionRequestDTO request = new LiquidacionRequestDTO("2025-06", UUID.randomUUID());
 
         assertThatThrownBy(() -> liquidacionService.actualizarLiquidacion(uuid, request))
                 .isInstanceOf(OperacionNoPermitidaException.class)
