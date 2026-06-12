@@ -32,10 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-### Claude Code ###
-CLAUDE.md
-.claude/
-
 
 ### Frontend (local testing only) ###
 frontend/
