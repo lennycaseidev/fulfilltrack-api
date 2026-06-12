@@ -24,6 +24,7 @@ public class LiquidacionScheduler {
     private final DespachoRepository despachoRepository;
     private final IEmailService emailService;
 
+    // @Scheduled(cron = "0 */5 * * * ?") // cada 5 minutos (para demo)
     @Scheduled(cron = "0 0 8 1 * ?") //el 1ro de cada mes a las 8:00am.
     @Transactional
     public void procesarLiquidacionesMensuales() {
