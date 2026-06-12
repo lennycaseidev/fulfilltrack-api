@@ -1,5 +1,6 @@
 package com.fulfilltrack.FulfillTrack.features.usuarioEmpresa;
 
+import com.fulfilltrack.FulfillTrack.auth.credenciales.CredencialRepository;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadDuplicadaException;
 import com.fulfilltrack.FulfillTrack.common.exception.EntidadNoEncontradaException;
 import com.fulfilltrack.FulfillTrack.common.exception.OperacionNoPermitidaException;
@@ -25,13 +26,15 @@ public class UsuarioEmpresaService implements IUsuarioEmpresaService {
     private final IEmpresaService empresaService;
     private final IInfoEmpleadosService infoEmpleadosService;
     private final IUsuarioService usuarioService;
+    private final CredencialRepository credencialRepository;
 
-    public UsuarioEmpresaService(UsuarioEmpresaRepository usuarioEmpresaRepository, UsuarioEmpresaMapper usuarioEmpresaMapper, IEmpresaService empresaService, IInfoEmpleadosService infoEmpleadosService, IUsuarioService usuarioService) {
+    public UsuarioEmpresaService(UsuarioEmpresaRepository usuarioEmpresaRepository, UsuarioEmpresaMapper usuarioEmpresaMapper, IEmpresaService empresaService, IInfoEmpleadosService infoEmpleadosService, IUsuarioService usuarioService, CredencialRepository credencialRepository) {
         this.usuarioEmpresaRepository = usuarioEmpresaRepository;
         this.usuarioEmpresaMapper = usuarioEmpresaMapper;
         this.empresaService = empresaService;
         this.infoEmpleadosService = infoEmpleadosService;
         this.usuarioService = usuarioService;
+        this.credencialRepository = credencialRepository;
     }
 
     @Override
@@ -95,6 +98,10 @@ public class UsuarioEmpresaService implements IUsuarioEmpresaService {
         }
         usuarioEmpresa.setEstado(Estado.ACTIVA);
         usuarioEmpresaRepository.save(usuarioEmpresa);
+        credencialRepository.findByUsuario(usuarioEmpresa.getUsuario()).ifPresent(credencial -> {
+            credencial.setActivo(true);
+            credencialRepository.save(credencial);
+        });
     }
 
     @Override
@@ -106,6 +113,11 @@ public class UsuarioEmpresaService implements IUsuarioEmpresaService {
         }
         usuarioEmpresa.setEstado(Estado.INACTIVA);
         usuarioEmpresaRepository.save(usuarioEmpresa);
+        credencialRepository.findByUsuario(usuarioEmpresa.getUsuario()).ifPresent(credencial -> {
+            credencial.setActivo(false);
+            credencial.setRefreshToken(null);
+            credencialRepository.save(credencial);
+        });
     }
 
     @Override
